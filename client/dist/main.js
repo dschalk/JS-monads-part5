@@ -3452,7 +3452,7 @@ var isNode = typeof process === 'object'
 module.exports = new Scheduler(isNode ? nodeTimer : setTimeoutTimer);
 
 }).call(this,require('_process'))
-},{"./Scheduler":48,"./nodeTimer":50,"./timeoutTimer":51,"_process":167}],50:[function(require,module,exports){
+},{"./Scheduler":48,"./nodeTimer":50,"./timeoutTimer":51,"_process":100}],50:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -7380,352 +7380,97 @@ module.exports = function(sel, data, children, text, elm) {
 };
 
 },{}],100:[function(require,module,exports){
-'use strict';
+// shim for using process in browser
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+var process = module.exports = {};
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
 
-var MonadIter = function MonadIter() {
-  var _this = this;
-  this.p = function () {};
-
-  this.release = function () {
-    return _this.p();
-  };
-
-  this.bnd = function (func) {
-    _this.p = func;
-  };
-};
-
-var Monad = function Monad(z, g) {
-  var _this = this;  
-  this.x = z;
-  if (arguments.length === 1) {
-    this.id = 'anonymous';
-  } else {
-    this.id = g;
-  }
-
-  this.bnd = function (func) {
-    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
+function cleanUpNextTick() {
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
     }
-
-    return func.apply(undefined, [_this.x].concat(args));
-  },
-
-  this.ret = function (a) {
-    _this.x = a;
-    return _this;
-  };
-};
-
-var ret = function ret(v) {
-  return new Monad(v);
-};
-
-module.exports = {
-  
-MonadIter: function MonadIter() {
-  var _this = this;
-  this.p = function () {};
-
-  this.release = function () {
-    return _this.p();
-  };
-
-  this.bnd = function (func) {
-    _this.p = func;
-  };
-},
-
-Monad: function Monad(z, g) {
-  var _this = this;  
-  this.x = z;
-  if (arguments.length === 1) {
-    this.id = 'anonymous';
-  } else {
-    this.id = g;
-  }
-
-  this.bnd = function (func) {
-    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
+    if (queue.length) {
+        drainQueue();
     }
-
-    return func.apply(undefined, [_this.x].concat(args));
-  },
-
-  this.ret = function (a) {
-    _this.x = a;
-    return _this;
-  };
-},
-
-ret: function(v) {
-  return new Monad(v);
-},
-
-cube: function(v) {
-  return ret(v*v*v);
-},
-
-double: function(v) {
-  return ret(v+v);
-},
-
-add: function(a,b) {
-  return ret(a+b);
-},
-
-addAr: function(a,b) {
-  return ret(a.map(v => v*1 + b*1));
-},
-
-M: function M(a,b) {
-  return new Monad(a,b);
-},
-
-MI: function MI() {
-  return new MonadIter();
-},
-
-mM1: new Monad([],'mM1'),
-mM2: new Monad(0,'mM2'),
-mM3: new Monad(0,'mM3'),
-mM4: new Monad([],'mM4'),
-mM5: new Monad(0,'mM5'),
-mM6: new Monad(0,'mM6'),
-mM7: new Monad(0,'mM7'),
-mM8: new Monad(0,'mM8'),
-mM9: new Monad(0,'mM9'),
-mM10: new Monad(0,'mM10'),
-mM11: new Monad([],'mM11'),
-mM12: new Monad(0,'mM12'),
-mM13: new Monad(0,'mM13'),
-mM14: new Monad(0,'mM14'),
-mM15: new Monad(0,'mM15'),
-mM16: new Monad(0,'mM16'),
-mM17: new Monad(0,'mM17'),
-mM18: new Monad(0,'mM18'),
-mM19: new Monad(0,'mM19'),
-mM20: new Monad(0,'mM20'),
-mM21: new Monad(0,'mM21'),
-mM22: new Monad(0,'mM22'),
-mM23: new Monad(0,'mM23'),
-mM24: new Monad(0,'mM24'),
-mM25: new Monad(0,'mM25'),
-mM26: new Monad(0,'mM26'),
-mM27: new Monad(0,'mM27'),
-mM28: new Monad(0,'mM28'),
-mM29: new Monad(0,'mM29'),
-mMscbd: new Monad([],'mMscbd'),
-mMmessages: new Monad([],'mMmessages'),
-mMscoreboard: new Monad([],'mMscoreboard'),
-mMmsg: new Monad([],'mMmsg'),
-mMgoals: new Monad(0,'mMgoals'),
-mMgoals2: new Monad('','mMgoals2'),
-mMnbrs: new Monad([],'mMnbrs'),
-mMnumbers: new Monad([],'mMnumbers'),
-mMname: new Monad('', 'mMname'),
-mMar: new Monad([1,2,3,4,5], 'mMar'),
-mMscores: new Monad('', 'mMscores'),
-mMprefix: new Monad('', 'mMprefix'),
-mMfib: new Monad([0,1], 'mMfib'),
-mMmain: new Monad(null, 'mMmain'),
-mMcalc: new Monad(null, 'mMcalc'),
-mMadd: new Monad(0, 'mMadd'),
-mMunit: new Monad(0, 'mMunit'),
-mMprod: new Monad(0, 'mMprod'),
-mMmult: new Monad({}, 'mMmult'),
-mMpause: new Monad(0, 'mMpause'),
-mMtem: new Monad(0, 'mMtem'),
-
-mMZ1: new MonadIter(),
-mMZ2: new MonadIter(),
-mMZ3: new MonadIter(),
-mMZ4: new MonadIter(),
-mMZ5: new MonadIter(),
-mMZ6: new MonadIter(),
-mMZ7: new MonadIter(),
-mMZ8: new MonadIter(),
-mMZ9: new MonadIter(),
-
-mMZ10: new MonadIter(),
-mMZ11: new MonadIter(),
-mMZ12: new MonadIter(),
-mMZ13: new MonadIter(),
-mMZ14: new MonadIter(),
-mMZ15: new MonadIter(),
-mMZ16: new MonadIter(),
-mMZ17: new MonadIter(),
-mMZ18: new MonadIter(),
-mMZ19: new MonadIter(),
-
-mMZ20: new MonadIter(),
-mMZ21: new MonadIter(),
-mMZ22: new MonadIter(),
-mMZ23: new MonadIter(),
-mMZ24: new MonadIter(),
-mMZ25: new MonadIter(),
-mMZ26: new MonadIter(),
-mMZ27: new MonadIter(),
-mMZ28: new MonadIter(),
-mMZ29: new MonadIter(),
-
-fib: function fib(x,k) {
-  let j = k;
-  while (j > 0) {
-    x = [x[1], x[0] + x[1]];
-    j -= 1;
-  }
-  return ret('fibonacci ' + k + ': ' + x[0]);
-},
-
-toNums: function toNums(x) {
-  let y = x.map(x => parseFloat(x));
-  return ret(y);
-},
-
-calc: function calc(a,op,b) { 
-  var result;
-  switch (op) {
-      case "add": result = (parseFloat(a) + parseFloat(b));
-      break;
-      case "subtract": result = (a - b);
-      break;
-      case "mult": result = (a * b);
-      break;
-      case "div": result = (a / b);
-      break;
-      case "concat": result = (a+""+b)*1.0;
-      break;
-      default : 'Major Malfunction in calc.';
-  }
-  return result;
-},
-
-pause: function(x,t,mon2) {
-  let time = t*1000;
-  setTimeout( function() {
-    mon2.release();
-  },time );
-  return mon2;
-},
-
-wait: function wait(x, y, mon2) {
-  if (x === y) {
-    mon2.release();
-  }
-  return mon2;
-},
-
-unshift: function unshift(x,v) {
-  x.unshift(v);
-  return ret(x);
-},
-
-toFloat: function toFloat(x) {
-  newx: x.map(function (a) {
-    return parseFloat(a);
-  });
-  return ret(newx);
-},
-
-push: function push(x, j) {
-  if (Array.isArray(x)) {
-    return ret(x.push(j));
-  }
-  return ret(x);
-},
-
-push: function push(x,v) {
-  let ar = x;
-  ar.push(v);
-  let cleanX = ar.filter(v => (v !== "" && v !== undefined));
-  return ret(cleanX);
-},
-splice: function splice(x, j, k) {
-  if (Array.isArray(x)) {
-    return ret(x.splice(j,k));
-  }
-  return ret(x);
-},
-
-clean: function clean(x) {
-  return ret(x.filter(v => v !== ""));
-},
-
-filter: function filter(x, condition) {
-  if (Array.isArray(x)) {
-    return ret(x.filter(v => condition))
-  }
-  return ret(x);
-},
-
-map: function map(x, y) {
-  if (Array.isArray(x)) {
-    return ret(x.map(v => y))
-  }
-  return ret(x);
-},
-
-reduce: function reduce(x, y) {
-  if (Array.isArray(x) && x.length > 0) {
-    return ret(x.reduce(y))
-  }
-  return ret(x);
-},
-
-pop: function pop(x) {
-  let v = x[x.length - 1];
-  console.log('In pop. v: ',v);
-  return ret(v);
-},
-
-next: function next(x, y, mon2) {
-  if (x === y) {
-    mon2.release();
-  }
-  return ret(x);
-},
-
-next2: function next(x, condition, mon2) {
-  if (condition) {
-    mon2.release();
-  }
-  return ret(x);
-},
-
-hyp: function hyp(x,y) {
-  return Math.sqrt(x*x + y*y);
-},
-
-doub: function doub(v) {
-  return ret(v + v);
-},
-
-square: function square(v) {
-  return ret(v * v);
-},
-
-mult: function mult(x, y) {
-  return ret(x * y);
-},
-
-log: function log(x,message) {
-  console.log(message);
-  let mon = new Monad(x);
-  return mon;
-},
-
-delay: function delay(x, mon) {
-  return new Promise(function (resolve, reject) {
-    setTimeout(resolve, 2000);
-  });
-}
 }
 
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = setTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    clearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        setTimeout(drainQueue, 0);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
 
 },{}],101:[function(require,module,exports){
 arguments[4][6][0].apply(exports,arguments)
@@ -7807,8 +7552,116 @@ arguments[4][22][0].apply(exports,arguments)
 },{"../Stream":104,"../sink/Pipe":150,"dup":22}],118:[function(require,module,exports){
 arguments[4][23][0].apply(exports,arguments)
 },{"../Stream":104,"../base":105,"../disposable/dispose":134,"../sink/IndexSink":148,"../sink/Pipe":150,"../source/core":155,"dup":23}],119:[function(require,module,exports){
-arguments[4][24][0].apply(exports,arguments)
-},{"../LinkedList":101,"../Stream":104,"../disposable/dispose":134,"dup":24}],120:[function(require,module,exports){
+/** @license MIT License (c) copyright 2010-2016 original author or authors */
+/** @author Brian Cavalier */
+/** @author John Hann */
+
+var Stream = require('../Stream');
+var dispose = require('../disposable/dispose');
+var LinkedList = require('../LinkedList');
+
+exports.mergeConcurrently = mergeConcurrently;
+
+function mergeConcurrently(concurrency, stream) {
+	return new Stream(new MergeConcurrently(concurrency, stream.source));
+}
+
+function MergeConcurrently(concurrency, source) {
+	this.concurrency = concurrency;
+	this.source = source;
+}
+
+MergeConcurrently.prototype.run = function(sink, scheduler) {
+	return new Outer(this.concurrency, this.source, sink, scheduler);
+};
+
+function Outer(concurrency, source, sink, scheduler) {
+	this.concurrency = concurrency;
+	this.sink = sink;
+	this.scheduler = scheduler;
+	this.pending = [];
+	this.current = new LinkedList();
+	this.disposable = dispose.once(source.run(this, scheduler));
+	this.active = true;
+}
+
+Outer.prototype.event = function(t, x) {
+	this._addInner(t, x);
+};
+
+Outer.prototype._addInner = function(t, stream) {
+	if(this.current.length < this.concurrency) {
+		this._startInner(t, stream);
+	} else {
+		this.pending.push(stream);
+	}
+};
+
+Outer.prototype._startInner = function(t, stream) {
+	var innerSink = new Inner(t, this, this.sink);
+	this.current.add(innerSink);
+	innerSink.disposable = stream.source.run(innerSink, this.scheduler);
+};
+
+Outer.prototype.end = function(t, x) {
+	this.active = false;
+	dispose.tryDispose(t, this.disposable, this.sink);
+	this._checkEnd(t, x);
+};
+
+Outer.prototype.error = function(t, e) {
+	this.active = false;
+	this.sink.error(t, e);
+};
+
+Outer.prototype.dispose = function() {
+	this.active = false;
+	this.pending.length = 0;
+	return Promise.all([this.disposable.dispose(), this.current.dispose()]);
+};
+
+Outer.prototype._endInner = function(t, x, inner) {
+	this.current.remove(inner);
+	dispose.tryDispose(t, inner, this);
+
+	if(this.pending.length === 0) {
+		this._checkEnd(t, x);
+	} else {
+		this._startInner(t, this.pending.shift());
+	}
+};
+
+Outer.prototype._checkEnd = function(t, x) {
+	if(!this.active && this.current.isEmpty()) {
+		this.sink.end(t, x);
+	}
+};
+
+function Inner(time, outer, sink) {
+	this.prev = this.next = null;
+	this.time = time;
+	this.outer = outer;
+	this.sink = sink;
+	this.disposable = void 0;
+}
+
+Inner.prototype.event = function(t, x) {
+	this.sink.event(Math.max(t, this.time), x);
+};
+
+Inner.prototype.end = function(t, x) {
+	this.outer._endInner(Math.max(t, this.time), x, this);
+};
+
+Inner.prototype.error = function(t, e) {
+	this.outer.error(Math.max(t, this.time), e);
+};
+
+Inner.prototype.dispose = function() {
+	return this.disposable.dispose();
+};
+
+},{"../LinkedList":101,"../Stream":104,"../disposable/dispose":134}],120:[function(require,module,exports){
 arguments[4][25][0].apply(exports,arguments)
 },{"../Stream":104,"../source/MulticastSource":153,"dup":25}],121:[function(require,module,exports){
 arguments[4][26][0].apply(exports,arguments)
@@ -7944,9 +7797,15 @@ Scheduler.prototype.cancel = function(task) {
 };
 
 Scheduler.prototype.cancelAll = function(f) {
-	this._tasks = base.removeAll(f, this._tasks);
+	for(var i=0; i<this._tasks.length; ++i) {
+		removeAllFrom(f, this._tasks[i]);
+	}
 	this._reschedule();
 };
+
+function removeAllFrom(f, timeslot) {
+	timeslot.events = base.removeAll(f, timeslot.events);
+}
 
 Scheduler.prototype._reschedule = function() {
 	if(this._tasks.length === 0) {
@@ -8074,7 +7933,7 @@ function newTimeslot(t, events) {
 
 },{"./../base":105}],144:[function(require,module,exports){
 arguments[4][49][0].apply(exports,arguments)
-},{"./Scheduler":143,"./nodeTimer":145,"./timeoutTimer":146,"_process":167,"dup":49}],145:[function(require,module,exports){
+},{"./Scheduler":143,"./nodeTimer":145,"./timeoutTimer":146,"_process":100,"dup":49}],145:[function(require,module,exports){
 arguments[4][50][0].apply(exports,arguments)
 },{"../defer":131,"dup":50}],146:[function(require,module,exports){
 arguments[4][51][0].apply(exports,arguments)
@@ -8093,8 +7952,32 @@ arguments[4][57][0].apply(exports,arguments)
 },{"../disposable/dispose":134,"./tryEvent":164,"dup":57}],153:[function(require,module,exports){
 arguments[4][58][0].apply(exports,arguments)
 },{"../base":105,"dup":58}],154:[function(require,module,exports){
-arguments[4][59][0].apply(exports,arguments)
-},{"../scheduler/PropagateTask":142,"dup":59}],155:[function(require,module,exports){
+/** @license MIT License (c) copyright 2010-2016 original author or authors */
+/** @author Brian Cavalier */
+/** @author John Hann */
+
+var PropagateTask = require('../scheduler/PropagateTask');
+
+module.exports = ValueSource;
+
+function ValueSource(emit, x) {
+	this.emit = emit;
+	this.value = x;
+}
+
+ValueSource.prototype.run = function(sink, scheduler) {
+	return new ValueProducer(this.emit, this.value, sink, scheduler);
+};
+
+function ValueProducer(emit, x, sink, scheduler) {
+	this.task = scheduler.asap(new PropagateTask(emit, x, sink));
+}
+
+ValueProducer.prototype.dispose = function() {
+	return this.task.cancel();
+};
+
+},{"../scheduler/PropagateTask":142}],155:[function(require,module,exports){
 arguments[4][60][0].apply(exports,arguments)
 },{"../Stream":104,"../disposable/dispose":134,"../scheduler/PropagateTask":142,"../source/ValueSource":154,"dup":60}],156:[function(require,module,exports){
 arguments[4][61][0].apply(exports,arguments)
@@ -8799,99 +8682,6 @@ Stream.prototype.multicast = function() {
 };
 
 },{"./lib/Stream":104,"./lib/base":105,"./lib/combinator/accumulate":106,"./lib/combinator/applicative":107,"./lib/combinator/build":108,"./lib/combinator/combine":109,"./lib/combinator/concatMap":110,"./lib/combinator/continueWith":111,"./lib/combinator/delay":112,"./lib/combinator/errors":113,"./lib/combinator/filter":114,"./lib/combinator/flatMap":115,"./lib/combinator/limit":116,"./lib/combinator/loop":117,"./lib/combinator/merge":118,"./lib/combinator/mergeConcurrently":119,"./lib/combinator/multicast":120,"./lib/combinator/observe":121,"./lib/combinator/promises":122,"./lib/combinator/sample":123,"./lib/combinator/slice":124,"./lib/combinator/switch":125,"./lib/combinator/timeslice":126,"./lib/combinator/timestamp":127,"./lib/combinator/transduce":128,"./lib/combinator/transform":129,"./lib/combinator/zip":130,"./lib/source/core":155,"./lib/source/create":156,"./lib/source/from":157,"./lib/source/fromEvent":159,"./lib/source/generate":161,"./lib/source/iterate":162,"./lib/source/periodic":163,"./lib/source/unfold":165}],167:[function(require,module,exports){
-// shim for using process in browser
-
-var process = module.exports = {};
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = setTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    clearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        setTimeout(drainQueue, 0);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],168:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -8903,7 +8693,7 @@ var _motorcycleDom = require('@motorcycle/dom');
 var Group = 'solo';
 var Name = 'Fred';
 
-var monads = (0, _motorcycleDom.h)('pre', '  class Monad {\n\n    constructor(z,g) {\n\n      this.x = z;\n      if (arguments.length === 1) {this.id = \'anonymous\'}\n      else {this.id = g}\n\n      this.bnd = function (func, ...args) {\n        return func(this.x, ...args);\n      };\n\n      this.ret = function (a) {\n        this.x = a;\n        return this;\n      };\n    }\n  };\n\n  class MonadIter {                \n\n    constructor() {\n\n      this.p = function() {};\n\n      this.release = function () {\n        return this.p();\n      }\n \n      this.bnd = function (func) {\n          this.p = func;\n      }\n    }\n  }; ');
+var monads = (0, _motorcycleDom.h)('pre', { style: { color: '#AFEEEE' } }, '  var Monad = function Monad(z, g) {\n    var _this = this;\n\n    this.x = z;\n    if (arguments.length === 1) {\n      this.id = \'anonymous\';\n    } else {\n      this.id = g;\n    };\n\n    this.bnd = function (func, ...args) {\n       return func(_this.x, ...args);\n    };\n\n    this.ret = function (a) {\n      window[_this.id] = new Monad(a, _this.id);\n      return window[_this.id]\n    };\n  };               \n\n  class MonadIter {                \n\n    constructor() {\n\n      this.p = function() {};\n\n      this.release = function () {\n        return this.p();\n      }\n \n      this.bnd = function (func) {\n          this.p = func;\n      }\n    }\n  }; ');
 
 var fib = (0, _motorcycleDom.h)('pre', '  var fib = function fib(x,k) {\n    let j = k;\n    while (j > 0) {\n      x = [x[1], x[0] + x[1]];\n      j -= 1;\n    }\n    return ret(\'fibonacci \' + k + \' = \' + x[0]);   // An anonymous monad holding the result.\n  };\n');
 
@@ -8917,20 +8707,30 @@ var game = (0, _motorcycleDom.h)('pre', '  const numClick$ = sources.DOM\n    .s
 
 var updateCalc = (0, _motorcycleDom.h)('pre', '  function updateCalc() { \n  mMcalc.bnd(() => (\n      (mMZ2.bnd(() => mM13\n                    .bnd(score, 1)\n                    .bnd(next2, (mM13.x % 5 === 0), mMZ5)  // Releases mMZ5.\n                    .bnd(newRoll)) ),\n      (mMZ4.bnd(() => mM13\n                    .bnd(score, 3)\n                    .bnd(next2, (mM13.x % 5 === 0), mMZ5) \n                    .bnd(newRoll)) ),\n          (mMZ5.bnd(() => mM13   // Released when the result mod 5 is 0.\n                        .bnd(score,5)\n                        .bnd(v => mM13.ret(v)\n                        .bnd(next, 25, mMZ6))) ),\n              (mMZ6.bnd(() => mM9.bnd(score2)  // Released when the score is 25 \n                            .bnd(next,3,mMZ7)) ),\n                  (mMZ7.bnd(() => mM13.bnd(winner)) ),                \n      (mM3.bnd(x => mM7\n                    .ret(calc(x[0], mM8.x, x[1]))\n                    .bnd(next, 18, mMZ4)  // Releases mMZ4.\n                    .bnd(next, 20, mMZ2) \n                    .bnd(() => mM1.bnd(push,mM7.x)  // Returns an anonymous monad.\n                    .bnd(mM1.ret)   // Gives mM1 the anonymous monad\'s value.\n                    .bnd(displayOff, ((mM1.x.length)+\'\'))\n                    .bnd(() => mM3\n                    .ret([])\n                    .bnd(() => mM4\n                    .ret(0).bnd(mM8.ret))))) ) \n  ));\n}  ');
 
-var mult = (0, _motorcycleDom.h)('pre', '  const mMmult = new Monad({}, \'mMmult\')\n\n  mMmult.x.addA = sources.DOM.select(\'input#addA\').events(\'input\'),\n  mMmult.x.addB = sources.DOM.select(\'input#addB\').events(\'input\'),\n  mMmult.x.product = 0;\n  mMmult.x.product2 = 0;\n  mMmult.x.result = combine((a,b) => a.target.value * b.target.value, mMmult.x.addA, mMmult.x.addB)\n\n  const mult$ = mMmult.x.result.map(v => {\n    mMmult.x.product = v;\n  });\n  ');
+var mult = (0, _motorcycleDom.h)('pre', '  mMmult.x.addA = sources.DOM.select(\'input#addA\').events(\'input\');\n  mMmult.x.addB = sources.DOM.select(\'input#addB\').events(\'input\');\n  mMmult.x.result = combine((a,b) => a.target.value * b.target.value, mMmult.x.addA, mMmult.x.addB);\n  \n  const mult$ = mMmult.x.result.map(v => {\n    mMmult2.ret(v);\n    mMtem.ret(v);\n    mMtem2.ret(v);\n    mM28.ret(v);\n    mMpause.ret(0);\n    mMpause2.ret(0);\n  });\n  ');
 
 var add = (0, _motorcycleDom.h)('pre', '  var addS = function addS (x,y) {\n    if (typeof x === \'number\') {\n      return ret(x + y);\n    }\n    else if (typeof x.product === \'number\') {\n      return ret(x.product + y);\n    }\n    else console.log(\'Problem in addS\');\n  };\n  ');
 
-var product2 = (0, _motorcycleDom.h)('pre', '  const unitDriver = function () {\n    return periodic(1000, 1);  // Creates a stream of 1-1-1-1..., in one-second intervals.\n  }\n  \n  const sources = {\n    DOM: makeDOMDriver(\'#main-container\'),\n    WS: websocketsDriver,\n    UNIT: unitDriver           // Added unitDriver to the sources object.\n  }\n\n  const unitAction$ = sources.UNIT.map(v => {  // unitDriver, cycled back inside of "run".\n      mMunit.ret(mMunit.x + v)  // mMunit is a monad dedicated to calling "next" with its bnd method.\n      .bnd(next, 1, mMZ26)  // Releases mMZ26 (below) after two seconds.\n      .bnd(next, 2, mMZ27)\n      .bnd(next, 3, mMZ28)\n  });\n\n  const mult2$ = mMmult.x.result.map(v => {\n    mMmult.x.product2 = v;\n    let mMtemp = new Monad(v);\n    mMZ26.bnd(() => mMtemp.bnd(add, 1000).bnd(mMtemp.ret).bnd(x => mMmult.x.product2 = x));\n    mMZ27.bnd(() => mMtemp.bnd(double).bnd(mMtemp.ret).bnd(x => mMmult.x.product2 = x));\n    mMZ28.bnd(() => mMtemp.bnd(add, 1).bnd(x => mMmult.x.product2 = x)); \n    mMunit.ret(0);\n  });\n  ');
+var product2 = (0, _motorcycleDom.h)('pre', '  const unitDriver = function () {\n    return periodic(1000, 1);  // Creates a stream of 1-1-1-1..., in one-second intervals.\n  }\n  \n  const sources = {\n    DOM: makeDOMDriver(\'#main-container\'),\n    WS: websocketsDriver,\n    UNIT: unitDriver           // Added unitDriver to the sources object.\n  }\n\n  const unitAction$ = sources.UNIT.map(v => {  // unitDriver, cycled back inside of "run".\n      mMunit.ret(mMunit.x + v)        \n      .bnd(next, 1, mMZ26)  // Releases mMZ26 (below) after two seconds.\n      .bnd(next, 2, mMZ27)\n      .bnd(next, 3, mMZ28)\n  });\n\n  const mult2$ = mMmult.x.result.map(v => {\n    mMZ26.bnd(() => mMmult2.bnd(add, 1000).bnd(mMmult2.ret));\n    mMZ27.bnd(() => mMmult2.bnd(double).bnd(mMmult2.ret));\n    mMZ28.bnd(() => mMmult2.bnd(add, 1).bnd(mMmult2.ret)); \n    mMunit.ret(0);\n  });\n  ');
 
-var product3 = (0, _motorcycleDom.h)('pre', '  const mult3$ = mMmult.x.result.map(v => {\n    mMtem.ret(v)\n    mMmult.x.product3 = v;\n    mMpause.ret(0);\n  })\n\n  const mult4$ = sources.UNIT.map(v => {\n      mMpause.ret(mMpause.x + v)\n      if(mMpause.x ===1) {\n        mMtem.bnd(add, 1000).bnd(mMtem.ret).bnd(x => mMmult.x.product3 = x)\n      }\n      if(mMpause.x === 2) {\n        mMtem.bnd(double).bnd(mMtem.ret).bnd(x => mMmult.x.product3 = x)\n      }\n      if(mMpause.x === 3) {\n        mMtem.bnd(add, 1).bnd(x => mMmult.x.product3 = x) \n      }\n    })\n  ');
+var product3 = (0, _motorcycleDom.h)('pre', '  const unitDriver = function () {\n    return periodic(1000, 1);  // Creates a stream of 1-1-1-1..., in one-second intervals.\n  }\n  \n  const sources = {            // Re-used. Same as above. Feeds main.\n    DOM: makeDOMDriver(\'#main-container\'),\n    WS: websocketsDriver,\n    UNIT: unitDriver           // Added unitDriver to the sources object.\n  }\n\n  const mult4$ = sources.UNIT.map(v => {\n    mMpause.ret(mMpause.x + v)\n    if(mMpause.x ===1) {\n      mMtem.bnd(add, 1000).bnd(mMtem.ret)\n    }\n    if(mMpause.x === 2) {\n      mMtem.bnd(double).bnd(mMtem.ret)\n    }\n    if(mMpause.x === 3) {\n      mMtem.bnd(add, 1).bnd(mMtem.ret) \n    }\n  })\n  ');
 
-var product4 = (0, _motorcycleDom.h)('pre', '  const mult5$ = mMmult.x.result\n  .debounce(3200).map(v => {mM27.ret(v)}).delay(1000)\n  .map(() => mM27.bnd(add, 1000).bnd(mM27.ret)).delay(1000)\n  .map(() => mM27.bnd(double).bnd(mM27.ret)).delay(1000)\n  .map(() => mM27.bnd(add, 1).bnd(mM27.ret)).delay(1000)\n  ');
+var product4 = (0, _motorcycleDom.h)('pre', '  const mult5$ = mMmult.x.result\n  .map(v => {mM27.ret(v)})\n  .map(() => mM27.bnd(add, 1000).bnd(mM27.ret)).debounce(1000)\n  .map(() => mM27.bnd(double).bnd(mM27.ret)).debounce(1000)\n  .map(() => mM27.bnd(add, 1).bnd(mM27.ret)).debounce(2000)\n  ');
 
-exports['default'] = { monads: monads, fib: fib, driver: driver, main: main, next: next, game: game, updateCalc: updateCalc, mult: mult, add: add, product2: product2, product3: product3, product4: product4 };
+var immutable = (0, _motorcycleDom.h)('pre', '  addOb.addC = sources.DOM\n  .select(\'input#addC\').events(\'input\');\n  addOb.addD = sources.DOM.select(\'input#addD\').events(\'input\');\n  addOb.result = combine((a,b) => a.target.value * b.target.value, addOb.addC, addOb.addD);\n  // Next, the above stream of products of the two numbers entered \n  // in input fields (the stream "addOb.result") is put to use. \n  const mult7$ = addOb.result.map(v => {\n    mMt.ret(v);\n    history.push(mMt);\n    mMpause2.ret(0);  // re-sets mMpause2 in preparation for the next procedure.\n  })\n  // Now, the stream of 1\'s from sources.UNIT controlls the sequenced computation.\n  const mult6$ = sources.UNIT.map(v => {\n      mMpause2.ret(mMpause2.x + v)\n      if(mMpause2.x === 1) {\n        mMt.bnd(add, 1000).bnd(mMt.ret)\n        history.push(mMt);\n      }\n      if(mMpause2.x === 2) {\n        mMt.bnd(double).bnd(mMt.ret)\n        history.push(mMt);\n      }\n      if(mMpause2.x === 3) {\n        mMt.bnd(add, 1).bnd(mMt.ret) \n        history.push(mMt);\n      }\n    });\n\n  const backClick$ = sources.DOM\n    .select(\'#back\').events(\'click\');\n\n  const backClickAction$ = backClick$.map(() => {\n    if (index > 0) {\n      index -= 1;\n    }\n  });\n\n  const forwardClick$ = sources.DOM\n    .select(\'#forward\').events(\'click\');\n\n  const forwardClickAction$ = forwardClick$.map(() => {\n    if (index < (history.length - 1)) {\n      index += 1;\n    }\n  })\n  ');
+
+var test = (0, _motorcycleDom.h)('pre', '  const testAction$ = test$.map(e => mMtest\n    .ret(e.target.value*1)).delay(1000)\n    .map(() => mMtest.ret(mMtest.x + 1000)).delay(1000)\n    .map(() => mMtest.ret(mMtest.x * 2)).delay(1000)\n    .map(() => mMtest.ret(mMtest.x + 1)).delay(1000)\n  ');
+
+var p4 = (0, _motorcycleDom.h)('pre', '  \n  ');
+
+var p5 = (0, _motorcycleDom.h)('pre', '  \n  ');
+
+var p6 = (0, _motorcycleDom.h)('pre', '  \n  ');
+
+exports['default'] = { monads: monads, fib: fib, driver: driver, main: main, next: next, game: game, updateCalc: updateCalc, mult: mult, add: add, product2: product2, product3: product3, product4: product4, immutable: immutable, test: test };
 module.exports = exports['default'];
 
-},{"@motorcycle/dom":74}],169:[function(require,module,exports){
+},{"@motorcycle/dom":74}],168:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -8938,8 +8738,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 var _motorcycleCore = require('@motorcycle/core');
 
 var _motorcycleCore2 = _interopRequireDefault(_motorcycleCore);
-
-var _jsMonads = require('js-monads');
 
 var _motorcycleDom = require('@motorcycle/dom');
 
@@ -8949,13 +8747,9 @@ var _codeJs = require('./code.js');
 
 var _codeJs2 = _interopRequireDefault(_codeJs);
 
-var Group = 'solo'; // These global variables will eventually be eliminated.
-var Goals = 0;
-var Name;
-
 var tempStyle = { display: 'inline' };
 var tempStyle2 = { display: 'none' };
-_jsMonads.mM6.ret('');
+mM6.ret('');
 
 function createWebSocket(path) {
   var host = window.location.hostname;
@@ -8967,7 +8761,6 @@ function createWebSocket(path) {
 
 var socket = createWebSocket('/');
 
-// const unit$ = periodic(1000, 1);
 var websocketsDriver = function websocketsDriver() {
   return (0, _most.create)(function (add) {
     socket.onmessage = function (msg) {
@@ -8980,51 +8773,52 @@ var unitDriver = function unitDriver() {
   return (0, _most.periodic)(1000, 1);
 };
 
-_jsMonads.mM1.ret([0, 0, 0, 0]);
-_jsMonads.mM3.ret([]);
+mM1.ret([0, 0, 0, 0]);
+mM3.ret([]);
 
 function main(sources) {
-  _jsMonads.mMfib.ret([0, 1]);
-  _jsMonads.mMpause.ret(0);
+  mMfib.ret([0, 1]);
+  mMpause.ret(0);
+  var count = 0;
+  var temp = new Monad('temp', 'temp');
+  var history = [mMt];
+  var index = 0;
+  var cow;
 
   var messages$ = sources.WS.map(function (e) {
-    return _jsMonads.mMar.ret(e.data.split(',')).bnd(function (array) {
-      return _jsMonads.mMscores.ret(array[3].split("<br>")).bnd(function () {
-        return _jsMonads.mMname.ret(_jsMonads.mMar.x[2]).bnd(function () {
-          return _jsMonads.mMprefix.ret(_jsMonads.mMar.x[0]).bnd(_jsMonads.next, 'CA#$42', _jsMonads.mMZ10).bnd(_jsMonads.next, 'CB#$42', _jsMonads.mMZ11).bnd(_jsMonads.next, 'CC#$42', _jsMonads.mMZ12).bnd(_jsMonads.next, 'CD#$42', _jsMonads.mMZ13).bnd(_jsMonads.next, 'CE#$42', _jsMonads.mMZ14).bnd(_jsMonads.next, 'EE#$42', _jsMonads.mMZ15);
+    return mMar.ret(e.data.split(',')).bnd(function (array) {
+      return mMscores.ret(array[3].split("<br>")).bnd(function () {
+        return mMsender.ret(mMar.x[2]).bnd(function () {
+          return mMprefix.ret(mMar.x[0]).bnd(next, 'CA#$42', mMZ10).bnd(next, 'CB#$42', mMZ11).bnd(next, 'CC#$42', mMZ12).bnd(next, 'CD#$42', mMZ13).bnd(next, 'CE#$42', mMZ14).bnd(next, 'EE#$42', mMZ15);
         });
       });
     });
   });
-  _jsMonads.mMmain.bnd(function () {
-    return _jsMonads.mMZ10.bnd(function () {
-      return _jsMonads.mM1.ret([_jsMonads.mMar.x[3], _jsMonads.mMar.x[4], _jsMonads.mMar.x[5], _jsMonads.mMar.x[6]]).bnd(displayInline, '1').bnd(displayInline, '2').bnd(displayInline, '3');
+  mMmain.bnd(function () {
+    return mMZ10.bnd(function () {
+      return mM1.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]]).bnd(displayInline, '1').bnd(displayInline, '2').bnd(displayInline, '3');
     });
-  }), _jsMonads.mMZ11.bnd(function () {
-    return _jsMonads.mMscbd.ret(_jsMonads.mMscores.x).bnd(updateScoreboard).bnd(function () {
-      return _jsMonads.mM3.ret([]).bnd(function () {
-        return _jsMonads.mM8.ret(0);
+  }), mMZ11.bnd(function () {
+    return mMscbd.ret(mMscores.x).bnd(updateScoreboard).bnd(function () {
+      return mM3.ret([]).bnd(function () {
+        return mM8.ret(0);
       });
     });
-  }), _jsMonads.mMZ12.bnd(function () {
-    return _jsMonads.mM6.ret(_jsMonads.mMname.x + ' successfully logged in.');
-  }), _jsMonads.mMZ13.bnd(function () {
-    return _jsMonads.mMar.bnd(_jsMonads.splice, 0, 3).bnd(_jsMonads.reduce, function (a, b) {
+  }), mMZ12.bnd(function () {
+    return mM6.ret(mMsender.x + ' successfully logged in.');
+  }), mMZ13.bnd(function () {
+    return mMar.bnd(splice, 0, 3).bnd(reduce, function (a, b) {
       return a + ", " + b;
     }).bnd(function () {
-      return _jsMonads.mMmsg.bnd(_jsMonads.push, _jsMonads.mMname.x + ': ' + _jsMonads.mMar.x).bnd(updateMessages);
+      return mMmsg.bnd(push, mMsender.x + ': ' + mMar.x).bnd(updateMessages);
     });
-  }), _jsMonads.mMZ14.bnd(function () {
-    return _jsMonads.mMgoals2.ret('The winner is ' + _jsMonads.mMname.x);
-  }), _jsMonads.mMZ15.bnd(function () {
-    return _jsMonads.mMgoals2.ret('A player named ' + _jsMonads.mMname.x + 'is currently logged in. Page will refresh in 4 seconds.').bnd(refresh);
+  }), mMZ14.bnd(function () {
+    return mMgoals2.ret('The winner is ' + mMname.x);
+  }), mMZ15.bnd(function () {
+    return mMgoals2.ret('A player named ' + mMname.x + 'is currently logged in. Page will refresh in 4 seconds.').bnd(refresh);
   });
 
-  var unitAction$ = sources.UNIT.map(function (v) {
-    _jsMonads.mMunit.ret(_jsMonads.mMunit.x + v).bnd(_jsMonads.next, 1, _jsMonads.mMZ26).bnd(_jsMonads.next, 2, _jsMonads.mMZ27).bnd(_jsMonads.next, 3, _jsMonads.mMZ28);
-  });
-
-  var loginPress$ = sources.DOM.select('input.login').events('keydown');
+  var loginPress$ = sources.DOM.select('input.login').events('keypress');
 
   var loginPressAction$ = loginPress$.map(function (e) {
     var v = e.target.value;
@@ -9033,103 +8827,143 @@ function main(sources) {
     }
     if (e.keyCode == 13) {
       socket.send("CC#$42" + v);
-      Name = v;
-      _jsMonads.mM3.ret([]).bnd(_jsMonads.mM2.ret);
+      mMname.ret(v.trim());
+      mM3.ret([]).bnd(mM2.ret);
       e.target.value = '';
       tempStyle = { display: 'none' };
       tempStyle2 = { display: 'inline' };
     }
   });
 
-  var groupPress$ = sources.DOM.select('input.group').events('keydown');
+  var groupPress$ = sources.DOM.select('input.group').events('keypress');
 
   var groupPressAction$ = groupPress$.map(function (e) {
     var v = e.target.value;
     if (v == '') {
       return;
     }
-    if (e.keyCode == 13) Group = e.target.value;
-    socket.send('CO#$42,' + e.target.value + ',' + Name + ',' + e.target.value);
+    if (e.keyCode == 13) mMgroup.ret(e.target.value);
+    socket.send('CO#$42,' + e.target.value + ',' + mMname.x.trim() + ',' + e.target.value);
   });
 
-  _jsMonads.mMmult.x.addA = sources.DOM.select('input#addA').events('input'), _jsMonads.mMmult.x.addB = sources.DOM.select('input#addB').events('input'), _jsMonads.mMmult.x.product = 0;
-  _jsMonads.mMmult.x.product2 = 0;
-  _jsMonads.mMmult.x.product3 = 0;
-  _jsMonads.mMmult.x.result = (0, _most.combine)(function (a, b) {
+  mMmult.x.addA = sources.DOM.select('input#addA').events('input');
+  mMmult.x.addB = sources.DOM.select('input#addB').events('input');
+  mMmult.x.result = (0, _most.combine)(function (a, b) {
     return a.target.value * b.target.value;
-  }, _jsMonads.mMmult.x.addA, _jsMonads.mMmult.x.addB);
+  }, mMmult.x.addA, mMmult.x.addB);
 
-  var mult$ = _jsMonads.mMmult.x.result.map(function (v) {
-    _jsMonads.mMmult.x.product = v;
+  var mult$ = mMmult.x.result.map(function (v) {
+    mMmult2.ret(v);
+    mMtem.ret(v);
+    mMtem2.ret(v);
+    mM28.ret(v);
+    mMpause.ret(0);
+    mMpause2.ret(0);
   });
 
-  var mult2$ = _jsMonads.mMmult.x.result.map(function (v) {
-    _jsMonads.mMmult.x.product2 = v;
-    var mMtemp = new _jsMonads.Monad(v);
-    _jsMonads.mMZ26.bnd(function () {
-      return mMtemp.bnd(_jsMonads.add, 1000).bnd(mMtemp.ret).bnd(function (x) {
-        return _jsMonads.mMmult.x.product2 = x;
-      });
-    });
-    _jsMonads.mMZ27.bnd(function () {
-      return mMtemp.bnd(_jsMonads.double).bnd(mMtemp.ret).bnd(function (x) {
-        return _jsMonads.mMmult.x.product2 = x;
-      });
-    });
-    _jsMonads.mMZ28.bnd(function () {
-      return mMtemp.bnd(_jsMonads.add, 1).bnd(function (x) {
-        return _jsMonads.mMmult.x.product2 = x;
-      });
-    });
-    _jsMonads.mMunit.ret(0);
+  mMob.x.addC = sources.DOM.select('input#addC').events('input');
+  mMob.x.addD = sources.DOM.select('input#addD').events('input');
+  mMob.x.result = (0, _most.combine)(function (a, b) {
+    return a.target.value * b.target.value;
+  }, mMob.x.addC, mMob.x.addD);
+
+  var mult7$ = mMob.x.result.map(function (v) {
+    mMt.ret(v);
+    history.push(mMt);
+    mMpause2.ret(0);
   });
 
-  var mult3$ = _jsMonads.mMmult.x.result.map(function (v) {
-    _jsMonads.mMtem.ret(v);
-    _jsMonads.mMmult.x.product3 = v;
-    _jsMonads.mMpause.ret(0);
+  var mult6$ = sources.UNIT.map(function (v) {
+    mMpause2.ret(mMpause2.x + v);
+    if (mMpause2.x === 1) {
+      mMt.bnd(add, 1000).bnd(mMt.ret);
+      history.push(mMt);
+    }
+    if (mMpause2.x === 2) {
+      mMt.bnd(double).bnd(mMt.ret);
+      history.push(mMt);
+    }
+    if (mMpause2.x === 3) {
+      mMt.bnd(add, 1).bnd(mMt.ret);
+      history.push(mMt);
+    }
+  });
+
+  var backClick$ = sources.DOM.select('#back').events('click');
+
+  var backClickAction$ = backClick$.map(function () {
+    if (index > 0) {
+      index -= 1;
+    }
+  });
+
+  var forwardClick$ = sources.DOM.select('#forward').events('click');
+
+  var forwardClickAction$ = forwardClick$.map(function () {
+    if (index < history.length - 1) {
+      index += 1;
+    }
+  });
+
+  var mult2$ = mMmult.x.result.map(function (v) {
+    mMZ26.bnd(function () {
+      return mMmult2.bnd(add, 1000).bnd(mMmult2.ret);
+    });
+    mMZ27.bnd(function () {
+      return mMmult2.bnd(double).bnd(mMmult2.ret);
+    });
+    mMZ28.bnd(function () {
+      return mMmult2.bnd(add, 1).bnd(mMmult2.ret);
+    });
+    mMunit.ret(0);
+  });
+
+  var unitAction$ = sources.UNIT.map(function (v) {
+    mMunit.ret(mMunit.x + v).bnd(next, 1, mMZ26).bnd(next, 2, mMZ27).bnd(next, 3, mMZ28);
   });
 
   var mult4$ = sources.UNIT.map(function (v) {
-    _jsMonads.mMpause.ret(_jsMonads.mMpause.x + v);
-    if (_jsMonads.mMpause.x === 1) {
-      _jsMonads.mMtem.bnd(_jsMonads.add, 1000).bnd(_jsMonads.mMtem.ret).bnd(function (x) {
-        return _jsMonads.mMmult.x.product3 = x;
-      });
+    mMpause.ret(mMpause.x + v);
+    if (mMpause.x === 1) {
+      mMtem.bnd(add, 1000).bnd(mMtem.ret);
     }
-    if (_jsMonads.mMpause.x === 2) {
-      _jsMonads.mMtem.bnd(_jsMonads.double).bnd(_jsMonads.mMtem.ret).bnd(function (x) {
-        return _jsMonads.mMmult.x.product3 = x;
-      });
+    if (mMpause.x === 2) {
+      mMtem.bnd(double).bnd(mMtem.ret);
     }
-    if (_jsMonads.mMpause.x === 3) {
-      _jsMonads.mMtem.bnd(_jsMonads.add, 1).bnd(function (x) {
-        return _jsMonads.mMmult.x.product3 = x;
-      });
+    if (mMpause.x === 3) {
+      mMtem.bnd(add, 1).bnd(mMtem.ret);
     }
   });
 
-  var mMtem2 = new _jsMonads.Monad(0, 'mMtem2');
-  var mMpause2 = new _jsMonads.Monad(0, 'mMpause2');
+  console.log('history: ', history);
 
-  var mult5$ = _jsMonads.mMmult.x.result.debounce(3200).map(function (v) {
-    _jsMonads.mM27.ret(v);
+  var mult5$ = mMmult.x.result.map(function (v) {
+    return mM27.ret(v);
+  }).map(function () {
+    return mM27.bnd(add, 1000).bnd(mM27.ret);
+  }).debounce(1000).map(function () {
+    return mM27.bnd(double).bnd(mM27.ret);
+  }).debounce(1000).map(function () {
+    return mM27.bnd(add, 1).bnd(mM27.ret);
+  }).debounce(1000);
+
+  var test$ = sources.DOM.select('input#addF').events('input');
+
+  var testAction$ = test$.map(function (e) {
+    return mMtest.ret(e.target.value * 1);
   }).delay(1000).map(function () {
-    return _jsMonads.mM27.bnd(_jsMonads.add, 1000).bnd(_jsMonads.mM27.ret);
+    return mMtest.ret(mMtest.x + 1000);
   }).delay(1000).map(function () {
-    return _jsMonads.mM27.bnd(_jsMonads.double).bnd(_jsMonads.mM27.ret);
+    return mMtest.ret(mMtest.x * 2);
   }).delay(1000).map(function () {
-    return _jsMonads.mM27.bnd(_jsMonads.add, 1).bnd(_jsMonads.mM27.ret);
+    return mMtest.ret(mMtest.x + 1);
   }).delay(1000);
-
-  //.then(
-  //mM27.bnd(add, 1).bnd(mM27.ret))
 
   var addS = function addS(x, y) {
     if (typeof x === 'number') {
-      return (0, _jsMonads.ret)(x + y);
+      return ret(x + y);
     } else if (typeof x.product === 'number') {
-      return (0, _jsMonads.ret)(x.product + y);
+      return ret(x.product + y);
     } else console.log('Problem in addS');
   };
 
@@ -9137,7 +8971,7 @@ function main(sources) {
 
   var messagePressAction$ = messagePress$.map(function (e) {
     if (e.keyCode == 13) {
-      socket.send('CD#$42,' + Group + ',' + Name + ',' + e.target.value);
+      socket.send('CD#$42,' + mMgroup.x.trim() + ',' + mMname.x.trim() + ',' + e.target.value);
       e.target.value = '';
     }
   });
@@ -9145,19 +8979,19 @@ function main(sources) {
   var numClick$ = sources.DOM.select('.num').events('click');
 
   var numClickAction$ = numClick$.map(function (e) {
-    _jsMonads.mM3.bnd(_jsMonads.push, e.target.textContent).bnd(function () {
-      _jsMonads.mM1.x[e.target.id] = "";
+    mM3.bnd(push, e.target.textContent).bnd(function () {
+      mM1.x[e.target.id] = "";
     });
-    if (_jsMonads.mM3.x.length === 2 && _jsMonads.mM8.x !== 0) {
+    if (mM3.x.length === 2 && mM8.x !== 0) {
       updateCalc();
     }
-  }).startWith(_jsMonads.mM1.x[0]);
+  }).startWith(mM1.x[0]);
 
   var opClick$ = sources.DOM.select('.op').events('click');
 
   var opClickAction$ = opClick$.map(function (e) {
-    _jsMonads.mM8.ret(e.target.textContent);
-    if (_jsMonads.mM3.x.length === 2) {
+    mM8.ret(e.target.textContent);
+    if (mM3.x.length === 2) {
       updateCalc();
     }
   });
@@ -9165,9 +8999,9 @@ function main(sources) {
   var rollClick$ = sources.DOM.select('.roll').events('click');
 
   var rollClickAction$ = rollClick$.map(function (e) {
-    _jsMonads.mM13.ret(_jsMonads.mM13.x - 1);
-    socket.send('CG#$42,' + Group + ',' + Name + ',' + -1 + ',' + 0);
-    socket.send('CA#$42,' + Group + ',' + Name + ',6,6,12,20');
+    mM13.ret(mM13.x - 1);
+    socket.send('CG#$42,' + mMgroup.x.trim() + ',' + mMname.x.trim() + ',' + -1 + ',' + mMgoals.x);
+    socket.send('CA#$42,' + mMgroup.x + ',' + mMname.x.trim() + ',6,6,12,20');
   });
 
   var fibPress$ = sources.DOM.select('input#code').events('keydown');
@@ -9178,44 +9012,44 @@ function main(sources) {
       return;
     }
     if (e.keyCode == 13 && Number.isInteger(v * 1)) {
-      var result = _jsMonads.mMfib.bnd(_jsMonads.fib, v).x;
-      _jsMonads.mM19.ret(result);
+      var result = mMfib.bnd(fib, v).x;
+      mM19.ret(result);
     }
-    if (e.keyCode == 13 && !Number.isInteger(v * 1)) _jsMonads.mM19.ret("You didn't provide an integer");
+    if (e.keyCode == 13 && !Number.isInteger(v * 1)) mM19.ret("You didn't provide an integer");
   });
 
-  var calcStream$ = (0, _most.merge)(mult$, unitAction$, mult2$, mult3$, mult4$, mult5$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
+  var calcStream$ = (0, _most.merge)(testAction$, mult7$, mult6$, forwardClickAction$, backClickAction$, mult$, mult2$, mult4$, mult5$, unitAction$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
 
   return {
     DOM: calcStream$.map(function () {
-      return (0, _motorcycleDom.h)('div.content', [(0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('h2', 'JS-monads-part4'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span', 'This installment of the JS-monads series features '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/motorcyclejs' }, style: { color: '#EECCFF' } }, 'Motorcyclejs'), (0, _motorcycleDom.h)('span', ' handling the monads. Motorcyclejs is Cyclejs, only using '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/paldepind/snabbdom' }, style: { color: '#EECCFF' } }, 'Snabbdom'), (0, _motorcycleDom.h)('span', ' instead of "virtual-dom", and '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/cujojs/most' }, style: { color: '#EECCFF' } }, 'Most'), (0, _motorcycleDom.h)('span', ' instead of "RxJS".'), (0, _motorcycleDom.h)('h3', 'The Game From JS-monads-part3'), (0, _motorcycleDom.h)('p', 'If clicking two numbers and an operator (in any order) results in 20 or 18, the score increases by 1 or 3, respectively. If the score becomes 0 mod 5, 5 points are added. A score of 25 results in one goal. That can only be achieved by arriving at a score of 20, which jumps the score to 25. Directly computing 25 results in a score of 30, and no goal. Each time ROLL is clicked, one point is deducted. Three goals wins the game. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#0.num', _jsMonads.mM1.x[0] + ''), (0, _motorcycleDom.h)('button#1.num', _jsMonads.mM1.x[1] + ''), (0, _motorcycleDom.h)('button#2.num', _jsMonads.mM1.x[2] + ''), (0, _motorcycleDom.h)('button#3.num', _jsMonads.mM1.x[3] + ''), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#4.op', 'add'), (0, _motorcycleDom.h)('button#5.op', 'subtract'), (0, _motorcycleDom.h)('button#5.op', 'mult'), (0, _motorcycleDom.h)('button#5.op', 'div'), (0, _motorcycleDom.h)('button#5.op', 'concat'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button.roll', { style: tempStyle2 }, 'ROLL'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('div.winner', _jsMonads.mMgoals2.x + ''), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('p.login', { style: tempStyle }, 'Please enter some name.'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input.login', { style: tempStyle }), (0, _motorcycleDom.h)('p', _jsMonads.mM6.x.toString()), (0, _motorcycleDom.h)('p.group', { style: tempStyle2 }, 'Change group: '), (0, _motorcycleDom.h)('input.group', { style: tempStyle2 }), (0, _motorcycleDom.h)('div.messages', [(0, _motorcycleDom.h)('p', { style: tempStyle2 }, 'Enter messages here: '), (0, _motorcycleDom.h)('input.inputMessage', { style: tempStyle2 }), (0, _motorcycleDom.h)('div', _jsMonads.mMmessages.x)]), (0, _motorcycleDom.h)('p.group2', [(0, _motorcycleDom.h)('p', 'Group: ' + Group), (0, _motorcycleDom.h)('p', 'Goals: ' + _jsMonads.mMgoals.x), (0, _motorcycleDom.h)('div.scoreDisplay', [(0, _motorcycleDom.h)('span', 'player[score][goals]'), (0, _motorcycleDom.h)('div', _jsMonads.mMscoreboard.x)])]), (0, _motorcycleDom.h)('span', 'People in the same group, other than solo, share text messages and dice rolls. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'Here are the definitions of the monad constructors: '), _codeJs2['default'].monads, (0, _motorcycleDom.h)('p', 'As is apparent from the definition of Monad, when some monad "m" uses its "bnd" method on some function "f(x,v)", the first argument is the value of m (which is m.x). The return value of m.bnd(f,v) is f(m.x, v). Here is a function which takes two arguments: '), _codeJs2['default'].fib, (0, _motorcycleDom.h)('p', 'If you enter some number "n" in the box below, mMfib, whose initial value is [0,1], uses its bnd method as follows:'), (0, _motorcycleDom.h)('p', { style: { color: '#FF0000' } }, 'mMfib.bnd(fib,n)'), (0, _motorcycleDom.h)('p', 'The result will be displayed undernieth the input box. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input#code'), (0, _motorcycleDom.h)('p#code2', _jsMonads.mM19.x), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('span', 'I won\'t discuss every aspect of the multi-player websockets game code. It is open source and available at '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/dschalk/JS-monads-part4' }, style: { color: '#EECCFF' } }, 'https://github.com/dschalk/JS-monads-part4'), (0, _motorcycleDom.h)('span', ' I want to show how I used the monads to organize code and to control browser interactions with the Haskell websockets server. Let\'s begin with the parsing and routing of incoming websockets messages. This is how the websockets driver is defined:'), _codeJs2['default'].driver, (0, _motorcycleDom.h)('p', '"create" comes from the most library. It creates a blank stream; and with "add", it becomes a stream of incoming messages. '), (0, _motorcycleDom.h)('p', 'This is how the driver, referenced by "sources.WS", is used: '), _codeJs2['default'].main, (0, _motorcycleDom.h)('p', 'MonadIter instances have the "mMZ" prefix. Each instance has a "p" attribute which is a selector pointing to all of the code which comes after the call to its "bnd" method. Here is its definition of "next": '), _codeJs2['default'].next, (0, _motorcycleDom.h)('p', ' "main.js" has other code for handling keyboard and mouse events, and for combining everything into a single stream. It returns a stream of descriptions of the virtual DOM. The Motorcycle function "run" takes main and the sources object, with attributes DOM and JS referencing the drivers. It is called only once. "run" establishes the relationships between "main" and the drivers. After that, everything is automatic. Click events, keypress events, and websockets messages come in, Most updates the virtual dom stream, and Snabbdom diffs and patches the DOM. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'Game clicks are handled as follows: '), _codeJs2['default'].game, (0, _motorcycleDom.h)('p', 'mM3 is populated by clicks on numbers, mM8 changes from 0 to the name of a clicked operator. So, when mM3.x.length equals 2 and mM8 is no longer 0, it is time to call updateCalc. Here is updateCalc: '), _codeJs2['default'].updateCalc, (0, _motorcycleDom.h)('p', 'This is light-weight, non-blocking asynchronous code. There are no data base, ajax, or websockets calls; nothing that would require error handling. Promises and JS6 iterators can be used to avoid "pyramid of doom" nested code structures, but that would entail excess baggage here. updateCalc illuminates a niche where the monads are right at home. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('div.caption', 'Name Spaces'), (0, _motorcycleDom.h)('p', 'The monads can serve as name spaces. A monad\'s value can be an object with as many attributes and methods as you like. In the next example, we create a monad named "mMmult" and use it to encapsulate a simple computation in which two numbers are multiplied and added to the number 1. The following snippet shows monad "mMmult" being created and provided with methods and a number attribute. It also shows the definition of mult$.  '), _codeJs2['default'].mult, (0, _motorcycleDom.h)('p', 'mult$ merges into the stream that initiates each new cycle of the virtual DOM. "mMmult.x.product" is displayed in the paragraph directly below this one.'), (0, _motorcycleDom.h)('p#add', _jsMonads.mMmult.x.product), (0, _motorcycleDom.h)('p', 'Enter two numbers below. '), (0, _motorcycleDom.h)('input#addA'), (0, _motorcycleDom.h)('span', ' * '), (0, _motorcycleDom.h)('input#addB'), (0, _motorcycleDom.h)('p', 'mMmult is a const, so it can\'t be mutated; and since it is a specialized monad created for a single purpose, we wouldn\'t expect any team members, advertizers, or anyone else to disrupt the computation by mutating the object mMmult.x or altering its contents. The paragraphs below contains mMmult.x.product2 and then mMmult.x.product3:'), (0, _motorcycleDom.h)('p.add', 'mMmult.x.product2: ' + _jsMonads.mMmult.x.product2), (0, _motorcycleDom.h)('p.add', 'mMmult.x.product3: ' + _jsMonads.mMmult.x.product3), (0, _motorcycleDom.h)('p.add', 'mM27.x: ' + _jsMonads.mM27.x), (0, _motorcycleDom.h)('p', 'Like mMmult.x.product, it stems from mMmult.x.result. Obtaining the final result is simple, but presenting intermediate results after one-second pauses required a little effort. Algorithms that worked in JS-monads-part3, a plain Snabbdom application, don\'t work in Motorcycle.js. For code to run in Motorcycle, it needs to blend into cycle. In our case, it needs to receive information from "sources" and return a stream that merges into calcStream, which provides the information necessary for patching the DOM. We provide two streams to calcStream in order to assign timed computation results to mMmult.x.product2; one for incrementally releasing computation steps, and one for assigning the results to mMmult.x.product2. Here is how a computation is performed, and how the sequential results are assigned to mMmult.x.product2: '), _codeJs2['default'].product2, (0, _motorcycleDom.h)('p', '"periodic" is from the "most" library. Motorcycle.js is like Cycle.js, only it uses most and Snabbdom instead of RxJS and virtual-dom. '), (0, _motorcycleDom.h)('p', 'This is how the same results are calculated and assigned to mMmult.x.product3. '), _codeJs2['default'].product3, (0, _motorcycleDom.h)('p', 'The final display in the list (above) shows the result of this computation:'), _codeJs2['default'].product4, (0, _motorcycleDom.h)('p', '"debounce" causes a 3,200 millisecond delay. The delay allows time for any previously started computations to complete, thereby avoiding the possiblility of unexpected results stemming from two or more simultaneously running computation chains. I don\'t know of any way to abort a computation once it has begun. When I experimented with setTimeout, I discovered that clearTimeout did not stop ongoing timeouts in this Motorcycle.js application. As is the case here, reliable results could be obtained only by allowing time for any pending timeouts to complete. Using the stream of 1\'s consistently provides correct results, with new computations overriding and nullifying any previously started computations. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p')]);
+      return (0, _motorcycleDom.h)('div.content', [(0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('h2', 'JS-monads-part4'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span', 'This installment of the JS-monads series features '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/motorcyclejs' }, style: { color: '#EECCFF' } }, 'Motorcyclejs'), (0, _motorcycleDom.h)('span', ' handling the monads. Motorcyclejs is Cyclejs, only using '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/paldepind/snabbdom' }, style: { color: '#EECCFF' } }, 'Snabbdom'), (0, _motorcycleDom.h)('span', ' instead of "virtual-dom", and '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/cujojs/most' }, style: { color: '#EECCFF' } }, 'Most'), (0, _motorcycleDom.h)('span', ' instead of "RxJS".'), (0, _motorcycleDom.h)('h3', 'The Game From JS-monads-part3'), (0, _motorcycleDom.h)('p', 'If clicking two numbers and an operator (in any order) results in 20 or 18, the score increases by 1 or 3, respectively. If the score becomes 0 mod 5, 5 points are added. A score of 25 results in one goal. That can only be achieved by arriving at a score of 20, which jumps the score to 25. Directly computing 25 results in a score of 30, and no goal. Each time ROLL is clicked, one point is deducted. Three goals wins the game. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#0.num', mM1.x[0] + ''), (0, _motorcycleDom.h)('button#1.num', mM1.x[1] + ''), (0, _motorcycleDom.h)('button#2.num', mM1.x[2] + ''), (0, _motorcycleDom.h)('button#3.num', mM1.x[3] + ''), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#4.op', 'add'), (0, _motorcycleDom.h)('button#5.op', 'subtract'), (0, _motorcycleDom.h)('button#5.op', 'mult'), (0, _motorcycleDom.h)('button#5.op', 'div'), (0, _motorcycleDom.h)('button#5.op', 'concat'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button.roll', { style: tempStyle2 }, 'ROLL'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('div.winner', mMgoals2.x + ''), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('p.login', { style: tempStyle }, 'Please enter some name.'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input.login', { style: tempStyle }), (0, _motorcycleDom.h)('p', mM6.x.toString()), (0, _motorcycleDom.h)('p.group', { style: tempStyle2 }, 'Change group: '), (0, _motorcycleDom.h)('input.group', { style: tempStyle2 }), (0, _motorcycleDom.h)('div.messages', [(0, _motorcycleDom.h)('p', { style: tempStyle2 }, 'Enter messages here: '), (0, _motorcycleDom.h)('input.inputMessage', { style: tempStyle2 }), (0, _motorcycleDom.h)('div', mMmessages.x)]), (0, _motorcycleDom.h)('p.group2', [(0, _motorcycleDom.h)('span', 'Group: ' + mMgroup.x), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span', 'Goals: ' + mMgoals.x), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span', 'Name: ' + mMname.x), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('div.scoreDisplay', [(0, _motorcycleDom.h)('span', 'player[score][goals]'), (0, _motorcycleDom.h)('div', mMscoreboard.x)])]), (0, _motorcycleDom.h)('span', 'People in the same group, other than solo, share text messages and dice rolls. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'Here are the definitions of the monad constructors: '), _codeJs2['default'].monads, (0, _motorcycleDom.h)('p', 'As is apparent from the definition of Monad, when some monad "m" uses its "bnd" method on some function "f(x,v)", the first argument is the value of m (which is m.x). The return value of m.bnd(f,v) is f(m.x, v). Here is a function which takes two arguments: '), _codeJs2['default'].fib, (0, _motorcycleDom.h)('p', 'If you enter some number "n" in the box below, mMfib, whose initial value is [0,1], uses its bnd method as follows:'), (0, _motorcycleDom.h)('p', { style: { color: '#FF0000' } }, 'mMfib.bnd(fib,n)'), (0, _motorcycleDom.h)('p', 'The result will be displayed undernieth the input box. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input#code'), (0, _motorcycleDom.h)('p#code2', mM19.x), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('span', 'I won\'t discuss every aspect of the multi-player websockets game code. It is open source and available at '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/dschalk/JS-monads-part4' }, style: { color: '#EECCFF' } }, 'https://github.com/dschalk/JS-monads-part4'), (0, _motorcycleDom.h)('span', ' I want to show how I used the monads to organize code and to control browser interactions with the Haskell websockets server. Let\'s begin with the parsing and routing of incoming websockets messages. This is how the websockets driver is defined:'), _codeJs2['default'].driver, (0, _motorcycleDom.h)('p', '"create" comes from the most library. It creates a blank stream; and with "add", it becomes a stream of incoming messages. '), (0, _motorcycleDom.h)('p', 'This is how the driver, referenced by "sources.WS", is used: '), _codeJs2['default'].main, (0, _motorcycleDom.h)('p', 'MonadIter instances have the "mMZ" prefix. Each instance has a "p" attribute which is a selector pointing to all of the code which comes after the call to its "bnd" method. Here is its definition of "next": '), _codeJs2['default'].next, (0, _motorcycleDom.h)('p', ' "main.js" has other code for handling keyboard and mouse events, and for combining everything into a single stream. It returns a stream of descriptions of the virtual DOM. The Motorcycle function "run" takes main and the sources object, with attributes DOM and JS referencing the drivers. It is called only once. "run" establishes the relationships between "main" and the drivers. After that, everything is automatic. Click events, keypress events, and websockets messages come in, Most updates the virtual dom stream, and Snabbdom diffs and patches the DOM. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'Game clicks are handled as follows: '), _codeJs2['default'].game, (0, _motorcycleDom.h)('p', 'mM3 is populated by clicks on numbers, mM8 changes from 0 to the name of a clicked operator. So, when mM3.x.length equals 2 and mM8 is no longer 0, it is time to call updateCalc. Here is updateCalc: '), _codeJs2['default'].updateCalc, (0, _motorcycleDom.h)('p', 'This is light-weight, non-blocking asynchronous code. There are no data base, ajax, or websockets calls; nothing that would require error handling. Promises and JS6 iterators can be used to avoid "pyramid of doom" nested code structures, but that would entail excess baggage here. updateCalc illuminates a niche where the monads are right at home. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'A monad\'s value can be an object with as many attributes and methods as you like. Here, we take two numbers from input boxes and create a stream of their product, all inside of the monad mMmult. We are using mMmult.x, which starts out as an empty object, for the sole purpose of creating a namespace for three streams.  '), _codeJs2['default'].mult, (0, _motorcycleDom.h)('p', 'mMmult$ provides the result of the computation the mMmult.x.result stream to several monads. For example, here is mM28.x: ' + mM28.x), (0, _motorcycleDom.h)('p', 'And here are the results of some computation sequences. To see them, type numbers into the boxes below. '), (0, _motorcycleDom.h)('input#addA'), (0, _motorcycleDom.h)('span', ' * '), (0, _motorcycleDom.h)('input#addB'), (0, _motorcycleDom.h)('p', 'The paragraphs below contain step delayed computations stemming from mMmult.x.result. '), (0, _motorcycleDom.h)('p.add', 'Using a stream of 1\'s with MonadIter: ' + mMmult2.x), (0, _motorcycleDom.h)('p.add', 'Using a stream of 1\'s with "if" tests: ' + mMtem.x), (0, _motorcycleDom.h)('p.add', 'Using most.debounce: ' + mM27.x), (0, _motorcycleDom.h)('p', 'Like mMmult.x.product, it stems from mMmult.x.result. Obtaining the final result is simple, but presenting intermediate results after one-second pauses is tricky. Algorithms that worked in JS-monads-part3, a plain Snabbdom application, don\'t work in Motorcycle.js. For code to run smoothly in Motorcycle, it should blend into the main stream that feeds data to the virtual DOM. In our case, it needs to receive information from "sources" and return a stream that merges into calcStream, which provides the information necessary for patching the DOM. The first two results above use a driver named "unitDriver" These examples always give the expected result, free of side effects from ongoing previously started sequences of computations. You can type numbers in the input boxes in rapid succession and always see the result expected from the last number appearing in the box. Here is how the result using MonadIter is computed: '), _codeJs2['default'].product2, (0, _motorcycleDom.h)('p', '"periodic" is from the "most" library. Motorcycle.js is like Cycle.js, only it uses most and Snabbdom instead of RxJS and virtual-dom. '), (0, _motorcycleDom.h)('p', 'This is how the same results are calculated using "if" tests: '), _codeJs2['default'].product3, (0, _motorcycleDom.h)('p', 'The final display in the list (above) shows the result of this computation:'), _codeJs2['default'].product4, (0, _motorcycleDom.h)('p', 'It usually gives the same result as the first two computations, but I found that adding and removing numbers in rapid succession occasionally gives a result slightly larger than expected. I suspect that the larger-than-expected result is caused by a side effect from a previously intitiated sequence of computations. The example at the bottom of this page shows that substituting `delay` for `debounce` results in side effects from all ongoing computations always being propagated and incorporated into the most recent computation.  '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'For any monad m with value a and id "m", m.ret(v) returns a new monad named "m" with id "m" and value v. It looks like m got the new value v. What follows is a demonstration showing that m does not get mutated when it calls its "ret" method. '), (0, _motorcycleDom.h)('p', 'The monad mMt will repeatedly use its "ret" method. Each time mMt does this, we will save mMt in an array named "history", which looks like this: [mMt, mMt, ...]. The size of history increases each time we run a computation similar to the ones above. '), (0, _motorcycleDom.h)('p', 'We will then traverse history using the BACK and FORWARD buttons and display mMt.x, verifying that each mMt still has the value it had when it was pushed into the history array. Here is the code: '), _codeJs2['default'].immutable, (0, _motorcycleDom.h)('p', ' "index" and "history[index].x" are placed paragraphs below. '), (0, _motorcycleDom.h)('p.add', 'Using a stream of 1\'s with "if" tests: ' + mMt.x), (0, _motorcycleDom.h)('input#addC'), (0, _motorcycleDom.h)('span', ' * '), (0, _motorcycleDom.h)('input#addD'), (0, _motorcycleDom.h)('button#back', 'BACK'), (0, _motorcycleDom.h)('button#forward', 'FORWARD'), (0, _motorcycleDom.h)('p', 'index: ' + index), (0, _motorcycleDom.h)('p', 'history[' + index + ']: ' + history[index].x), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'The next demonstration involves an algorithm similar to the one above using "most.debounce" only using "most.delay" instead. To see why most.delay is a bad choice in this context, enter a number then enter a different number immediately afterwards. The first calculation will not stop, so two sequences will be doubling mMtext.x and adding 1 or 1000 to it, causing the result to be larger than it should be. If you wait for the first sequence to finish, you will get the expected result; otherwise, you won\'t.  Here is the code:  '), _codeJs2['default'].test, (0, _motorcycleDom.h)('p', ' Put a number in the box below '), (0, _motorcycleDom.h)('input#addF'), (0, _motorcycleDom.h)('p', mMtest.x), (0, _motorcycleDom.h)('p', ' Try changing the number right after starting a computation and see how large the resulting number is. Typing "1" seven times in rapid succession and then rapidly pressing BACKSPACE seven times produces large numbers, the faster you do it, the larger the number will; at least, I think, up to the limit of completing all 14 steps in under one second.  '), (0, _motorcycleDom.h)('p', ' The algorithms using sources.UNIT consistently give the desired result, never letting side effects from recently started sequences of computations spill over into the most recent sequences of computations. The one using most.debounce rarely give a too-large result and the one using most.delay always does. That doesn\'t necessarily imply that most.delay or most.debounce are buggy or that they could be improved. It does show that it is a mistake to start a sequence of computations using either of them if a similar sequence is already running. '), (0, _motorcycleDom.h)('p', ' . '), (0, _motorcycleDom.h)('p', ' . '), (0, _motorcycleDom.h)('p', ' . '), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p')]);
     })
   };
 }
 
 function updateCalc() {
-  _jsMonads.mMcalc.bnd(function () {
-    return _jsMonads.mMZ2.bnd(function () {
-      return _jsMonads.mM13.bnd(score, 1).bnd(_jsMonads.next2, _jsMonads.mM13.x % 5 === 0, _jsMonads.mMZ5) // Releases mMZ5.
+  mMcalc.bnd(function () {
+    return mMZ2.bnd(function () {
+      return mM13.bnd(score, 1).bnd(next2, mM13.x % 5 === 0, mMZ5) // Releases mMZ5.
       .bnd(newRoll);
-    }), _jsMonads.mMZ4.bnd(function () {
-      return _jsMonads.mM13.bnd(score, 3).bnd(_jsMonads.next2, _jsMonads.mM13.x % 5 === 0, _jsMonads.mMZ5).bnd(newRoll);
-    }), _jsMonads.mMZ5.bnd(function () {
-      return _jsMonads.mM13.bnd(score, 5).bnd(function (v) {
-        return _jsMonads.mM13.ret(v).bnd(_jsMonads.next, 25, _jsMonads.mMZ6);
+    }), mMZ4.bnd(function () {
+      return mM13.bnd(score, 3).bnd(next2, mM13.x % 5 === 0, mMZ5).bnd(newRoll);
+    }), mMZ5.bnd(function () {
+      return mM13.bnd(score, 5).bnd(function (v) {
+        return mM13.ret(v).bnd(next, 25, mMZ6);
       });
-    }), _jsMonads.mMZ6.bnd(function () {
-      return _jsMonads.mM9.bnd(score2).bnd(_jsMonads.next, 3, _jsMonads.mMZ7);
-    }), _jsMonads.mMZ7.bnd(function () {
-      return _jsMonads.mM13.bnd(winner);
-    }), _jsMonads.mM3.bnd(function (x) {
-      return _jsMonads.mM7.ret((0, _jsMonads.calc)(x[0], _jsMonads.mM8.x, x[1])).bnd(_jsMonads.log, _jsMonads.mM7.x).bnd(_jsMonads.next, 18, _jsMonads.mMZ4) // Releases mMZ4.
-      .bnd(_jsMonads.next, 20, _jsMonads.mMZ2).bnd(function () {
-        return _jsMonads.mM1.bnd(_jsMonads.push, _jsMonads.mM7.x) // Returns an anonymous monad.
-        .bnd(_jsMonads.mM1.ret) // Gives mM1 the anonymous monad's value.
-        .bnd(displayOff, _jsMonads.mM1.x.length + '').bnd(function () {
-          return _jsMonads.mM3.ret([]).bnd(function () {
-            return _jsMonads.mM4.ret(0).bnd(_jsMonads.mM8.ret);
+    }), mMZ6.bnd(function () {
+      return mM9.bnd(score2).bnd(next, 3, mMZ7);
+    }), mMZ7.bnd(function () {
+      return mM13.bnd(winner);
+    }), mM3.bnd(function (x) {
+      return mM7.ret(calc(x[0], mM8.x, x[1])).bnd(next, 18, mMZ4) // Releases mMZ4.
+      .bnd(next, 20, mMZ2).bnd(function () {
+        return mM1.bnd(push, mM7.x) // Returns an anonymous monad.
+        .bnd(mM1.ret) // Gives mM1 the anonymous monad's value.
+        .bnd(displayOff, mM1.x.length + '').bnd(function () {
+          return mM3.ret([]).bnd(function () {
+            return mM4.ret(0).bnd(mM8.ret);
           });
         });
       });
@@ -9224,13 +9058,13 @@ function updateCalc() {
 }
 
 var updateScoreboard = function updateScoreboard(v) {
-  _jsMonads.mMscoreboard.ret([]);
-  var ar = _jsMonads.mMscbd.x;
+  mMscoreboard.ret([]);
+  var ar = mMscbd.x;
   var keys = Object.keys(ar);
   for (var k in keys) {
-    _jsMonads.mMscoreboard.bnd(_jsMonads.unshift, (0, _motorcycleDom.h)('div.indent', ar[k]));
+    mMscoreboard.bnd(unshift, (0, _motorcycleDom.h)('div.indent', ar[k]));
   }
-  return _jsMonads.mMscoreboard;
+  return mMscoreboard;
 };
 
 window.onload = function (event) {
@@ -9238,49 +9072,50 @@ window.onload = function (event) {
 };
 
 var updateMessages = function updateMessages(v) {
-  _jsMonads.mMmessages.ret([]);
-  var ar = _jsMonads.mMmsg.x;
+  mMmessages.ret([]);
+  var ar = mMmsg.x;
   var keys = Object.keys(ar);
   for (var k in keys) {
-    _jsMonads.mMmessages.bnd(_jsMonads.unshift, (0, _motorcycleDom.h)('div', ar[k]));
+    mMmessages.bnd(unshift, (0, _motorcycleDom.h)('div', ar[k]));
   }
-  return _jsMonads.mMmessages;
+  return mMmessages;
 };
 
 var displayOff = function displayOff(x, a) {
   document.getElementById(a).style.display = 'none';
-  return (0, _jsMonads.ret)(x);
+  return ret(x);
 };
 
 var displayInline = function displayInline(x, a) {
   if (document.getElementById(a)) document.getElementById(a).style.display = 'inline';
-  return (0, _jsMonads.ret)(x);
+  return ret(x);
 };
 
 var score = function score(v, j) {
-  socket.send('CG#$42,' + Group + ',' + Name + ',' + j + ',' + 0);
-  return _jsMonads.mM13.ret(v + j);
+  socket.send('CG#$42,' + mMgroup.x + ',' + mMname.x + ',' + j + ',' + mMgoals.x);
+  return mM13.ret(v + j);
 };
 
 var score2 = function score2() {
-  _jsMonads.mMgoals.ret(_jsMonads.mMgoals.x + 1);
+  console.log('In score2 again  mMgoals.x ', mMgoals.x);
+  mMgoals.ret(mMgoals.x + 1);
   var j = -25;
-  socket.send('CG#$42,' + Group + ',' + Name + ',' + j + ',' + 1);
-  _jsMonads.mM13.ret(0);
-  return _jsMonads.mMgoals;
+  socket.send('CG#$42,' + mMgroup.x + ',' + mMname.x + ',' + j + ',' + mMgoals.x);
+  mM13.ret(0);
+  return mMgoals;
 };
 
 var winner = function winner() {
   var k = -3;
-  _jsMonads.mMgoals.ret(_jsMonads.mMgoals.x - 3);
-  socket.send('CG#$42,' + Group + ',' + Name + ',' + 0 + ',' + k);
-  socket.send('CE#$42,' + Group + ',' + Name + ',nothing ');
-  return (0, _jsMonads.ret)(0);
+  mMgoals.ret(mMgoals.x - 3);
+  socket.send('CG#$42,' + mMgroup.x + ',' + mMname.x + ',' + 0 + ',' + mMgoals.x);
+  socket.send('CE#$42,' + mMgroup.x + ',' + mMname.x + ',nothing ');
+  return ret(0);
 };
 
 var newRoll = function newRoll(v) {
-  socket.send('CA#$42,' + Group + ',' + Name + ',6,6,12,20');
-  return (0, _jsMonads.ret)(v);
+  socket.send('CA#$42,' + mMgroup.x + ',' + mMname.x.trim() + ',6,6,12,20');
+  return ret(v);
 };
 
 var refresh = function refresh() {
@@ -9297,4 +9132,4 @@ var sources = {
 
 _motorcycleCore2['default'].run(main, sources);
 
-},{"./code.js":168,"@motorcycle/core":1,"@motorcycle/dom":74,"js-monads":100,"most":166}]},{},[169]);
+},{"./code.js":167,"@motorcycle/core":1,"@motorcycle/dom":74,"most":166}]},{},[168]);

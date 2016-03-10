@@ -6,21 +6,9 @@ function _classCallCheck(instance, Constructor) {
   } 
 }
 
-var MonadIter = function MonadIter() {
-  var _this = this;
-  this.p = function () {};
-
-  this.release = function () {
-    return _this.p();
-  };
-
-  this.bnd = function (func) {
-    _this.p = func;
-  };
-};
-
 var Monad = function Monad(z, g) {
-  var _this = this;  
+  var _this = this;
+
   this.x = z;
   if (arguments.length === 1) {
     this.id = 'anonymous';
@@ -37,8 +25,21 @@ var Monad = function Monad(z, g) {
   };
 
   this.ret = function (a) {
-    _this.x = a;
-    return _this;
+    window[_this.id] = new Monad(a,_this.id);
+    return window[_this.id];
+  };
+};
+
+var MonadIter = function MonadIter() {
+  var _this = this;
+  this.p = function () {};
+
+  this.release = function () {
+    return _this.p();
+  };
+
+  this.bnd = function (func) {
+    _this.p = func;
   };
 };
 
@@ -49,6 +50,10 @@ var ret = function ret(v) {
 
 var cube = function(v) {
   return ret(v*v*v);
+}
+
+var double = function(v) {
+  return ret(v + v);
 }
 
 var add = function(a,b) {
@@ -88,6 +93,16 @@ var mM16 = M(0,'mM16');
 var mM17 = M(0,'mM17');
 var mM18 = M(0,'mM18');
 var mM19 = M(0,'mM19');
+var mM20 = M(0,'mM20');
+var mM21 = M(0,'mM21');
+var mM22 = M(0,'mM22');
+var mM23 = M(0,'mM23');
+var mM24 = M(0,'mM24');
+var mM25 = M(0,'mM25');
+var mM26 = M(0,'mM26');
+var mM27 = M(0,'mM27');
+var mM28 = M(0,'mM28');
+var mM29 = M(0,'mM29');
 var mMscbd = M([],'mMscbd');
 var mMmessages = M([],'mMmessages');
 var mMscoreboard = M([],'mMscoreboard');
@@ -103,6 +118,25 @@ var mMprefix = M('', 'mMprefix');
 var mMfib = M([0,1], 'mMfib');
 var mMmain = M(null, 'mMmain');
 var mMcalc = M(null, 'mMcalc');
+var mMadd = new Monad(0, 'mMadd');
+var mMunit = new Monad(0, 'mMunit');
+var mMprod = new Monad(0, 'mMprod');
+var mMmult = new Monad({}, 'mMmult');
+var mMmult2 = new Monad({}, 'mMmult2');
+var mMpause = new Monad(0, 'mMpause');
+var mMpause2 = new Monad(0, 'mMpause2');
+var mMtem = new Monad(0, 'mMtem');
+var mMtem2 = new Monad(0, 'mMtem2');
+var mMt = new Monad(0, 'mMt');
+var mMtest = new Monad(0, 'mMtest');
+var mMhistory = new Monad(0, 'mMhistory');
+var mMindex = new Monad(0, 'mMindex');
+var mMcursor = new Monad(0, 'mMcursor');
+var mMgroup = new Monad('solo', 'mMgroup');
+var mMgoals = new Monad(0, 'mMgoals');
+var mMname = new Monad(0, 'mMname');
+var mMob = new Monad({}, 'mMob');
+var mMsender = new Monad('nobody', 'mMsender');
 
 var mMZ1 = MI();
 var mMZ2 = MI();
@@ -121,6 +155,9 @@ var mMZ13 = MI();
 var mMZ14 = MI();
 var mMZ15 = MI();
 var mMZ16 = MI();
+var mMZ17 = MI();
+var mMZ18 = MI();
+var mMZ19 = MI();
 
 var mMZ20 = MI();
 var mMZ21 = MI();
@@ -129,6 +166,13 @@ var mMZ23 = MI();
 var mMZ24 = MI();
 var mMZ25 = MI();
 var mMZ26 = MI();
+var mMZ27 = MI();
+var mMZ28 = MI();
+var mMZ29 = MI();
+
+var trim = function trim(x,str) {
+  return ret(str.trim());
+};
 
 var fib = function fib(x,k) {
   let j = k;
@@ -138,7 +182,7 @@ var fib = function fib(x,k) {
     j -= 1;
   }
   return ret('fibonacci ' + k + ' = ' + x[0]);
-}
+};
 
 var toNums = function toNums(x) {
   let y = x.map(x => parseFloat(x));
@@ -291,11 +335,11 @@ var log = function log(x,message) {
   let mon = new Monad(x);
   return mon;
 };
-
+/*
 var delay = function delay(x, mon) {
   return new Promise(function (resolve, reject) {
     setTimeout(resolve, 2000);
   });
 };
-
+*/
 
