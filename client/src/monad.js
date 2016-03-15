@@ -101,8 +101,8 @@ var mM24 = M(0,'mM24');
 var mM25 = M(0,'mM25');
 var mM26 = M(0,'mM26');
 var mM27 = M(0,'mM27');
-var mM28 = M(0,'mM28');
-var mM29 = M(0,'mM29');
+var mM28 = M([],'mM28');
+var mM29 = M([],'mM29');
 var mMscbd = M([],'mMscbd');
 var mMmessages = M([],'mMmessages');
 var mMscoreboard = M([],'mMscoreboard');
@@ -138,8 +138,9 @@ var mMname = new Monad(0, 'mMname');
 var mMob = new Monad({}, 'mMob');
 var mMsender = new Monad('nobody', 'mMsender');
 var mMsave = new Monad({x: 'start'}, 'mMsave');
-var mMsaveAr = new Monad([], 'mMsaveAr');
+var mMsaveAr = new Monad([ret([0,0,0,0])], 'mMsaveAr');
 var mMindex = new Monad(0, 'mMindex');
+var mMindex2 = new Monad(0, 'mMindex2');
 var mMcount = new Monad(0, 'mMcount');
 var mMhistory = new Monad([], 'mMhistory');
 var mMtemp = new Monad('temp', 'mMtemp');
@@ -228,61 +229,91 @@ var wait = function wait(x, y, mon2) {
   return mon2;
 };
 
-var unshift = function unshift(x,v) {
-  x.unshift(v);
-  return ret(x);
+var unshift = function unshift(y,v,mon) {
+  if (Array.isArray(y)) {
+    let mMtemp = ret(y);
+    mMtemp.x.unshift(v);
+    return mon.ret(mMtemp.x);
+  }
+  console.log('The value provided to unshift is not an array');
+  return mon.ret(y);
+};
+
+var unshift2 = function unshift(y,v,mon) {
+  return mon.ret(ret(y).x.unshift(v));
 };
 
 var toFloat = function toFloat(x) {
-  var newx = x.map(function (a) {
-    return parseFloat(a);
-  });
-  return ret(newx);
+    return ret(parseFloat(x));
 };
 
-var push = function push(x,v) {
-  let ar = x;
-  ar.push(v);
-  let cleanX = ar.filter(v => (v !== "" && v !== undefined));
-  return ret(cleanX);
-};
-
-var splice = function splice(x, j, k) {
-  if (Array.isArray(x)) {
-    return ret(x.splice(j,k));
-  }
-  return ret(x);
+var clean = function clean(x, mon) {
+  let ar = ret(x);
+  return mon.ret(ar.x.filter(v => v !== "" && v!== undefined));
 }
 
-var clean = function clean(x) {
-  return ret(x.filter(v => v !== ""));
+var push = function push(y,v,mon) {
+  if (Array.isArray(y)) {
+    let mMtemp = ret(y);
+    mMtemp.ret(y);
+    mMtemp.x.push(v)
+    return mon.ret(mMtemp.x.filter(v => (v !== "")));
+  }
+  console.log('The value provided to push is not an array');
+  return ret(y);
+};
+
+var splice = function push(x, j, k, mon) {
+  if (Array.isArray(x)) {
+    let mMtemp = ret(x);
+    mMtemp.ret(x);
+    mMtemp.x.splice(j, 0, k);
+    return mon.ret(mMtemp.x.filter(v => (v !== "")));
+  }
+  console.log('The value provided to push is not an array');
+  return ret(y);
+};
+
+var spliceBackup = function splice(x, j, k, mon) {
+  if (Array.isArray(x)) {
+    return mon.ret(ret(x).bnd(clean, mon).x.splice(j, 0, k));
+  }
+  console.log('The value provided to splice was not an array');
+  return mon.ret(x);
+}
+
+var splice2 = function splice(x, j, k, mon) {
+  if (Array.isArray(x)) {
+    let mMtemp = ret(x);
+    mMtemp.x.splice(j,k);
+    return mon.ret(mMtemp.bnd(clean, mon).x);
+  }
+  console.log('The value provided to splice was not an array');
+  return mon.ret(x);
 }
 
 var filter = function filter(x, condition) {
   if (Array.isArray(x)) {
-    return ret(x.filter(v => condition))
+    let ar = ret(x);
+    return ret(ar.x.filter(v => condition))
   }
   return ret(x);
 }
 
 var map = function map(x, y) {
   if (Array.isArray(x)) {
-    return ret(x.map(v => y))
+    let ar = ret(x);
+    return ret(ar.x.map(v => y));
   }
   return ret(x);
 }
 
 var reduce = function reduce(x, y) {
   if (Array.isArray(x) && x.length > 0) {
-    return ret(x.reduce(y))
+    let ar = ret(x);
+    return ret(ar.x.reduce(y))
   }
   return ret(x);
-}
-
-var pop = function pop(x) {
-  let v = x[x.length - 1];
-  console.log('In pop. v = ',v);
-  return ret(v);
 }
 
 var next = function next(x, y, mon2) {

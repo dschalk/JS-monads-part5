@@ -1,7 +1,32 @@
 import {h, pre} from '@motorcycle/dom'; 
 
-var Group = 'solo';
-var Name = 'Fred';
+
+var Monad = function Monad(z, g) {
+  var _this = this;
+
+  this.x = z;
+  if (arguments.length === 1) {
+    this.id = 'anonymous';
+  } else {
+    this.id = g;
+  }
+
+  this.bnd = function (func) {
+    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    return func.apply(undefined, [_this.x].concat(args));
+  };
+
+  this.ret = function (a) {
+    window[_this.id] = new Monad(a,_this.id);
+    return window[_this.id];
+  };
+};
+
+var mMname = new Monad('Fred', 'mMname');
+var mMgroup = new Monad('solo', 'mMgroup');
 
 const monads = h('pre', {style: {color: '#AFEEEE' }}, `  var Monad = function Monad(z, g) {
     var _this = this;
@@ -57,11 +82,10 @@ var driver = h('pre', `  var websocketsDriver = function () {
   };
 ` )
 
-var main = h('pre', `  function main(sources) {
-  const messages$ = (sources.WS).map(e => 
+var main = h('pre', `  const messages$ = (sources.WS).map(e => 
     mMar.ret(e.data.split(','))
     .bnd(array => mMscores.ret(array[3].split("<br>"))
-    .bnd(() => mMname.ret(mMar.x[2])
+    .bnd(() => mMsender.ret(mMar.x[2])
     .bnd(() => mMprefix.ret(mMar.x[0])
       .bnd(next, 'CA#$42', mMZ10)
       .bnd(next, 'CB#$42', mMZ11)
@@ -72,26 +96,30 @@ var main = h('pre', `  function main(sources) {
     mMmain.bnd(() =>
     (mMZ10.bnd(() => mM1
       .ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]])
+      .bnd(() => push(mMsaveAr.x, mMsave.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]]), mMsaveAr)
+      .bnd(() => mMindex2.bnd(add,1)
+      .bnd(mMindex2.ret)
+      .bnd(displayInline,'0')
       .bnd(displayInline,'1')
       .bnd(displayInline,'2')
-      .bnd(displayInline,'3')))),
+      .bnd(displayInline,'3'))))),
     (mMZ11.bnd(() => mMscbd
       .ret(mMscores.x)
       .bnd(updateScoreboard)
       .bnd(() => mM3.ret([])
       .bnd(() => mM8.ret(0) )))),
     (mMZ12.bnd(() => mM6
-      .ret( mMname.x + ' successfully logged in.'))),
+      .ret( mMsender.x + ' successfully logged in.'))),
     (mMZ13.bnd(() => mMar
-      .bnd(splice, 0 ,3)
+      .bnd(splice2, 0, 3, mMar)
       .bnd(reduce, (a,b) => a + ", " + b)
       .bnd(() => mMmsg
-      .bnd(push, mMname.x + ': ' + mMar.x)
+      .bnd(push, mMsender.x + ': ' + mMar.x, mMmsg)
       .bnd(updateMessages)))),
     (mMZ14.bnd(() => mMgoals2.ret('The winner is ' + mMname.x ))), 
     (mMZ15.bnd(() => mMgoals2.ret('A player named ' + 
         mMname.x + 'is currently logged in. Page will refresh in 4 seconds.')
-      .bnd(refresh)))  `  )
+      .bnd(refresh))))  `  )
 
 var next = h('pre',  `  var next = function next(x, y, mon2) {
     if (x === y) {
@@ -105,8 +133,11 @@ var game = h('pre',`  const numClick$ = sources.DOM
      
   const numClickAction$ = numClick$.map(e => {
     mM3
-    .bnd(push,e.target.textContent)
-    .bnd(() => {mM1.x[e.target.id] = "";})
+    .bnd(push,e.target.textContent, mM3)
+    mM28.ret([mM1.x[0], mM1.x[1], mM1.x[2], mM1.x[3]]);
+    mM28.x[e.target.id] = "";
+    mM1.ret(mM28.x)
+    .bnd(cleanup); 
     if (mM3.x.length === 2 && mM8.x !== 0) {updateCalc();}
   }).startWith(mM1.x[0]);
 
@@ -123,39 +154,44 @@ var game = h('pre',`  const numClick$ = sources.DOM
 
   const rollClickAction$ = rollClick$.map(e => {  
     mM13.ret(mM13.x - 1);
-    socket.send('CG#$42,' + Group + ',' + Name + ',' + -1 + ',' + 0);
-    socket.send(\`CA#$42,${Group},${Name},6,6,12,20\`);
-  });   `  )
+    socket.send('CG#$42,' + mMgroup.x.trim() + ',' + mMname.x.trim() + ',' + -1 + ',' + mMgoals.x    );
+    socket.send(i\`CA#$42,${mMgroup.x},${mMname.x.trim()},6,6,12,20 \`      ) 
+     `  )
 
 var updateCalc = h('pre',  `  function updateCalc() { 
   mMcalc.bnd(() => (
-      (mMZ2.bnd(() => mM13
+       (mMZ2.bnd(() => mM13
                     .bnd(score, 1)
                     .bnd(next2, (mM13.x % 5 === 0), mMZ5)  // Releases mMZ5.
-                    .bnd(newRoll)) ),
-      (mMZ4.bnd(() => mM13
+                    .bnd(newRoll))),
+       (mMZ4.bnd(() => mM13
                     .bnd(score, 3)
                     .bnd(next2, (mM13.x % 5 === 0), mMZ5) 
-                    .bnd(newRoll)) ),
-          (mMZ5.bnd(() => mM13   // Released when the result mod 5 is 0.
+                    .bnd(newRoll))),
+           (mMZ5.bnd(() => mM13
                         .bnd(score,5)
                         .bnd(v => mM13.ret(v)
-                        .bnd(next, 25, mMZ6))) ),
-              (mMZ6.bnd(() => mM9.bnd(score2)  // Released when the score is 25 
-                            .bnd(next,3,mMZ7)) ),
-                  (mMZ7.bnd(() => mM13.bnd(winner)) ),                
-      (mM3.bnd(x => mM7
+                        .bnd(next, 25, mMZ6)))),
+               (mMZ6.bnd(() => mM9.bnd(score2) 
+                            .bnd(next,3,mMZ7))),
+                  (mMZ7.bnd(() => mM13.bnd(winner))),                 
+       (mM3.bnd(x => mM7
                     .ret(calc(x[0], mM8.x, x[1]))
                     .bnd(next, 18, mMZ4)  // Releases mMZ4.
                     .bnd(next, 20, mMZ2) 
-                    .bnd(() => mM1.bnd(push,mM7.x)  // Returns an anonymous monad.
-                    .bnd(mM1.ret)   // Gives mM1 the anonymous monad's value.
+                    .bnd(() => mM1.bnd(push, mM7.x, mM1)
+                    .bnd(v => mM1.bnd(log, 'first ' + v))
+                    .bnd(v => mMsaveAr.bnd(splice, ((mMindex2.x)+1), mMsave.ret(v).bnd(clean,mMsave), mMsaveAr))
+                    .bnd(v => mM1.bnd(log, 'after ' + v))
+                    .bnd(() => mMindex2.bnd(add,1))
+                    .bnd(mMindex2.ret)
                     .bnd(displayOff, ((mM1.x.length)+''))
                     .bnd(() => mM3
                     .ret([])
                     .bnd(() => mM4
-                    .ret(0).bnd(mM8.ret))))) ) 
-  ));
+                    .ret(0).bnd(mM8.ret).bnd(cleanup)
+                    )))))
+  ))
 }  `  )
 
 var mult = h('pre',  `  mMmult.x.addA = sources.DOM.select('input#addA').events('input');
@@ -245,25 +281,25 @@ var product4 = h('pre',  `  const mult5$ = mMmult.x.result
   addOb.result = combine((a,b) => a.target.value * b.target.value, addOb.addC, addOb.addD);
   // Next, the above stream of products of the two numbers entered 
   // in input fields (the stream "addOb.result") is put to use. 
-  const mult7$ = addOb.result.map(v => {
+  const mult7$ = mMob.x.result.map(v => {
     mMt.ret(v);
-    history.push(mMt);
-    mMpause2.ret(0);  // re-sets mMpause2 in preparation for the next procedure.
+    mMhistory.bnd(push,mMt).bnd(mMhistory.ret);
+    mMpause2.ret(0);
   })
   // Now, the stream of 1's from sources.UNIT controlls the sequenced computation.
   const mult6$ = sources.UNIT.map(v => {
       mMpause2.ret(mMpause2.x + v)
       if(mMpause2.x === 1) {
         mMt.bnd(add, 1000).bnd(mMt.ret)
-        history.push(mMt);
+        mMhistory.bnd(push,mMt);
       }
       if(mMpause2.x === 2) {
         mMt.bnd(double).bnd(mMt.ret)
-        history.push(mMt);
+        mMhistory.bnd(push,mMt);
       }
       if(mMpause2.x === 3) {
         mMt.bnd(add, 1).bnd(mMt.ret) 
-        history.push(mMt);
+        mMhistory.bnd(push,mMt);
       }
     });
 
@@ -271,8 +307,8 @@ var product4 = h('pre',  `  const mult5$ = mMmult.x.result
     .select('#back').events('click');
 
   const backClickAction$ = backClick$.map(() => {
-    if (index > 0) {
-      index -= 1;
+    if (mMindex.x > 0) {
+     mMindex.ret(mMindex.x -1) 
     }
   });
 
@@ -280,8 +316,8 @@ var product4 = h('pre',  `  const mult5$ = mMmult.x.result
     .select('#forward').events('click');
 
   const forwardClickAction$ = forwardClick$.map(() => {
-    if (index < (history.length - 1)) {
-      index += 1;
+    if (mMindex.x < (mMhistory.x.length - 1)) {
+     mMindex.ret(mMindex.x +1) 
     }
   })
   `  )
