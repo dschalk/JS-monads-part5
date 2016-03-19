@@ -7,15 +7,16 @@
   "dependencies": {
     "@cycle/core": "6.0.0-rc2",
     "@cycle/dom": "8.0.0-rc2",
-    "@cycle/http": "^8.0.0",
-    "@motorcycle/core": "^1.1.0",
-    "@motorcycle/dom": "^1.1.0",
-    "babel-loader": "^6.2.2",
+    "@cycle/http": "8.0.0",
+    "@motorcycle/core": "1.1.0",
+    "@motorcycle/dom": "1.1.0",
+    "babel-loader": "6.2.2",
     "immutable": "3.7.6",
     "js-monads": "1.0.3",
-    "most": "^0.18.0",
+    "most": "0.18.4",
+    "most-subject": "3.0.0",
     "rx": "4.0.6",
-    "watchify": "^3.7.0"
+    "watchify": "3.7.0"
   },
   "devDependencies": {
     "browserify": "11.0.1",

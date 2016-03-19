@@ -2,6 +2,49 @@ import Cycle from '@motorcycle/core';
 import {h, p, span, h1, h2, h3, br, div, label, input, hr, makeDOMDriver} from '@motorcycle/dom'; 
 import {just, create, merge, combine, fromEvent, periodic, observe, delay, filter, of} from 'most'; 
 import code from './code.js'; 
+import {subject} from 'most-subject'
+
+window.subject = subject;
+window.create = create;
+
+var sub = subject();
+var observer = sub.observer;
+var stream = sub.stream;
+
+var Monad$ = function Monad$(z, g, h) {
+  var _this = this;
+  
+  this.subject = sub;
+  this.observer = this.subject.observer;
+  this.stream = this.subject.stream;
+  this.history = h;
+
+  this.x = z;
+  if (arguments.length === 1) {
+    this.id = 'anonymous';
+  } else {
+    this.id = g;
+  }
+
+  this.bnd = function (func) {
+    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    return func.apply(undefined, [_this.x].concat(args));
+  };
+
+  this.ret = function (a) {
+    window[_this.id] = new Monad$(a,_this.id, _this.history);
+    _this.history.push(a);
+    observer.next(a);
+    return window[_this.id];
+  };
+};
+
+var mM$1 = new Monad$(null, 'mM$1', []);
+
+mM$1.ret(mM1.x);
 
 var tempStyle = {display: 'inline'}
 var tempStyle2 = {display: 'none'}
@@ -32,6 +75,12 @@ const unitDriver = function () {
 mM1.ret([0,0,0,0]);
 mM3.ret([]);
 
+window.onload = function (event) {
+    console.log('onopen event: ', event);
+    change2Elem = document.getElementById('change2');
+    console.log('typeof change2Elem: ', typeof change2Elem, change2Elem);
+};
+
 function main(sources) {
 
   mMfib.ret([0,1]);
@@ -51,13 +100,11 @@ function main(sources) {
     mMmain.bnd(() =>
     (mMZ10.bnd(() => mM1
       .ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]])
-      .bnd(() => push(mMsaveAr.x, mMsave.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]]), mMsaveAr)
-      .bnd(() => mMindex2.bnd(add,1)
-      .bnd(mMindex2.ret)
+      .bnd(mM$1.ret)
       .bnd(displayInline,'0')
       .bnd(displayInline,'1')
       .bnd(displayInline,'2')
-      .bnd(displayInline,'3'))))),
+      .bnd(displayInline,'3')))),
     (mMZ11.bnd(() => mMscbd
       .ret(mMscores.x)
       .bnd(updateScoreboard)
@@ -74,7 +121,7 @@ function main(sources) {
     (mMZ14.bnd(() => mMgoals2.ret('The winner is ' + mMname.x ))), 
     (mMZ15.bnd(() => mMgoals2.ret('A player named ' + 
         mMname.x + 'is currently logged in. Page will refresh in 4 seconds.')
-      .bnd(refresh))))
+      .bnd(refresh)))
   
   const loginPress$ = sources.DOM
     .select('input.login').events('keypress');
@@ -107,109 +154,6 @@ function main(sources) {
       socket.send(`CO#$42,${e.target.value},${mMname.x.trim()},${e.target.value}`);
   });
 
-  mMmult.x.addA = sources.DOM.select('input#addA').events('input');
-  mMmult.x.addB = sources.DOM.select('input#addB').events('input');
-  mMmult.x.result = combine((a,b) => a.target.value * b.target.value, mMmult.x.addA, mMmult.x.addB);
-  
-  const mult$ = mMmult.x.result.map(v => {
-    mMmult2.ret(v);
-    mMtem.ret(v);
-    mMtem2.ret(v);
-    mM28.ret(v);
-    mMpause.ret(0);
-    mMpause2.ret(0);
-  });
-
-  mMob.x.addC = sources.DOM.select('input#addC').events('input');
-  mMob.x.addD = sources.DOM.select('input#addD').events('input');
-  mMob.x.result = combine((a,b) => a.target.value * b.target.value, mMob.x.addC, mMob.x.addD);
-  
-  mMt.ret(0);
-  mMhistory.bnd(push,mMt, mMhistory);
-
-  const mult7$ = mMob.x.result.map(v => {
-    mMt.ret(v);
-    mMhistory.bnd(push,mMt, mMhistory);
-    mMpause2.ret(0);
-  })
-  
-  const mult6$ = sources.UNIT.map(v => {
-      mMpause2.ret(mMpause2.x + v)
-      if(mMpause2.x === 1) {
-        mMt.bnd(add, 1000).bnd(mMt.ret)
-        mMhistory.bnd(push,mMt, mMhistory);
-      }
-      if(mMpause2.x === 2) {
-        mMt.bnd(double).bnd(mMt.ret)
-        mMhistory.bnd(push,mMt, mMhistory);
-      }
-      if(mMpause2.x === 3) {
-        mMt.bnd(add, 1).bnd(mMt.ret) 
-        mMhistory.bnd(push,mMt, mMhistory);
-      }
-    });
-
-  const backClick$ = sources.DOM
-    .select('#back').events('click');
-
-  const backClickAction$ = backClick$.map(() => {
-    if (mMindex.x > 0) {
-     mMindex.ret(mMindex.x -1) 
-    }
-  });
-
-  const forwardClick$ = sources.DOM
-    .select('#forward').events('click');
-
-  const forwardClickAction$ = forwardClick$.map(() => {
-    if (mMindex.x < (mMhistory.x.length - 1)) {
-     mMindex.ret(mMindex.x +1) 
-    }
-  })
-
-  const mult2$ = mMmult.x.result.map(v => {
-    mMZ26.bnd(() => mMmult2.bnd(add, 1000).bnd(mMmult2.ret));
-    mMZ27.bnd(() => mMmult2.bnd(double).bnd(mMmult2.ret));
-    mMZ28.bnd(() => mMmult2.bnd(add, 1).bnd(mMmult2.ret)); 
-    mMunit.ret(0);
-  })
-
-  const unitAction$ = sources.UNIT.map(v => {
-      mMunit.ret(mMunit.x + v)
-      .bnd(next, 1, mMZ26)
-      .bnd(next, 2, mMZ27)
-      .bnd(next, 3, mMZ28)
-  })
-
-  const mult4$ = sources.UNIT.map(v => {
-      mMpause.ret(mMpause.x + v)
-      if(mMpause.x ===1) {
-        mMtem.bnd(add, 1000).bnd(mMtem.ret)
-      }
-      if(mMpause.x === 2) {
-        mMtem.bnd(double).bnd(mMtem.ret)
-      }
-      if(mMpause.x === 3) {
-        mMtem.bnd(add, 1).bnd(mMtem.ret) 
-      }
-    })
-
-  console.log('history: ', history);
-
-  const mult5$ = mMmult.x.result
-  .map(v => mM27.ret(v))
-  .map(() => mM27.bnd(add, 1000).bnd(mM27.ret)).debounce(1000)
-  .map(() => mM27.bnd(double).bnd(mM27.ret)).debounce(1000)
-  .map(() => mM27.bnd(add, 1).bnd(mM27.ret)).debounce(1000)
-  
-  var test$ = sources.DOM.select('input#addF').events('input');
-
-  const testAction$ = test$.map(e => mMtest
-    .ret(e.target.value*1)).delay(1000)
-    .map(() => mMtest.ret(mMtest.x + 1000)).delay(1000)
-    .map(() => mMtest.ret(mMtest.x * 2)).delay(1000)
-    .map(() => mMtest.ret(mMtest.x + 1)).delay(1000)
-  
   var addS = function addS (x,y) {
     if (typeof x === 'number') {
       return ret(x + y);
@@ -238,9 +182,11 @@ function main(sources) {
     .bnd(push,e.target.textContent, mM3)
     mM28.ret([mM1.x[0], mM1.x[1], mM1.x[2], mM1.x[3]]);
     mM28.x[e.target.id] = "";
-    mM1.ret(mM28.x)
+    mM28.bnd(clean,mM1)
     .bnd(cleanup); 
-    if (mM3.x.length === 2 && mM8.x !== 0) {updateCalc();}
+    if (mM3.x.length === 2 && mM8.x !== 0) {
+      updateCalc();
+    }
   }).startWith(mM1.x[0]);
 
   const opClick$ = sources.DOM
@@ -248,7 +194,9 @@ function main(sources) {
 
   const opClickAction$ = opClick$.map(e => {
     mM8.ret(e.target.textContent);
-    if (mM3.x.length === 2) {updateCalc();}
+    if (mM3.x.length === 2) {
+      updateCalc();
+    }
   })
 
   const rollClick$ = sources.DOM
@@ -275,32 +223,38 @@ function main(sources) {
     if( e.keyCode == 13 && !Number.isInteger(v*1) ) mM19.ret("You didn't provide an integer");
   });
 
-  const forwardClick2$ = sources.DOM
+  const forwardClick$ = sources.DOM
     .select('#forward2').events('click');
 
-  const backClick2$ = sources.DOM
+  const backClick$ = sources.DOM
     .select('#back2').events('click');
 
-  const forwardClick2Action$ = forwardClick2$.map(() => {
-    if (mMindex2.x > 0) {
-      console.log('In forwardClick2Action$');
-      mMindex2.bnd(add,-1).bnd(mMindex2.ret)
-      let mMtemp = ret(mMsaveAr.x[mMindex2.x].x)
-      mM1.ret(mMtemp.x) 
+  const forwardClickAction$ = forwardClick$.map(() => {
+    if (mMindex2.x < (mM$1.history.length - 1)) {
+      mMindex2.bnd(add,1)
+      .bnd(mMindex2.ret)
+      .bnd(() => mM1
+      .ret(mM$1.history[mMindex2.x]))
       .bnd(() => show());
     }
   });
 
-  const backClick2Action$ = backClick2$.map(() => {
-    if (mMsaveAr.x.length > (mMindex2.x + 1)) {
-      mMindex2.bnd(add,1).bnd(mMindex2.ret)
-      let mMtemp = ret(mMsaveAr.x[mMindex2.x].x)
-      mM1.ret(mMtemp.x) 
+  const backClickAction$ = backClick$.map(() => {
+    if (mMindex2.x > 1) {
+      mMindex2.bnd(add, -1)
+      .bnd(mMindex2.ret)
+      .bnd(() => mM1
+      .ret(mM$1.history[mMindex2.x])) 
       .bnd(() => show());
     }
   });
 
-  const calcStream$ = merge(backClick2Action$, forwardClick2Action$, testAction$, mult7$, mult6$, forwardClickAction$, backClickAction$, mult$, mult2$, mult4$, mult5$, unitAction$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
+  const mM$1Action$ = mM$1.stream.map(v => {
+    mMindex2.ret(mM$1.history.length - 1);
+    console.log('From mM$1.stream: ', v);
+  })
+
+  const calcStream$ = merge(mM$1Action$, forwardClickAction$, backClickAction$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
 
   return {
     DOM: 
@@ -319,8 +273,7 @@ function main(sources) {
       h('h3', 'The Game From JS-monads-part3' ),
       h('p', 'If clicking two numbers and an operator (in any order) results in 20 or 18, the score increases by 1 or 3, respectively. If the score becomes 0 mod 5, 5 points are added. A score of 25 results in one goal. That can only be achieved by arriving at a score of 20, which jumps the score to 25. Directly computing 25 results in a score of 30, and no goal. Each time ROLL is clicked, one point is deducted. Three goals wins the game. '    ),
       h('br'),
-      h('button#save',  {style: {display: 'none'}},   mM1.x+''  ),
-      h('br' ),
+      h('br'),
       h('button#0.num', mM1.x[0] + '' ),
       h('button#1.num', mM1.x[1] + '' ),
       h('button#2.num', mM1.x[2] + '' ),
@@ -334,9 +287,8 @@ function main(sources) {
       h('br'),
       h('button.roll', {style: tempStyle2}, 'ROLL' ),
       h('br'),
-      h('br'),
-      h('button#forward2',  'TAKE BACK'  ),
-      h('button#back2',  'FORWARD'  ),
+      h('button#back2',  'TAKE BACK'  ),
+      h('button#forward2',  'FORWARD'  ),
       h('br'),
       h('div.winner', mMgoals2.x+''  ),
       h('br'),
@@ -393,62 +345,16 @@ function main(sources) {
       code.updateCalc,
       h('p', 'This is light-weight, non-blocking asynchronous code. There are no data base, ajax, or websockets calls; nothing that would require error handling. Promises and JS6 iterators can be used to avoid "pyramid of doom" nested code structures, but that would entail excess baggage here. updateCalc illuminates a niche where the monads are right at home. ' ),  
       h('hr',),  
-      h('p', 'A monad\'s value can be an object with as many attributes and methods as you like. Here, we take two numbers from input boxes and create a stream of their product, all inside of the monad mMmult. We are using mMmult.x, which starts out as an empty object, for the sole purpose of creating a namespace for three streams.  '  ),
-      code.mult,
-      h('p', 'mMmult$ provides the result of the computation the mMmult.x.result stream to several monads. For example, here is mM28.x: ' + mM28.x ),
-      h('p', 'And here are the results of some computation sequences. To see them, type numbers into the boxes below. ' ),
-      h('input#addA'  ),
-      h('span', ' * '   ),
-      h('input#addB'  ),
-      h('p', 'The paragraphs below contain step delayed computations stemming from mMmult.x.result. ' ),
-      h('p.add', 'Using a stream of 1\'s with MonadIter: ' + mMmult2.x    ),  
-      h('p.add', 'Using a stream of 1\'s with "if" tests: ' + mMtem.x   ),  
-      h('p.add', 'Using most.debounce: ' + mM27.x   ),  
-      h('p', 'Like mMmult.x.product, it stems from mMmult.x.result. Obtaining the final result is simple, but presenting intermediate results after one-second pauses is tricky. Algorithms that worked in JS-monads-part3, a plain Snabbdom application, don\'t work in Motorcycle.js. For code to run smoothly in Motorcycle, it should blend into the main stream that feeds data to the virtual DOM. In our case, it needs to receive information from "sources" and return a stream that merges into calcStream, which provides the information necessary for patching the DOM. The first two results above use a driver named "unitDriver" These examples always give the expected result, free of side effects from ongoing previously started sequences of computations. You can type numbers in the input boxes in rapid succession and always see the result expected from the last number appearing in the box. Here is how the result using MonadIter is computed: '  ),
-      code.product2,
-      h('p', '"periodic" is from the "most" library. Motorcycle.js is like Cycle.js, only it uses most and Snabbdom instead of RxJS and virtual-dom. '  ),  
-      h('p', 'This is how the same results are calculated using "if" tests: '  ),  
-      code.product3,
-      h('p', 'The final display in the list (above) shows the result of this computation:' ),  
-      code.product4,  
-      h('p', 'It usually gives the same result as the first two computations, but I found that adding and removing numbers in rapid succession occasionally gives a result slightly larger than expected. I suspect that the larger-than-expected result is caused by a side effect from a previously intitiated sequence of computations. The example at the bottom of this page shows that substituting `delay` for `debounce` results in side effects from all ongoing computations always being propagated and incorporated into the most recent computation.  ' ),
-      h('hr',),  
-      h('h2', 'Time Travel'  ),
-      h('p', 'For any monad m with value a and id "m", m.ret(v) returns a new monad named "m" with id "m" and value v. It looks like m got the new value v. What follows is a demonstration showing that m does not get mutated when it calls its "ret" method. '),
-      h('p', 'The monad mMt will repeatedly use its "ret" method. Each time mMt does this, we will save mMt in an array named "history", which looks like this: [mMt, mMt, ...]. The size of history increases each time we run a computation similar to the ones above. ' ),
-     h('p', 'We will then traverse history using the BACK and FORWARD buttons and display mMt.x, verifying that each mMt still has the value it had when it was pushed into the history array. Here is the code: ' ),  
-      code.immutable,
-      h('p', ' "index" and "history[index].x" are placed paragraphs below. '  ), 
-      h('p.add', 'Using a stream of 1\'s with "if" tests: ' + mMt.x   ),  
-      h('input#addC'  ),
-      h('span', ' * '   ),
-      h('input#addD'  ),
-      h('button#back',  'BACK'  ),   
-      h('button#forward',  'FORWARD'  ),
-      h('p',  'mMindex.x: ' + mMindex.x  ),
-      h('p',  'mMhistory.x[' + mMindex.x + ']: ' + mMhistory.x[mMindex.x].x ),  
-      h('hr',),  
-      h('p', 'The next demonstration involves an algorithm similar to the one above using "most.debounce" only using "most.delay" instead. To see why most.delay is a bad choice in this context, enter a number then enter a different number immediately afterwards. The first calculation will not stop, so two sequences will be doubling mMtext.x and adding 1 or 1000 to it, causing the result to be larger than it should be. If you wait for the first sequence to finish, you will get the expected result; otherwise, you won\'t.  Here is the code:  '  ),
-      code.test,
-      h('p', ' Put a number in the box below '  ),
-      h('input#addF'  ),
-      h('p',  mMtest.x  ),  
-      h('p', ' Try changing the number right after starting a computation. Typing "1" seven times in rapid succession and then rapidly pressing BACKSPACE seven times produces numbers larger 2001 (the result expected from the default value of 0). In the three algorithm example, if you put 1 in the left input box and type 1 seven times followed by BACKSPACE seven times in the other box, all three results are 2001. The faster you type numbers into the box, the larger the resuld. I held down the "9" key until I got infinity.  ' ),  
-      h('p', ' The algorithms using sources.UNIT consistently give the desired result, never letting side effects from recently started sequences of computations spill over into the most recent sequences of computations. The one using most.debounce rarely give a too-large result and the one using most.delay always does. That doesn\'t necessarily imply that most.delay or most.debounce are buggy or that they could be improved. It does show that it is a mistake to start a sequence of computations using either of them if a similar sequence might already be running. ' ),
-      h('p', ' . ' ),  
-      h('p', ' . ' ),  
-      h('p', ' . ' ),  
+      h('p', ' . ' ), 
       h('p', ),  
-      h('p', ),  
-      h('p', ),  
-      h('p', ),  
-      h('p', ),  
+      h('p', ), 
+      h('p', ), 
       h('p', )  
       ])
     )  
   } 
-}  
-
+}
+ 
 const show = function show() {
   let number0 = document.getElementById('0');
   let number1 = document.getElementById('1');
@@ -505,39 +411,33 @@ function cleanup (x) {
 };
 
 function updateCalc() { 
-  mMcalc.bnd(() => (
-       (mMZ2.bnd(() => mM13
+       mMZ2.bnd(() => mM13
                     .bnd(score, 1)
                     .bnd(next2, (mM13.x % 5 === 0), mMZ5)  // Releases mMZ5.
-                    .bnd(newRoll))),
-       (mMZ4.bnd(() => mM13
+                    .bnd(newRoll));
+       mMZ4.bnd(() => mM13
                     .bnd(score, 3)
                     .bnd(next2, (mM13.x % 5 === 0), mMZ5) 
-                    .bnd(newRoll))),
-           (mMZ5.bnd(() => mM13
+                    .bnd(newRoll));
+           mMZ5.bnd(() => mM13
                         .bnd(score,5)
                         .bnd(v => mM13.ret(v)
-                        .bnd(next, 25, mMZ6)))),
-               (mMZ6.bnd(() => mM9.bnd(score2) 
-                            .bnd(next,3,mMZ7))),
-                  (mMZ7.bnd(() => mM13.bnd(winner))),                 
-       (mM3.bnd(x => mM7
+                        .bnd(next, 25, mMZ6)));
+               mMZ6.bnd(() => mM9.bnd(score2) 
+                            .bnd(next,3,mMZ7));
+                  mMZ7.bnd(() => mM13.bnd(winner));               
+       mM3.bnd(x => mM7
                     .ret(calc(x[0], mM8.x, x[1]))
                     .bnd(next, 18, mMZ4)  // Releases mMZ4.
                     .bnd(next, 20, mMZ2) 
                     .bnd(() => mM1.bnd(push, mM7.x, mM1)
-                    .bnd(v => mM1.bnd(log, 'first ' + v))
-                    .bnd(v => mMsaveAr.bnd(splice, ((mMindex2.x)+1), mMsave.ret(v).bnd(clean,mMsave), mMsaveAr))
-                    .bnd(v => mM1.bnd(log, 'after ' + v))
-                    .bnd(() => mMindex2.bnd(add,1))
-                    .bnd(mMindex2.ret)
+                    .bnd(mM$1.ret)
                     .bnd(displayOff, ((mM1.x.length)+''))
                     .bnd(() => mM3
                     .ret([])
                     .bnd(() => mM4
                     .ret(0).bnd(mM8.ret).bnd(cleanup)
-                    )))))
-  ))
+                    ))))
 }
 
 var updateScoreboard = function updateScoreboard(v) {
@@ -549,10 +449,6 @@ var updateScoreboard = function updateScoreboard(v) {
   }
   return mMscoreboard;
 }
-
-window.onload = function (event) {
-    console.log('onopen event: ', event);
-};
 
 var updateMessages = function updateMessages(v) {
   mMmessages.ret([]);
@@ -580,7 +476,6 @@ var score = function score(v,j) {
 }
 
 var score2 = function score2() {
-  console.log('In score2 again  mMgoals.x ', mMgoals.x);
   mMgoals.ret(mMgoals.x + 1);
   let j = -25;
   socket.send('CG#$42,' + mMgroup.x + ',' + mMname.x + ',' + j + ',' + mMgoals.x);

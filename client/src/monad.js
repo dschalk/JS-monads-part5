@@ -1,10 +1,52 @@
 'use strict';
 
+var tempStyle = {display: 'inline'}
+var tempStyle2 = {display: 'none'}
+
 function _classCallCheck(instance, Constructor) { 
   if (!(instance instanceof Constructor)) { 
     throw new TypeError("Cannot call a class as a function"); 
   } 
 }
+
+var MonadSave = function MonadSave(z, g, h) {
+  var _this = this;
+
+  this.history = h;
+
+  this.x = z;
+  if (arguments.length === 1) {
+    this.id = 'anonymous';
+  } else {
+    this.id = g;
+  }
+
+  this.bnd = function (func) {
+    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    return func.apply(undefined, [_this.x].concat(args));
+  };
+
+  this.ret = function (a) {
+    _this.history.push(a);
+    window[_this.id] = new MonadSave(a,_this.id, _this.history);
+    return window[_this.id];
+  };
+};
+
+var mMsaved = new MonadSave({}, 'mMsaved');
+var mMid = new MonadSave('waiting', 'mMid');
+var mMnewval = new MonadSave('waiting', 'mMnewval');
+var mMdata = new MonadSave(['start'], 'mMdata');
+var mMdata2 = new MonadSave(['start'], 'mMdata2');
+var mMlatest = new MonadSave({}, 'mMlatest');
+
+var retSaveVal = ['start'];
+var retSaveId = ['start'];
+var emitEvent;
+var data$;
 
 var Monad = function Monad(z, g) {
   var _this = this;
@@ -79,7 +121,7 @@ var mM2 = M(0,'mM2');
 var mM3 = M(0,'mM3');
 var mM4 = M([],'mM4');
 var mM5 = M(0,'mM5');
-var mM6 = M(0,'mM6');
+var mM6 = M('','mM6');
 var mM7 = M(0,'mM7');
 var mM8 = M(0,'mM8');
 var mM9 = M(0,'mM9');
@@ -142,8 +184,12 @@ var mMsaveAr = new Monad([ret([0,0,0,0])], 'mMsaveAr');
 var mMindex = new Monad(0, 'mMindex');
 var mMindex2 = new Monad(0, 'mMindex2');
 var mMcount = new Monad(0, 'mMcount');
+var mMcount2 = new Monad(0, 'mMcount2');
 var mMhistory = new Monad([], 'mMhistory');
 var mMtemp = new Monad('temp', 'mMtemp');
+var mMte = new Monad(0, 'mMte');
+var mMid = new Monad('cow', 'mMid');
+var mM1change = new Monad(mM1, 'mM1change');
 
 var mMZ1 = MI();
 var mMZ2 = MI();
@@ -176,6 +222,12 @@ var mMZ26 = MI();
 var mMZ27 = MI();
 var mMZ28 = MI();
 var mMZ29 = MI();
+
+var change = [new Monad([7,7,7,7])];
+  
+var Bigcow = 'change[0] === mM1 ' + change[0] === mM1;
+
+var change2Elem = 'Niether true now false';
 
 var trim = function trim(x,str) {
   return ret(str.trim());
@@ -242,6 +294,11 @@ var unshift = function unshift(y,v,mon) {
 var unshift2 = function unshift(y,v,mon) {
   return mon.ret(ret(y).x.unshift(v));
 };
+
+var latestClick = function latestClick(x, mon) {
+  document.getElementById('latest').click();
+  return mon;
+}
 
 var toFloat = function toFloat(x) {
     return ret(parseFloat(x));
