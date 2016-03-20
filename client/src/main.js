@@ -297,7 +297,7 @@ function main(sources) {
       h('br'),
       h('button.roll', {style: tempStyle2}, 'ROLL' ),
       h('br'),
-      h('button#back2', {style: tempStyle2}, 'TAKE BACK'  ),
+      h('button#back2', {style: tempStyle2}, 'BACK'  ),
       h('button#forward2', {style: tempStyle2}, 'FORWARD'  ),
       h('br'),
       h('div.winner', mMgoals2.x+''  ),
