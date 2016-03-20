@@ -53,7 +53,7 @@ mM6.ret('');
 function createWebSocket(path) {
     let host = window.location.hostname;
     if(host == '') host = 'localhost';
-    let uri = 'ws://' + host + ':3099' + path;
+    let uri = 'ws://' + host + ':3077' + path;
     let Socket = "MozWebSocket" in window ? MozWebSocket : WebSocket;
     return new Socket(uri);
 }
