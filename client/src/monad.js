@@ -118,7 +118,7 @@ var MI = function MI() {
 var Count = 0;
 var mM1 = M([],'mM1');
 var mM2 = M(0,'mM2');
-var mM3 = M(0,'mM3');
+var mM3 = M([],'mM3');
 var mM4 = M([],'mM4');
 var mM5 = M(0,'mM5');
 var mM6 = M('','mM6');
@@ -186,6 +186,8 @@ var mMindex2 = new Monad(0, 'mMindex2');
 var mMcount = new Monad(0, 'mMcount');
 var mMcount2 = new Monad(0, 'mMcount2');
 var mMhistory = new Monad([], 'mMhistory');
+var mMhistorymM1 = new Monad([], 'mMhistorymM1');
+var mMhistorymM3 = new Monad([], 'mMhistorymM3');
 var mMtemp = new Monad('temp', 'mMtemp');
 var mMte = new Monad(0, 'mMte');
 var mMid = new Monad('cow', 'mMid');
@@ -320,15 +322,14 @@ var push = function push(y,v,mon) {
   return ret(y);
 };
 
-var splice = function push(x, j, k, mon) {
+var splice = function splice(x, j, mon) {
   if (Array.isArray(x)) {
     let mMtemp = ret(x);
-    mMtemp.ret(x);
-    mMtemp.x.splice(j, 0, k);
-    return mon.ret(mMtemp.x.filter(v => (v !== "")));
+    mMtemp.x.splice(j,1);
+    return mon.ret(mMtemp.x);
   }
   console.log('The value provided to push is not an array');
-  return ret(y);
+  return ret(x);
 };
 
 var spliceBackup = function splice(x, j, k, mon) {
