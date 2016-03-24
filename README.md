@@ -32,5 +32,5 @@ This demonstration picks up where [JS-monads-part4](http://schalk.net:3099) left
     };
   };
 ```
-The "most" streams facilitate taking back game moves, traversing the whole history of play if the BACK button is clicked enough times. 
+The "most" streams facilitate taking back game moves, traversing the whole history of play if the BACK button is clicked enough times. If a player in your group rolls the dice before you are done with a computation sequence, you can go back and finish what you were doing.
 
