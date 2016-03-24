@@ -353,7 +353,7 @@ function main(sources) {
      h('pre.indent',  'mM1.x === mM1.bnd(v => mM1.ret(v).bnd(mM1.ret)).x'  ), 
      h('p', ' but '  ), 
      h('pre.indent',  'mM1 !== mM1.bnd(v => mM1.ret(v).bnd(mM1.ret))'  ),
-     h('p', 'to verify this feature. As is apparent in the definition of "Monad", the "ret" method returns a new monad with the calling monad\'s name and whatever value is provided to ret. When a monad calls ret on its own value, for instance with "mM1.bnd(mM1.ret)" or "mM1.ret(mM1.x)", the returned monad is nearly indistinguishable from the calling monad, but it resides in a different location in memory, and mM1 === mM1.bnd(mM1.ret) returns false. In the history traversal code, old versions of mM1.x are stored in mMhistorymM1, and there is no danger that they will be modified by subsequent calls to mM1.ret(). I use monad instances to hold values and use only the "ret" method (never mM1.x = newValuer) to update them. ' ),
+     h('p', 'to verify this feature. As is apparent in the definition of "Monad", the "ret" method returns a new monad with the calling monad\'s name and whatever value is provided to ret. When a monad calls ret on its own value, for instance with "mM1.bnd(mM1.ret)" or "mM1.ret(mM1.x)", the returned monad is nearly indistinguishable from the calling monad, but it resides in a different location in memory, and mM1 === mM1.bnd(mM1.ret) returns false.' ),
       h('hr'),
       h('h2', 'Miscellaneous Functions'  ),
       h('p', 'The function responsible for updating scores is shown below. It gets called whenever two numbers and an operator have been selected, in any order.' ),  
