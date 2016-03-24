@@ -8813,17 +8813,17 @@ var fib = (0, _motorcycleDom.h)('pre', '  var fib = function fib(x,k) {\n    let
 
 var driver = (0, _motorcycleDom.h)('pre', '  var websocketsDriver = function () {\n      return create((add) => {\n        socket.onmessage = msg => add(msg)\n      })\n  };\n');
 
-var messages = (0, _motorcycleDom.h)('pre', '  const messages$ = (sources.WS).map(e => \n    mMar.ret(e.data.split(\',\'))\n    .bnd(array => mMscores.ret(array[3].split("<br>"))\n    .bnd(() => mMsender.ret(mMar.x[2])\n    .bnd(() => mMprefix.ret(mMar.x[0])\n      .bnd(next, \'CA#$42\', mMZ10)       // Incoming dice roll.\n      .bnd(next, \'CB#$42\', mMZ11)\n      .bnd(next, \'CC#$42\', mMZ12)\n      .bnd(next, \'CD#$42\', mMZ13)\n      .bnd(next, \'CE#$42\', mMZ14)\n      .bnd(next, \'EE#$42\', mMZ15)))));\n    mMmain.bnd(() =>\n    (mMZ10.bnd(() => mM1\n      .ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]])\n      .bnd(mM$1.ret)                   // mM$1.history gets mM1.x\n      .bnd(displayInline,\'0\')\n      .bnd(displayInline,\'1\')\n      .bnd(displayInline,\'2\')\n      .bnd(displayInline,\'3\')))),\n    (mMZ11.bnd(() => mMscbd\n      .ret(mMscores.x)\n      .bnd(updateScoreboard)\n      .bnd(() => mM3.ret([])\n      .bnd(() => mM8.ret(0) )))),\n    (mMZ12.bnd(() => mM6\n      .ret( mMsender.x + \' successfully logged in.\'))),\n    (mMZ13.bnd(() => mMar\n      .bnd(splice2, 0, 3, mMar)\n      .bnd(reduce, (a,b) => a + ", " + b)\n      .bnd(() => mMmsg\n      .bnd(push, mMsender.x + \': \' + mMar.x, mMmsg)\n      .bnd(updateMessages)))),\n    (mMZ14.bnd(() => mMgoals2.ret(\'The winner is \' + mMname.x ))), \n    (mMZ15.bnd(() => mMgoals2.ret(\'A player named \' + \n        mMname.x + \'is currently logged in. Page will refresh in 4 seconds.\')\n      .bnd(refresh)))\n');
+var messages = (0, _motorcycleDom.h)('pre', '  const messages$ = (sources.WS).map(e => \n    mMar.ret(e.data.split(\',\'))\n    .bnd(array => mMscores.ret(array[3].split("<br>"))\n    .bnd(() => mMsender.ret(mMar.x[2])\n    .bnd(() => mMprefix.ret(mMar.x[0])\n      .bnd(next, \'CA#$42\', mMZ10)\n      .bnd(next, \'CB#$42\', mMZ11)\n      .bnd(next, \'CC#$42\', mMZ12)\n      .bnd(next, \'CD#$42\', mMZ13)\n      .bnd(next, \'CE#$42\', mMZ14)\n      .bnd(next, \'EE#$42\', mMZ15)))));\n    mMZ10.bnd(() => mM$1\n      .ret(mM1.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]]))\n      .bnd(() => mM$2.ret([]))\n      .bnd(displayInline,\'0\')\n      .bnd(displayInline,\'1\')\n      .bnd(displayInline,\'2\')\n      .bnd(displayInline,\'3\'));\n    mMZ11.bnd(() => mMscbd\n      .ret(mMscores.x)\n      .bnd(updateScoreboard)\n      .bnd(() => mM3.ret([])\n      .bnd(() => mM8.ret(0) )));\n    mMZ12.bnd(() => mM6\n      .ret( mMsender.x + \' successfully logged in.\'));\n    mMZ13.bnd(() => mMar\n      .bnd(splice, 0, 3, mMar)\n      .bnd(reduce, (a,b) => a + ", " + b)\n      .bnd(() => mMmsg\n      .bnd(push, mMsender.x + \': \' + mMar.x, mMmsg)\n      .bnd(updateMessages)));\n    mMZ14.bnd(() => mMgoals2.ret(\'The winner is \' + mMname.x ));\n    mMZ15.bnd(() => mMgoals2.ret(\'A player named \' + \n        mMname.x + \'is currently logged in. Page will refresh in 4 seconds.\')\n      .bnd(refresh));\n');
 
 var next = (0, _motorcycleDom.h)('pre', '  var next = function next(x, y, mon2) {\n    if (x === y) {\n      mon2.release();\n    }\n    return ret(x);  // An anonymous monad with the value of the calling monad.\n  } ');
 
-var Monad$ = (0, _motorcycleDom.h)('pre', '  var Monad$ = function Monad$(z, g, h) {\n  var _this = this;\n  \n  this.subject = sub;\n  this.observer = this.subject.observer;\n  this.stream = this.subject.stream;\n  this.history = h;\n\n  this.x = z;\n  if (arguments.length === 1) {\n    this.id = \'anonymous\';\n  } else {\n    this.id = g;\n  }\n\n  this.bnd = function (func) {\n    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {\n      args[_key - 1] = arguments[_key];\n    }\n\n    return func.apply(undefined, [_this.x].concat(args));\n  };\n\n  this.ret = function (a) {\n    window[_this.id] = new Monad$(a,_this.id, _this.history);\n    _this.history.push(a);\n    observer.next(a);\n    return window[_this.id];\n  };\n};\n  ');
+var Monad$ = (0, _motorcycleDom.h)('pre', '  var Monad$ = function Monad$(z, g) {\n    var _this = this;\n    \n    this.subject = sub();\n    this.observer = this.subject.observer;\n    this.stream = this.subject.stream;\n    this.x = z;\n  \n    if (arguments.length === 1) {\n      this.id = \'anonymous\';\n    } else {\n      this.id = g;\n    }\n  \n    this.bnd = function (func) {\n      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {\n        args[_key - 1] = arguments[_key];\n      }\n  \n      return func.apply(undefined, [_this.x].concat(args));\n    };\n  \n    this.ret = function (a) {\n      window[_this.id] = new Monad$(a,_this.id);\n      _this.observer.next(a);\n      return window[_this.id];\n    };\n  };\n  ');
 
-var updateCalc = (0, _motorcycleDom.h)('pre', '  function updateCalc() { \n    mMZ2.bnd(() => mM13\n                 .bnd(score, 1)\n                 .bnd(next2, (mM13.x % 5 === 0), mMZ5) \n                 .bnd(newRoll));\n    mMZ4.bnd(() => mM13\n                 .bnd(score, 3)\n                 .bnd(next2, (mM13.x % 5 === 0), mMZ5) \n                 .bnd(newRoll));\n        mMZ5.bnd(() => mM13\n                 .bnd(score,5)\n                 .bnd(v => mM13.ret(v)\n                 .bnd(next, 25, mMZ6)));\n            mMZ6.bnd(() => mM9.bnd(score2) \n                 .bnd(next,3,mMZ7));\n               mMZ7.bnd(() => mM13.bnd(winner));               \n    mM3.bnd(x => mM7\n                 .ret(calc(x[0], mM8.x, x[1]))\n                 .bnd(next, 18, mMZ4)  \n                 .bnd(next, 20, mMZ2) // Releases mMZ2 (above)\n                 .bnd(() => mM1.bnd(push, mM7.x, mM1)\n                 .bnd(mM$1.ret)      // mM$1.history gets mM1.x\n                 .bnd(displayOff, ((mM1.x.length)+\'\'))\n                 .bnd(() => mM3\n                 .ret([])\n                 .bnd(() => mM4\n                 .ret(0).bnd(mM8.ret).bnd(cleanup)\n                 ))))\n  }\n  ');
+var updateCalc = (0, _motorcycleDom.h)('pre', '  function updateCalc(mM1) { \n    mMZ2.bnd(() => mM13\n                 .bnd(score, 1)\n                 .bnd(next2, (mM13.x % 5 === 0), mMZ5) \n                 .bnd(newRoll));\n    mMZ4.bnd(() => mM13\n                 .bnd(score, 3)\n                 .bnd(next2, (mM13.x % 5 === 0), mMZ5) \n                 .bnd(newRoll));\n        mMZ5.bnd(() => mM13\n                     .bnd(score,5)\n                     .bnd(v => mM13.ret(v)\n                     .bnd(next, 25, mMZ6)));\n            mMZ6.bnd(() => mM9.bnd(score2) \n                         .bnd(next,3,mMZ7));\n               mMZ7.bnd(() => mM13.bnd(winner));               \n    mM3.bnd(x => mM7\n                 .ret(calc(x[0], mM8.x, x[1]))\n                 .bnd(next, 18, mMZ4)  \n                 .bnd(next, 20, mMZ2) // Releases mMZ2 (above)\n                 .bnd(() => mM$1.ret(mM1.bnd(push, mM7.x, mM1))\n                 .bnd(() => mM3\n                 .ret([])\n                 .bnd(() => mM4\n                 .ret(0).bnd(mM8.ret)\n                 .bnd(cleanup)\n                 ))))\n  }\n  ');
 
-var stream = (0, _motorcycleDom.h)('pre', '  const mM$1Action$ = mM$1.stream.map(v => {\n    mMindex2.ret(mM$1.history.length - 1);\n    console.log(\'From mM$1.stream: \', v);\n  })\n  ');
+var stream = (0, _motorcycleDom.h)('pre', '  const mM$1Action$ = mM$1.stream.map(v => {\n    let ar = [];\n    if (Array.isArray(v.x)) {\n      let keys = Object.keys(v.x);\n      for(let k in keys) {\n        ar[k] = v.x[k];\n      }\n    }\n    mMhistorymM1.bnd(spliceAdd, mMindex2.x, ar, mMhistorymM1);\n    document.getElementById(\'0\').innerHTML = (mMhistorymM1.x[mMindex2.x])[0]; \n    document.getElementById(\'1\').innerHTML = (mMhistorymM1.x[mMindex2.x])[1]; \n    document.getElementById(\'2\').innerHTML = (mMhistorymM1.x[mMindex2.x])[2]; \n    document.getElementById(\'3\').innerHTML = (mMhistorymM1.x[mMindex2.x])[3]; \n    show(4000);\n  })\n\n  const mM$3Action$ = mM$3.stream.map(v => {\n    document.getElementById(\'0\').innerHTML = (mMhistorymM1.x[mMindex2.x])[0]; \n    document.getElementById(\'1\').innerHTML = (mMhistorymM1.x[mMindex2.x])[1]; \n    document.getElementById(\'2\').innerHTML = (mMhistorymM1.x[mMindex2.x])[2]; \n    document.getElementById(\'3\').innerHTML = (mMhistorymM1.x[mMindex2.x])[3]; \n    show2(7);\n  })\n  ');
 
-var product3 = (0, _motorcycleDom.h)('pre', '  \n  ');
+var arrayFuncs = (0, _motorcycleDom.h)('pre', '  var push = function push(y,v,mon) {\n      if (Array.isArray(y)) {\n        let ar = [];\n        let keys = Object.keys(y);\n        for (let k in keys) {ar[k] = y[k]};\n        ar.push(v);\n        return mon.ret(ar);  \n      }\n      console.log(\'The value provided to push is not an array\');\n      return ret(y);\n    };\n    \n    var spliceRemove = function splice(x, j, mon) {\n      if (Array.isArray(x)) {\n        let ar = [];\n        let keys = Object.keys(x);\n        for (let k in keys) {ar[k] = x[k]};\n        ar.splice(j,1);\n        return mon.ret(ar);  \n      }\n      console.log(\'The value provided to spliceRemove is not an array\');\n      return ret(x);\n    };\n    \n    var spliceAdd = function splice(x, index, value, mon) {\n      if (Array.isArray(x)) {\n        let ar = [];\n        let keys = Object.keys(x);\n        for (let k in keys) {ar[k] = x[k]};\n        ar.splice(index, 0, value);\n        return mon.ret(ar);  \n      }\n      console.log(\'The value provided to spliceAdd is not an array\');\n      return ret(x);\n    };\n    \n    var splice = function splice(x, start, end, mon) {\n      if (Array.isArray(x)) {\n        let ar = [];\n        let keys = Object.keys(x);\n        for (let k in keys) {ar[k] = x[k]};\n        ar.splice(start, end);\n        return mon.ret(ar);  \n      }\n      console.log(\'The value provided to spliceAdd is not an array\');\n      return ret(x);\n    };\n  ');
 
 var product4 = (0, _motorcycleDom.h)('pre', '  \n  ');
 
@@ -8835,7 +8835,7 @@ var p5 = (0, _motorcycleDom.h)('pre', '  \n  ');
 
 var p6 = (0, _motorcycleDom.h)('pre', '  \n  ');
 
-exports['default'] = { monads: monads, fib: fib, driver: driver, messages: messages, next: next, Monad$: Monad$, updateCalc: updateCalc, stream: stream };
+exports['default'] = { monads: monads, fib: fib, driver: driver, messages: messages, next: next, Monad$: Monad$, updateCalc: updateCalc, stream: stream, arrayFuncs: arrayFuncs };
 module.exports = exports['default'];
 
 },{"@motorcycle/dom":73}],183:[function(require,module,exports){
@@ -8893,8 +8893,9 @@ var Monad$ = function Monad$(z, g) {
   };
 };
 
-var mM$1 = new Monad$([], 'mM$1', []);
-var mM$2 = new Monad$([], 'mM$2', []);
+var mM$1 = new Monad$([], 'mM$1');
+var mM$2 = new Monad$([], 'mM$2');
+var mM$3 = new Monad$([], 'mM$3');
 
 var tempStyle = { display: 'inline' };
 var tempStyle2 = { display: 'none' };
@@ -8946,7 +8947,7 @@ function main(sources) {
     });
   });
   mMZ10.bnd(function () {
-    return mM1.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]]).bnd(mM$1.ret).bnd(function () {
+    return mM$1.ret(mM1.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]])).bnd(function () {
       return mM$2.ret([]);
     }).bnd(displayInline, '0').bnd(displayInline, '1').bnd(displayInline, '2').bnd(displayInline, '3');
   });
@@ -8961,7 +8962,7 @@ function main(sources) {
     return mM6.ret(mMsender.x + ' successfully logged in.');
   });
   mMZ13.bnd(function () {
-    return mMar.bnd(splice2, 0, 3, mMar).bnd(reduce, function (a, b) {
+    return mMar.bnd(splice, 0, 3, mMar).bnd(reduce, function (a, b) {
       return a + ", " + b;
     }).bnd(function () {
       return mMmsg.bnd(push, mMsender.x + ': ' + mMar.x, mMmsg).bnd(updateMessages);
@@ -9023,17 +9024,15 @@ function main(sources) {
 
   var numClickAction$ = numClick$.map(function (e) {
     console.log(e);
-    if (mM3.x.length < 3) {
-      mM1.bnd(splice, e.target.id, mM1);
-      mM3.bnd(push, e.target.textContent, mM3).bnd(cleanup);
+    if (mM3.x.length < 2) {
+      console.log('*********mM3 ', mM3);
+      mM3.bnd(push, e.target.innerHTML, mM3);
+      ret(mMhistorymM1.x[mMindex2.x]).bnd(spliceRemove, e.target.id, mM1).bnd(function (v) {
+        e.target.innerHTML = '';mM$1.ret(ret(v));
+      });
       if (mM3.x.length === 2 && mM8.x !== 0) {
-        updateCalc();
-        return;
-      } else if (mM3.length === 2 && mM8.x === 0) {
-        return;
+        updateCalc(mM1);
       }
-      mM1.bnd(mM1.ret);
-      mM$1.ret(mM1.x);
     };
   }).startWith(mM1.x[0]);
 
@@ -9042,7 +9041,7 @@ function main(sources) {
   var opClickAction$ = opClick$.map(function (e) {
     mM8.ret(e.target.textContent);
     if (mM3.x.length === 2) {
-      updateCalc();
+      updateCalc(mM1);
     }
   });
 
@@ -9073,38 +9072,43 @@ function main(sources) {
   var backClick$ = sources.DOM.select('#back2').events('click');
 
   var forwardClickAction$ = forwardClick$.map(function () {
-    console.log('Entered forward');
     if (mMindex2.x < mMhistorymM1.x.length - 1) {
-      console.log('Got past the test');
-      mMindex2.bnd(add, 1).bnd(mMindex2.ret).bnd(function () {
-        return mM1.ret(mMhistorymM1.x[mMindex2.x]);
-      }).bnd(mM1.ret).bnd(function () {
-        return show();
+      inc(mMindex2.x, mMindex2).bnd(function () {
+        return mM$3.ret('Hello');
       });
     }
   });
 
   var backClickAction$ = backClick$.map(function () {
     if (mMindex2.x > 0) {
-      mMindex2.bnd(add, -1).bnd(mMindex2.ret).bnd(function () {
-        return mM1.ret(mMhistorymM1.x[mMindex2.x]);
-      }).bnd(function () {
-        return show();
+      dec(mMindex2.x, mMindex2).bnd(function () {
+        return mM$3.ret('You bet!');
       });
     }
   });
 
   var mM$1Action$ = mM$1.stream.map(function (v) {
     var ar = [];
-    if (Array.isArray(v)) {
-      var keys = Object.keys(v);
+    if (Array.isArray(v.x)) {
+      var keys = Object.keys(v.x);
       for (var k in keys) {
-        ar[k] = v[k];
+        ar[k] = v.x[k];
       }
-      mMhistorymM1.bnd(push, ar, mMhistorymM1);
-      mMindex2.ret(mMhistorymM1.x.length - 1);
-      console.log('From mM$1.stream: ', v);
     }
+    mMhistorymM1.bnd(spliceAdd, mMindex2.x, ar, mMhistorymM1);
+    document.getElementById('0').innerHTML = mMhistorymM1.x[mMindex2.x][0];
+    document.getElementById('1').innerHTML = mMhistorymM1.x[mMindex2.x][1];
+    document.getElementById('2').innerHTML = mMhistorymM1.x[mMindex2.x][2];
+    document.getElementById('3').innerHTML = mMhistorymM1.x[mMindex2.x][3];
+    show(4000);
+  });
+
+  var mM$3Action$ = mM$3.stream.map(function (v) {
+    document.getElementById('0').innerHTML = mMhistorymM1.x[mMindex2.x][0];
+    document.getElementById('1').innerHTML = mMhistorymM1.x[mMindex2.x][1];
+    document.getElementById('2').innerHTML = mMhistorymM1.x[mMindex2.x][2];
+    document.getElementById('3').innerHTML = mMhistorymM1.x[mMindex2.x][3];
+    show2(7);
   });
 
   var mM$2Action$ = mM$2.stream.map(function (v) {
@@ -9112,20 +9116,27 @@ function main(sources) {
     console.log('From mM$2.stream: ', v);
   });
 
-  var calcStream$ = (0, _most.merge)(mM$2Action$, mM$1Action$, backClickAction$, forwardClickAction$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
+  var calcStream$ = (0, _most.merge)(mM$3Action$, mM$2Action$, mM$1Action$, backClickAction$, forwardClickAction$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
 
   return {
     DOM: calcStream$.map(function () {
-      return (0, _motorcycleDom.h)('div.content', [(0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('h2', 'JS-monads-part5 - Specialized Monads'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span.tao', ' In this installment of the JS-monads series,'), (0, _motorcycleDom.h)('span', 'I demonstrate the tools I use for front-end web application development. The server is built on top of the '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/yesodweb/wai/tree/master/wai-websockets' } }, 'Wai Websockets server'), (0, _motorcycleDom.h)('span', ' It is very easy to modify whenever the need arises because the Haskell Programming Language provides list comprehension and pattern matching and, when used as intended, is not likely to surprise you with unintended side effects. The front end is a '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/motorcyclejs' } }, 'Motorcyclejs'), (0, _motorcycleDom.h)('span', ' application. Motorcyclejs is Cycle.js, only using '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/paldepind/snabbdom' } }, 'Snabbdom'), (0, _motorcycleDom.h)('span', ' instead of "virtual-dom", and '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/cujojs/most' } }, 'Most'), (0, _motorcycleDom.h)('span', ' instead of "RxJS".'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span.tao', 'The rules and the code for the '), (0, _motorcycleDom.h)('span', ' game used in this demonstration are discussed in earlier installments of this series, which can be found at  '), (0, _motorcycleDom.h)('a', { props: { href: 'http://schalk.net' } }, 'http://schalk.net'), (0, _motorcycleDom.h)('span', ' The code repository is at '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/dschalk/JS-monads-part5' } }, 'Code.'), (0, _motorcycleDom.h)('span', ' Here are the basic rules:'), (0, _motorcycleDom.h)('p', 'RULES: If clicking two numbers and an operator (in any order) results in 20 or 18, the score increases by 1 or 3, respectively. If the score becomes 0 mod 5, 5 points are added. A score of 25 results in one goal. That can only be achieved by arriving at a score of 20, which jumps the score to 25. Directly computing 25 results in a score of 30, and no goal. Each time ROLL is clicked, one point is deducted. Three goals wins the game. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('p', mM25.x), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#0.num', mM1.x[0] + ''), (0, _motorcycleDom.h)('button#1.num', mM1.x[1] + ''), (0, _motorcycleDom.h)('button#2.num', mM1.x[2] + ''), (0, _motorcycleDom.h)('button#3.num', mM1.x[3] + ''), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#4.op', 'add'), (0, _motorcycleDom.h)('button#5.op', 'subtract'), (0, _motorcycleDom.h)('button#5.op', 'mult'), (0, _motorcycleDom.h)('button#5.op', 'div'), (0, _motorcycleDom.h)('button#5.op', 'concat'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button.roll', { style: tempStyle2 }, 'ROLL'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#back2', { style: tempStyle2 }, 'BACK'), (0, _motorcycleDom.h)('button#forward2', { style: tempStyle2 }, 'FORWARD'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('div.winner', mMgoals2.x + ''), (0, _motorcycleDom.h)('p.login', { style: tempStyle }, 'Please enter some name.'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input.login', { style: tempStyle }), (0, _motorcycleDom.h)('p', mM6.x.toString()), (0, _motorcycleDom.h)('p.group', { style: tempStyle2 }, 'Change group: '), (0, _motorcycleDom.h)('input.group', { style: tempStyle2 }), (0, _motorcycleDom.h)('div.messages', [(0, _motorcycleDom.h)('p', { style: tempStyle2 }, 'Enter messages here: '), (0, _motorcycleDom.h)('input.inputMessage', { style: tempStyle2 }), (0, _motorcycleDom.h)('div', mMmessages.x)]), (0, _motorcycleDom.h)('p.group2', [(0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span', 'Group: ' + mMgroup.x), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span', 'Goals: ' + mMgoals.x), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span', 'Name: ' + mMname.x), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('div.scoreDisplay', [(0, _motorcycleDom.h)('span', 'player[score][goals]'), (0, _motorcycleDom.h)('div', mMscoreboard.x)])]), (0, _motorcycleDom.h)('span.tao', 'People in the same group, other than solo, share text messages and dice rolls. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('h2', 'Streams and Time Travel'), (0, _motorcycleDom.h)('p', 'The monads presented in this series are simple and flexible. The reference at the bottom of this page presents the definitions of the two basic monads. There isn\'t much to them, but they are great for streamlining and organizing code. If you want error handling, enforcement of type rules, or something specific to your own application, just modify the basic Monad constructor, give it a new name, and start creating specialized monad instances. Monad$ as a good example. It is defined as follow: '), _codeJs2['default'].Monad$, (0, _motorcycleDom.h)('p', 'I created an instance, which I named "mM$1", and I use its "history" attribute to keep a chronological record of all dice rolls and computations in the game for use with the BACK and FORWARD history-traversal buttons. I mM$1\'s "stream" attribute to display each dice roll and computation result in the browser log as they occur. The monad mM1 maintains the array of numbers which populate the game display. Normally, this array results from dice rolls or computations, but the BACK and FORWARD buttons cause the generation of new instances of mM1 in which mM1.x is the value of prior or subsequent dice rolls and computations held in mM$1.history. You can travel backwards and resume play starting with numbers that were previously displayed and used in a different way. This would create a paradox in a science fiction story, but it causes no problems here. '), (0, _motorcycleDom.h)('p', 'I created the same history traversal functionality in JS-monads-part4, but in a more complex, harder-to-reason-about manner. In this demonstration, the mM$1.history array is traversed with mMindex2. So a new Monad instance named "mM1" can be created with the selected value of mM$1.history by: '), (0, _motorcycleDom.h)('pre.indent', 'mM1.ret(mM$1.history[mMindex.x])'), (0, _motorcycleDom.h)('p', ' Traversing the history of the game boils down to increasing and decreasing mMindex.x, then providing mM$1.history[mMindex.x] to mM1. mM$1.stream keeps mMindex current as game play progresses. '), (0, _motorcycleDom.h)('p', 'A developer not familiar with Cycle.js or Motorcycle.js, and new to the idea of object methods taking functions as arguments, would need some time to study Motorcycle.js and functional programming. After that, some experimentation with code such as '), (0, _motorcycleDom.h)('pre.indent', 'mM1.x === mM1.bnd(v => mM1.ret(v).bnd(mM1.ret)).x'), (0, _motorcycleDom.h)('p', ' but '), (0, _motorcycleDom.h)('pre.indent', 'mM1 !== mM1.bnd(v => mM1.ret(v).bnd(mM1.ret))'), (0, _motorcycleDom.h)('p', ' would get them up and running. Unfortunately, new Javascript front-end web developers seem to progress from coding JQuery-based web pages to cumbersome, opinionated frameworks that don\'t foster creativity, innovation, or fun. For anyone reading this who is somewhat bewildered, the above example might seem anomolous, but it does give the expected results. That is because the "ret" method returns a new monad with the calling monad\'s name and whatever value is provided to ret. When a monad calls ret on its own value, for instance with "mM1.bnd(mM1.ret)" or "mM1.ret(mM1.x)", the returned monad is nearly indistinguishable from the calling monad, but it resides in a different location in memory, and that causes mM1 === mM1.bnd(mM1.ret) to return false. It is possible to save old versions of mM1 by assigning them to variables or placing them in an array, confident that they will remain unchanged unless extraordinary measures are taken to locate and mutate them. I use the simple monads to hold values and use only the "ret" method (never mM1.x = newValuer) to update them. My data is, therefore, never mutated. '), (0, _motorcycleDom.h)('p', 'SUGGESTION: If pressing F12 takes you to the browser console, you can go there and see the output from mM$1.stream. If you type "mM$1.history", you should see an array containing arrays holding the same numbers that are displayed in the browser console. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('h2', 'A Closer Look'), (0, _motorcycleDom.h)('p', 'The function responsible for updating scores is shown below. It gets called whenever two numbers and an operator have been selected, in any order.'), _codeJs2['default'].updateCalc, (0, _motorcycleDom.h)('p', ' Toward the end, before the final comment, ".bnd(mM$1.ret)" is one of two places where mM$1 places the array mM1.x in mM$1.history and sends it to the browser console. The other time this happens is after a dice roll, caused either by clicking ROLL or automatically when a player scores. The mM$1.history update and the browser update occur when a websockets message prefixed by "CA#$42" arrives from the server. Messages with that prefix contain four pseudo-random numbers representing a roll of the dice. The code is shown below: '), _codeJs2['default'].messages, (0, _motorcycleDom.h)('p', 'mM$1\'s stream updates the browser console and increases the value of mMindex as follows: '), _codeJs2['default'].stream, (0, _motorcycleDom.h)('span.tao', 'When a player presses BACK for the first'), (0, _motorcycleDom.h)('span', ' time, the cursor is at mMindex.x (mM$1.history.length - 1), making mM$1.history[mMindex.x - 1] the most recent prior value of mM1. mM$1Action$ gets merged into the stream that feeds data to the virtual DOM, setting the stage for the next patch of the DOM. The client/src/main.js file at '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/dschalk/JS-monads-part5' } }, 'JS-monads-part5'), (0, _motorcycleDom.h)('span', ' shows the details.  '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('h2', 'REFERENCE'), (0, _motorcycleDom.h)('p', 'This reference section is not comprehensive. For the reader\'s convenience, here are the basic monad constructors: '), _codeJs2['default'].monads, (0, _motorcycleDom.h)('p', 'As is apparent from the definition of Monad, when some monad "m" uses its "bnd" method on some function "f(x,v)", the first argument is the value of m (which is m.x). The return value of m.bnd(f,v) is f(m.x, v). Here is a function which takes two arguments: '), _codeJs2['default'].fib, (0, _motorcycleDom.h)('p', 'If you enter some number "n" in the box below, mMfib, whose initial value is [0,1], uses its bnd method as follows:'), (0, _motorcycleDom.h)('p', { style: { color: '#FF0000' } }, 'mMfib.bnd(fib,n)'), (0, _motorcycleDom.h)('p', 'The result will be displayed underneath the input box. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input#code'), (0, _motorcycleDom.h)('p#code2', mM19.x), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('p', ' The message-handling code is shown above. Here is the websockets driver: '), _codeJs2['default'].driver, (0, _motorcycleDom.h)('p', '"create" comes from the most library. It creates a blank stream; and with "add", it becomes a stream of incoming messages. '), (0, _motorcycleDom.h)('p', 'MonadIter instances have the "mMZ" prefix. Each instance has a "p" attribute which is a selector pointing to all of the code which comes after the call to its "bnd" method. Here is its definition of "next": '), _codeJs2['default'].next, (0, _motorcycleDom.h)('p', '"next" provides a simple but reliable way to assure that the messages$ stream and the updateCalc function respond appropriately to incoming data. The code using "next" is like a switch block, only more compact.  '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', ' . '), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p')]);
+      return (0, _motorcycleDom.h)('div.content', [(0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('h2', 'JS-monads-part5 - Specialized Monads'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span.tao', ' In this installment of the JS-monads series,'), (0, _motorcycleDom.h)('span', 'I demonstrate the tools I use for front-end web application development. The server is built on top of the '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/yesodweb/wai/tree/master/wai-websockets' } }, 'Wai Websockets server'), (0, _motorcycleDom.h)('span', ' It is very easy to modify whenever the need arises because the Haskell Programming Language provides list comprehension and pattern matching and, when used as intended, is not likely to surprise you with unintended side effects. The front end is a '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/motorcyclejs' } }, 'Motorcyclejs'), (0, _motorcycleDom.h)('span', ' application. Motorcyclejs is Cycle.js, only using '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/paldepind/snabbdom' } }, 'Snabbdom'), (0, _motorcycleDom.h)('span', ' instead of "virtual-dom", and '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/cujojs/most' } }, 'Most'), (0, _motorcycleDom.h)('span', ' instead of "RxJS".'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span.tao', 'The rules and the code for the '), (0, _motorcycleDom.h)('span', ' game used in this demonstration are discussed in earlier installments of this series, which can be found at  '), (0, _motorcycleDom.h)('a', { props: { href: 'http://schalk.net' } }, 'http://schalk.net'), (0, _motorcycleDom.h)('span', ' The code repository is at '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/dschalk/JS-monads-part5' } }, 'Code.'), (0, _motorcycleDom.h)('span', ' Here are the basic rules:'), (0, _motorcycleDom.h)('p', 'RULES: If clicking two numbers and an operator (in any order) results in 20 or 18, the score increases by 1 or 3, respectively. If the score becomes 0 mod 5, 5 points are added. A score of 25 results in one goal. That can only be achieved by arriving at a score of 20, which jumps the score to 25. Directly computing 25 results in a score of 30, and no goal. Each time ROLL is clicked, one point is deducted. Three goals wins the game. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#0.num'), (0, _motorcycleDom.h)('button#1.num'), (0, _motorcycleDom.h)('button#2.num'), (0, _motorcycleDom.h)('button#3.num'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#4.op', 'add'), (0, _motorcycleDom.h)('button#5.op', 'subtract'), (0, _motorcycleDom.h)('button#5.op', 'mult'), (0, _motorcycleDom.h)('button#5.op', 'div'), (0, _motorcycleDom.h)('button#5.op', 'concat'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button.roll', { style: tempStyle2 }, 'ROLL'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#back2', { style: tempStyle2 }, 'FORWARD'), (0, _motorcycleDom.h)('button#forward2', { style: tempStyle2 }, 'BACK'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('div.winner', mMgoals2.x + ''), (0, _motorcycleDom.h)('p.login', { style: tempStyle }, 'Please enter some name.'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input.login', { style: tempStyle }), (0, _motorcycleDom.h)('p', mM6.x.toString()), (0, _motorcycleDom.h)('p.group', { style: tempStyle2 }, 'Change group: '), (0, _motorcycleDom.h)('input.group', { style: tempStyle2 }), (0, _motorcycleDom.h)('div.messages', [(0, _motorcycleDom.h)('p', { style: tempStyle2 }, 'Enter messages here: '), (0, _motorcycleDom.h)('input.inputMessage', { style: tempStyle2 }), (0, _motorcycleDom.h)('div', mMmessages.x)]), (0, _motorcycleDom.h)('p.group2', [(0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span', 'Group: ' + mMgroup.x), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span', 'Goals: ' + mMgoals.x), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span', 'Name: ' + mMname.x), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('div.scoreDisplay', [(0, _motorcycleDom.h)('span', 'player[score][goals]'), (0, _motorcycleDom.h)('div', mMscoreboard.x)])]), (0, _motorcycleDom.h)('span.tao', 'People in the same group, other than solo, share text messages and dice rolls. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('h2', 'Streams and Time Travel'), (0, _motorcycleDom.h)('p', 'The monads presented in this series are simple and flexible. The reference at the bottom of this page presents the definitions of the two basic monads. There isn\'t much to them, but they are great for streamlining and organizing code. If you want error handling, enforcement of type rules, or something specific to your own application, just modify the basic Monad constructor, give it a new name, and start creating specialized monad instances. Monad$ as a good example. It is defined as follow: '), _codeJs2['default'].Monad$, (0, _motorcycleDom.h)('p', 'I created two instances, which I named "mM$1" and "mM$3". mM$1.stream is used for updating monads involved in game play. mM$3.stream prompts browser display updates when traveling back and forth through the history of game actions. The argument provided to mM$3.ret() does not matter, nor does the content of the stream that updates as a result of calling it. But the update triggers mM$3Action$ to update the displayed numbers during history traversal. You can travel backwards and resume play starting with numbers that were previously displayed. '), (0, _motorcycleDom.h)('p', ' Traversing the history of the game boils down to increasing and decreasing mMindex.x, element.innerHTML = mM$1.history[mMindex.x] updates the browser display '), (0, _motorcycleDom.h)('p', 'A developer not familiar with Cycle.js or Motorcycle.js, and new to the idea of object methods taking functions as arguments, would need some time to study Motorcycle.js and functional programming. After that, some experimentation with puzzles like '), (0, _motorcycleDom.h)('pre.indent', 'mM1.x === mM1.bnd(v => mM1.ret(v).bnd(mM1.ret)).x'), (0, _motorcycleDom.h)('p', ' but '), (0, _motorcycleDom.h)('pre.indent', 'mM1 !== mM1.bnd(v => mM1.ret(v).bnd(mM1.ret))'), (0, _motorcycleDom.h)('p', ' would get them up and running. Unfortunately, Javascript front-end web developers seem to progress from coding JQuery-based web pages to cumbersome, opinionated frameworks that don\'t foster creativity, innovation, or fun. For anyone reading this who is somewhat bewildered, the above example might seem anomolous, but it does give the expected results. That is because the "ret" method returns a new monad with the calling monad\'s name and whatever value is provided to ret. When a monad calls ret on its own value, for instance with "mM1.bnd(mM1.ret)" or "mM1.ret(mM1.x)", the returned monad is nearly indistinguishable from the calling monad, but it resides in a different location in memory, and that causes mM1 === mM1.bnd(mM1.ret) to return false. It is possible to save old versions of mM1 by assigning them to variables or placing them in an array, confident that they will remain unchanged unless extraordinary measures are taken to locate and mutate them. I use the simple monads to hold values and use only the "ret" method (never mM1.x = newValuer) to update them. History traversal in the game depends on this sort of immutability, where mM1.x might reference one value now and another value later, but only if "mM1" does not reference the same monad that it referenced before.  '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('h2', 'A Closer Look'), (0, _motorcycleDom.h)('p', 'The function responsible for updating scores is shown below. It gets called whenever two numbers and an operator have been selected, in any order.'), _codeJs2['default'].updateCalc, (0, _motorcycleDom.h)('p', ' Toward the end, before the final comment, ".bnd(mM$1.ret)" is one of two places where mM$1 places the array mM1.x in mM$1.history and sends it to the browser console. The other time this happens is after a dice roll, caused either by clicking ROLL or automatically when a player scores. The mM$1.history update and the browser update occur when a websockets message prefixed by "CA#$42" arrives from the server. Messages with that prefix contain four pseudo-random numbers representing a roll of the dice. The code is shown below: '), _codeJs2['default'].messages, (0, _motorcycleDom.h)('p', 'mM$1 and mM$3 update the browser display as follows: '), _codeJs2['default'].stream, (0, _motorcycleDom.h)('span.tao', 'When a player presses BACK for the first'), (0, _motorcycleDom.h)('span', ' time, the cursor is at mMindex.x (mM$1.history.length - 1), making mM$1.history[mMindex.x - 1] the most recent prior value of mM1. mM$1Action$ gets merged into the stream that feeds data to the virtual DOM, setting the stage for the next patch of the DOM. The client/src/main.js file at '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/dschalk/JS-monads-part5' } }, 'JS-monads-part5'), (0, _motorcycleDom.h)('span', ' shows the details.  '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('h2', 'REFERENCE'), (0, _motorcycleDom.h)('p', 'This reference section is not comprehensive. For the reader\'s convenience, here are the basic monad constructors: '), _codeJs2['default'].monads, (0, _motorcycleDom.h)('p', 'As is apparent from the definition of Monad, when some monad "m" uses its "bnd" method on some function "f(x,v)", the first argument is the value of m (which is m.x). The return value of m.bnd(f,v) is f(m.x, v). Here is a function which takes two arguments: '), _codeJs2['default'].fib, (0, _motorcycleDom.h)('p', 'If you enter some number "n" in the box below, mMfib, whose initial value is [0,1], uses its bnd method as follows:'), (0, _motorcycleDom.h)('p', { style: { color: '#FF0000' } }, 'mMfib.bnd(fib,n)'), (0, _motorcycleDom.h)('p', 'The result will be displayed underneath the input box. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input#code'), (0, _motorcycleDom.h)('p#code2', mM19.x), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('p', ' The message-handling code is shown above. Here is the websockets driver: '), _codeJs2['default'].driver, (0, _motorcycleDom.h)('p', 'MonadIter instances have the "mMZ" prefix. Each instance has a "p" attribute which is a selector pointing to all of the code which comes after the call to its "bnd" method. Here is its definition of "next": '), _codeJs2['default'].next, (0, _motorcycleDom.h)('p', '"next" provides a simple but reliable way to assure that the messages$ stream and the updateCalc function respond appropriately to incoming data. The code using "next" is like a switch block, only more compact.  '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', ' . '), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p')]);
     })
   };
 }
 
-var show = function show() {
+var show = function show(x) {
   var number0 = document.getElementById('0');
   var number1 = document.getElementById('1');
   var number2 = document.getElementById('2');
   var number3 = document.getElementById('3');
+
+  if (mM1.x.length === 0) {
+    number0.style.display = 'none';
+    number1.style.display = 'none';
+    number2.style.display = 'none';
+    number3.style.display = 'none';
+  }
 
   if (mM1.x.length === 1) {
     number0.style.display = 'inline';
@@ -9154,10 +9165,49 @@ var show = function show() {
     number2.style.display = 'inline';
     number3.style.display = 'inline';
   }
+  return ret(x);
 };
 
-function show2(x) {
-  mMsaveAr.bnd(unshift, [mM1.x[0], mM1.x[1], mM1.x[2], mM1.x[3]], mMsaveAr);
+var show2 = function show(x) {
+  var number0 = document.getElementById('0');
+  var number1 = document.getElementById('1');
+  var number2 = document.getElementById('2');
+  var number3 = document.getElementById('3');
+
+  if (mMhistorymM1.x[mMindex2.x].length === 0) {
+    number0.style.display = 'none';
+    number1.style.display = 'none';
+    number2.style.display = 'none';
+    number3.style.display = 'none';
+  }
+
+  if (mMhistorymM1.x[mMindex2.x].length === 1) {
+    number0.style.display = 'inline';
+    number1.style.display = 'none';
+    number2.style.display = 'none';
+    number3.style.display = 'none';
+  }
+
+  if (mMhistorymM1.x[mMindex2.x].length === 2) {
+    number0.style.display = 'inline';
+    number1.style.display = 'inline';
+    number2.style.display = 'none';
+    number3.style.display = 'none';
+  }
+
+  if (mMhistorymM1.x[mMindex2.x].length === 3) {
+    number0.style.display = 'inline';
+    number1.style.display = 'inline';
+    number2.style.display = 'inline';
+    number3.style.display = 'none';
+  }
+
+  if (mMhistorymM1.x[mMindex2.x].length === 4) {
+    number0.style.display = 'inline';
+    number1.style.display = 'inline';
+    number2.style.display = 'inline';
+    number3.style.display = 'inline';
+  }
   return ret(x);
 };
 
@@ -9177,7 +9227,7 @@ function cleanup(x) {
   return ret(x);
 };
 
-function updateCalc() {
+function updateCalc(mM1) {
   mMZ2.bnd(function () {
     return mM13.bnd(score, 1).bnd(next2, mM13.x % 5 === 0, mMZ5).bnd(newRoll);
   });
@@ -9198,7 +9248,7 @@ function updateCalc() {
   mM3.bnd(function (x) {
     return mM7.ret(calc(x[0], mM8.x, x[1])).bnd(next, 18, mMZ4).bnd(next, 20, mMZ2) // Releases mMZ2 (above)
     .bnd(function () {
-      return mM1.bnd(push, mM7.x, mM1).bnd(mM$1.ret).bnd(displayOff, mM1.x.length + '').bnd(function () {
+      return mM$1.ret(mM1.bnd(push, mM7.x, mM1)).bnd(function () {
         return mM3.ret([]).bnd(function () {
           return mM4.ret(0).bnd(mM8.ret).bnd(cleanup);
         });

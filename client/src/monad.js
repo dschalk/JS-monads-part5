@@ -186,7 +186,7 @@ var mMindex2 = new Monad(0, 'mMindex2');
 var mMcount = new Monad(0, 'mMcount');
 var mMcount2 = new Monad(0, 'mMcount2');
 var mMhistory = new Monad([], 'mMhistory');
-var mMhistorymM1 = new Monad([], 'mMhistorymM1');
+var mMhistorymM1 = new Monad([[0,0,0,0]], 'mMhistorymM1');
 var mMhistorymM3 = new Monad([], 'mMhistorymM3');
 var mMtemp = new Monad('temp', 'mMtemp');
 var mMte = new Monad(0, 'mMte');
@@ -251,6 +251,7 @@ var toNums = function toNums(x) {
 };
 
 var calc = function calc(a,op,b) { 
+  console.log('From calc. a, op, b ', a, op, b)
   var result;
   switch (op) {
       case "add": result = (parseFloat(a) + parseFloat(b));
@@ -313,41 +314,59 @@ var clean = function clean(x, mon) {
 
 var push = function push(y,v,mon) {
   if (Array.isArray(y)) {
-    let mMtemp = ret(y);
-    mMtemp.ret(y);
-    mMtemp.x.push(v)
-    return mon.ret(mMtemp.x.filter(v => (v !== "")));
+    let ar = [];
+    let keys = Object.keys(y);
+    for (let k in keys) {ar[k] = y[k]};
+    ar.push(v);
+    return mon.ret(ar);  
+    // return mon.ret(mMtemp.x.filter(v => (v !== "" && v !== undefined || v !== 'undefined')));
   }
   console.log('The value provided to push is not an array');
   return ret(y);
 };
 
-var splice = function splice(x, j, mon) {
+var spliceRemove = function splice(x, j, mon) {
   if (Array.isArray(x)) {
-    let mMtemp = ret(x);
-    mMtemp.x.splice(j,1);
-    return mon.ret(mMtemp.x);
+    let ar = [];
+    let keys = Object.keys(x);
+    for (let k in keys) {ar[k] = x[k]};
+    ar.splice(j,1);
+    return mon.ret(ar);  
   }
-  console.log('The value provided to push is not an array');
+  console.log('The value provided to spliceRemove is not an array');
   return ret(x);
 };
 
-var spliceBackup = function splice(x, j, k, mon) {
+var spliceAdd = function splice(x, index, value, mon) {
   if (Array.isArray(x)) {
-    return mon.ret(ret(x).bnd(clean, mon).x.splice(j, 0, k));
+    let ar = [];
+    let keys = Object.keys(x);
+    for (let k in keys) {ar[k] = x[k]};
+    ar.splice(index, 0, value);
+    return mon.ret(ar);  
   }
-  console.log('The value provided to splice was not an array');
-  return mon.ret(x);
+  console.log('The value provided to spliceAdd is not an array');
+  return ret(x);
+};
+
+var splice = function splice(x, start, end, mon) {
+  if (Array.isArray(x)) {
+    let ar = [];
+    let keys = Object.keys(x);
+    for (let k in keys) {ar[k] = x[k]};
+    ar.splice(start, end);
+    return mon.ret(ar);  
+  }
+  console.log('The value provided to spliceAdd is not an array');
+  return ret(x);
+};
+
+var inc = function inc(x, mon) {
+  return mon.ret(x + 1);
 }
 
-var splice2 = function splice(x, j, k, mon) {
-  if (Array.isArray(x)) {
-    let mMtemp = ret(x);
-    mMtemp.x.splice(j,k);
-    return mon.ret(mMtemp.bnd(clean, mon).x);
-  }
-  console.log('The value provided to splice was not an array');
-  return mon.ret(x);
+var dec = function inc(x, mon) {
+  return mon.ret(x - 1);
 }
 
 var filter = function filter(x, condition) {

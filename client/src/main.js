@@ -40,8 +40,9 @@ var Monad$ = function Monad$(z, g) {
   };
 };
 
-var mM$1 = new Monad$([], 'mM$1', []);
-var mM$2 = new Monad$([], 'mM$2', []);
+var mM$1 = new Monad$([], 'mM$1');
+var mM$2 = new Monad$([], 'mM$2');
+var mM$3 = new Monad$([], 'mM$3');
 
 var tempStyle = {display: 'inline'}
 var tempStyle2 = {display: 'none'}
@@ -92,8 +93,8 @@ function main(sources) {
       .bnd(next, 'CD#$42', mMZ13)
       .bnd(next, 'CE#$42', mMZ14)
       .bnd(next, 'EE#$42', mMZ15)))));
-    mMZ10.bnd(() => mM1
-      .ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]]).bnd(mM$1.ret)
+    mMZ10.bnd(() => mM$1
+      .ret(mM1.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]]))
       .bnd(() => mM$2.ret([]))
       .bnd(displayInline,'0')
       .bnd(displayInline,'1')
@@ -107,7 +108,7 @@ function main(sources) {
     mMZ12.bnd(() => mM6
       .ret( mMsender.x + ' successfully logged in.'));
     mMZ13.bnd(() => mMar
-      .bnd(splice2, 0, 3, mMar)
+      .bnd(splice, 0, 3, mMar)
       .bnd(reduce, (a,b) => a + ", " + b)
       .bnd(() => mMmsg
       .bnd(push, mMsender.x + ': ' + mMar.x, mMmsg)
@@ -173,20 +174,14 @@ function main(sources) {
      
   const numClickAction$ = numClick$.map(e => {
     console.log(e);
-    if (mM3.x.length < 3) {
-      mM1.bnd(splice, e.target.id, mM1)
-      mM3
-      .bnd(push, e.target.textContent, mM3)
-      .bnd(cleanup) 
+    if (mM3.x.length < 2) {
+      console.log('*********mM3 ', mM3);
+      mM3.bnd(push, e.target.innerHTML, mM3)
+      ret(mMhistorymM1.x[mMindex2.x]).bnd(spliceRemove, e.target.id, mM1)
+      .bnd(v => {e.target.innerHTML = ''; mM$1.ret(ret(v))})
       if (mM3.x.length === 2 && mM8.x !== 0) {
-        updateCalc();
-        return;
+        updateCalc(mM1);
       }
-      else if (mM3.length === 2 && mM8.x === 0) {
-        return;
-      }
-      mM1.bnd(mM1.ret)
-      mM$1.ret(mM1.x);
     };
   }).startWith(mM1.x[0]);
 
@@ -196,7 +191,7 @@ function main(sources) {
   const opClickAction$ = opClick$.map(e => {
     mM8.ret(e.target.textContent);
     if (mM3.x.length === 2) {
-      updateCalc();
+      updateCalc(mM1);
     }
   })
 
@@ -231,38 +226,41 @@ function main(sources) {
     .select('#back2').events('click');
 
   const forwardClickAction$ = forwardClick$.map(() => {
-    console.log('Entered forward');
     if (mMindex2.x < (mMhistorymM1.x.length - 1)) {
-      console.log('Got past the test');
-      mMindex2.bnd(add,1)
-      .bnd(mMindex2.ret)
-      .bnd(() => mM1
-      .ret(mMhistorymM1.x[mMindex2.x])).bnd(mM1.ret)
-      .bnd(() => show());
+      inc(mMindex2.x, mMindex2)
+      .bnd(() => mM$3.ret('Hello'))
     }
   });
 
   const backClickAction$ = backClick$.map(() => {
     if (mMindex2.x > 0) {
-      mMindex2.bnd(add, -1)
-      .bnd(mMindex2.ret)
-      .bnd(() => mM1
-      .ret(mMhistorymM1.x[mMindex2.x]))
-      .bnd(() => show());
+      dec(mMindex2.x, mMindex2)
+      .bnd(() => mM$3.ret('You bet!'))
     }
   });
 
   const mM$1Action$ = mM$1.stream.map(v => {
     let ar = [];
-    if (Array.isArray(v)) {
-      let keys = Object.keys(v);
+    if (Array.isArray(v.x)) {
+      let keys = Object.keys(v.x);
       for(let k in keys) {
-        ar[k] = v[k];
+        ar[k] = v.x[k];
       }
-    mMhistorymM1.bnd(push, ar, mMhistorymM1);
-    mMindex2.ret(mMhistorymM1.x.length - 1);
-    console.log('From mM$1.stream: ', v);
     }
+    mMhistorymM1.bnd(spliceAdd, mMindex2.x, ar, mMhistorymM1);
+    document.getElementById('0').innerHTML = (mMhistorymM1.x[mMindex2.x])[0]; 
+    document.getElementById('1').innerHTML = (mMhistorymM1.x[mMindex2.x])[1]; 
+    document.getElementById('2').innerHTML = (mMhistorymM1.x[mMindex2.x])[2]; 
+    document.getElementById('3').innerHTML = (mMhistorymM1.x[mMindex2.x])[3]; 
+    show(4000);
+  })
+
+  const mM$3Action$ = mM$3.stream.map(v => {
+    document.getElementById('0').innerHTML = (mMhistorymM1.x[mMindex2.x])[0]; 
+    document.getElementById('1').innerHTML = (mMhistorymM1.x[mMindex2.x])[1]; 
+    document.getElementById('2').innerHTML = (mMhistorymM1.x[mMindex2.x])[2]; 
+    document.getElementById('3').innerHTML = (mMhistorymM1.x[mMindex2.x])[3]; 
+    show2(7);
   })
 
   const mM$2Action$ = mM$2.stream.map(v => {
@@ -270,7 +268,7 @@ function main(sources) {
     console.log('From mM$2.stream: ', v);
   })
 
-  const calcStream$ = merge(mM$2Action$, mM$1Action$, backClickAction$, forwardClickAction$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
+  const calcStream$ = merge(mM$3Action$, mM$2Action$, mM$1Action$, backClickAction$, forwardClickAction$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
 
   return {
     DOM: 
@@ -299,12 +297,11 @@ function main(sources) {
       h('span', ' Here are the basic rules:' ), 
       h('p', 'RULES: If clicking two numbers and an operator (in any order) results in 20 or 18, the score increases by 1 or 3, respectively. If the score becomes 0 mod 5, 5 points are added. A score of 25 results in one goal. That can only be achieved by arriving at a score of 20, which jumps the score to 25. Directly computing 25 results in a score of 30, and no goal. Each time ROLL is clicked, one point is deducted. Three goals wins the game. '    ),
       h('br'),
-      h('p',   mM25.x   ),
       h('br'),
-      h('button#0.num', mM1.x[0] + '' ),
-      h('button#1.num', mM1.x[1] + '' ),
-      h('button#2.num', mM1.x[2] + '' ),
-      h('button#3.num', mM1.x[3] + '' ),
+      h('button#0.num'  ),
+      h('button#1.num'  ),
+      h('button#2.num'  ),
+      h('button#3.num'  ),
       h('br'),
       h('button#4.op', 'add'  ),
       h('button#5.op', 'subtract' ),
@@ -314,8 +311,8 @@ function main(sources) {
       h('br'),
       h('button.roll', {style: tempStyle2}, 'ROLL' ),
       h('br'),
-      h('button#back2', {style: tempStyle2}, 'BACK'  ),
-      h('button#forward2', {style: tempStyle2}, 'FORWARD'  ),
+      h('button#back2', {style: tempStyle2}, 'FORWARD'  ),
+      h('button#forward2', {style: tempStyle2}, 'BACK'  ),
       h('br'),
       h('div.winner', mMgoals2.x+''  ),
       h('p.login', {style: tempStyle}, 'Please enter some name.'  ),
@@ -344,23 +341,20 @@ function main(sources) {
       h('h2',  'Streams and Time Travel'  ),
       h('p',  'The monads presented in this series are simple and flexible. The reference at the bottom of this page presents the definitions of the two basic monads. There isn\'t much to them, but they are great for streamlining and organizing code. If you want error handling, enforcement of type rules, or something specific to your own application, just modify the basic Monad constructor, give it a new name, and start creating specialized monad instances. Monad$ as a good example. It is defined as follow: '  ),
    code.Monad$,
-     h('p', 'I created an instance, which I named "mM$1", and I use its "history" attribute to keep a chronological record of all dice rolls and computations in the game for use with the BACK and FORWARD history-traversal buttons. I mM$1\'s "stream" attribute to display each dice roll and computation result in the browser log as they occur. The monad mM1 maintains the array of numbers which populate the game display. Normally, this array results from dice rolls or computations, but the BACK and FORWARD buttons cause the generation of new instances of mM1 in which mM1.x is the value of prior or subsequent dice rolls and computations held in mM$1.history. You can travel backwards and resume play starting with numbers that were previously displayed and used in a different way. This would create a paradox in a science fiction story, but it causes no problems here. ' ),
-     h('p',  'I created the same history traversal functionality in JS-monads-part4, but in a more complex, harder-to-reason-about manner. In this demonstration, the mM$1.history array is traversed with mMindex2. So a new Monad instance named "mM1" can be created with the selected value of mM$1.history by: '  ),
-     h('pre.indent',  'mM1.ret(mM$1.history[mMindex.x])'  ),
-     h('p', ' Traversing the history of the game boils down to increasing and decreasing mMindex.x, then providing mM$1.history[mMindex.x] to mM1. mM$1.stream keeps mMindex current as game play progresses. '  ), 
-     h('p',  'A developer not familiar with Cycle.js or Motorcycle.js, and new to the idea of object methods taking functions as arguments, would need some time to study Motorcycle.js and functional programming. After that, some experimentation with code such as '  ), 
+     h('p', 'I created two instances, which I named "mM$1" and "mM$3". mM$1.stream is used for updating monads involved in game play. mM$3.stream prompts browser display updates when traveling back and forth through the history of game actions. The argument provided to mM$3.ret() does not matter, nor does the content of the stream that updates as a result of calling it. But the update triggers mM$3Action$ to update the displayed numbers during history traversal. You can travel backwards and resume play starting with numbers that were previously displayed. ' ),
+     h('p', ' Traversing the history of the game boils down to increasing and decreasing mMindex.x, element.innerHTML = mM$1.history[mMindex.x] updates the browser display '  ), 
+     h('p',  'A developer not familiar with Cycle.js or Motorcycle.js, and new to the idea of object methods taking functions as arguments, would need some time to study Motorcycle.js and functional programming. After that, some experimentation with puzzles like '  ), 
      h('pre.indent',  'mM1.x === mM1.bnd(v => mM1.ret(v).bnd(mM1.ret)).x'  ), 
      h('p', ' but '  ), 
      h('pre.indent',  'mM1 !== mM1.bnd(v => mM1.ret(v).bnd(mM1.ret))'  ),
-     h('p', ' would get them up and running. Unfortunately, new Javascript front-end web developers seem to progress from coding JQuery-based web pages to cumbersome, opinionated frameworks that don\'t foster creativity, innovation, or fun. For anyone reading this who is somewhat bewildered, the above example might seem anomolous, but it does give the expected results. That is because the "ret" method returns a new monad with the calling monad\'s name and whatever value is provided to ret. When a monad calls ret on its own value, for instance with "mM1.bnd(mM1.ret)" or "mM1.ret(mM1.x)", the returned monad is nearly indistinguishable from the calling monad, but it resides in a different location in memory, and that causes mM1 === mM1.bnd(mM1.ret) to return false. It is possible to save old versions of mM1 by assigning them to variables or placing them in an array, confident that they will remain unchanged unless extraordinary measures are taken to locate and mutate them. I use the simple monads to hold values and use only the "ret" method (never mM1.x = newValuer) to update them. My data is, therefore, never mutated. ' ),
-     h('p', 'SUGGESTION: If pressing F12 takes you to the browser console, you can go there and see the output from mM$1.stream. If you type "mM$1.history", you should see an array containing arrays holding the same numbers that are displayed in the browser console. '  ),  
+     h('p', ' would get them up and running. Unfortunately, Javascript front-end web developers seem to progress from coding JQuery-based web pages to cumbersome, opinionated frameworks that don\'t foster creativity, innovation, or fun. For anyone reading this who is somewhat bewildered, the above example might seem anomolous, but it does give the expected results. That is because the "ret" method returns a new monad with the calling monad\'s name and whatever value is provided to ret. When a monad calls ret on its own value, for instance with "mM1.bnd(mM1.ret)" or "mM1.ret(mM1.x)", the returned monad is nearly indistinguishable from the calling monad, but it resides in a different location in memory, and that causes mM1 === mM1.bnd(mM1.ret) to return false. It is possible to save old versions of mM1 by assigning them to variables or placing them in an array, confident that they will remain unchanged unless extraordinary measures are taken to locate and mutate them. I use the simple monads to hold values and use only the "ret" method (never mM1.x = newValuer) to update them. History traversal in the game depends on this sort of immutability, where mM1.x might reference one value now and another value later, but only if "mM1" does not reference the same monad that it referenced before.  ' ),
       h('hr'),
       h('h2', 'A Closer Look'  ),
       h('p', 'The function responsible for updating scores is shown below. It gets called whenever two numbers and an operator have been selected, in any order.' ),  
       code.updateCalc,
       h('p', ' Toward the end, before the final comment, ".bnd(mM$1.ret)" is one of two places where mM$1 places the array mM1.x in mM$1.history and sends it to the browser console. The other time this happens is after a dice roll, caused either by clicking ROLL or automatically when a player scores. The mM$1.history update and the browser update occur when a websockets message prefixed by "CA#$42" arrives from the server. Messages with that prefix contain four pseudo-random numbers representing a roll of the dice. The code is shown below: '  ),  
       code.messages,
-      h('p', 'mM$1\'s stream updates the browser console and increases the value of mMindex as follows: ' ),
+      h('p', 'mM$1 and mM$3 update the browser display as follows: ' ),
       code.stream,
       h('span.tao', 'When a player presses BACK for the first' ),
       h('span', ' time, the cursor is at mMindex.x (mM$1.history.length - 1), making mM$1.history[mMindex.x - 1] the most recent prior value of mM1. mM$1Action$ gets merged into the stream that feeds data to the virtual DOM, setting the stage for the next patch of the DOM. The client/src/main.js file at ' ),
@@ -381,7 +375,6 @@ function main(sources) {
       h('br', ),  
       h('p', ' The message-handling code is shown above. Here is the websockets driver: ' ),  
       code.driver,
-      h('p', '"create" comes from the most library. It creates a blank stream; and with "add", it becomes a stream of incoming messages. '  ),  
       h('p', 'MonadIter instances have the "mMZ" prefix. Each instance has a "p" attribute which is a selector pointing to all of the code which comes after the call to its "bnd" method. Here is its definition of "next": ' ),  
       code.next,
       h('p', '"next" provides a simple but reliable way to assure that the messages$ stream and the updateCalc function respond appropriately to incoming data. The code using "next" is like a switch block, only more compact.  ' ),
@@ -397,11 +390,18 @@ function main(sources) {
   } 
 }
  
-const show = function show() {
+const show = function show(x) {
   let number0 = document.getElementById('0');
   let number1 = document.getElementById('1');
   let number2 = document.getElementById('2');
   let number3 = document.getElementById('3');
+
+  if (mM1.x.length === 0) {
+    number0.style.display = 'none' 
+    number1.style.display = 'none'   
+    number2.style.display = 'none'   
+    number3.style.display = 'none'   
+  }
 
   if (mM1.x.length === 1) {
     number0.style.display = 'inline' 
@@ -430,10 +430,49 @@ const show = function show() {
     number2.style.display = 'inline'   
     number3.style.display = 'inline'   
   }
+  return ret(x);
 };
 
-function show2(x) {
-  mMsaveAr.bnd(unshift, [mM1.x[0], mM1.x[1], mM1.x[2], mM1.x[3]], mMsaveAr);
+const show2 = function show(x) {
+  let number0 = document.getElementById('0');
+  let number1 = document.getElementById('1');
+  let number2 = document.getElementById('2');
+  let number3 = document.getElementById('3');
+
+  if (mMhistorymM1.x[mMindex2.x].length === 0) {
+    number0.style.display = 'none' 
+    number1.style.display = 'none'   
+    number2.style.display = 'none'   
+    number3.style.display = 'none'   
+  }
+
+  if (mMhistorymM1.x[mMindex2.x].length === 1) {
+    number0.style.display = 'inline' 
+    number1.style.display = 'none'   
+    number2.style.display = 'none'   
+    number3.style.display = 'none'   
+  }
+
+  if (mMhistorymM1.x[mMindex2.x].length === 2) {
+    number0.style.display = 'inline' 
+    number1.style.display = 'inline'   
+    number2.style.display = 'none'   
+    number3.style.display = 'none'   
+  }
+
+  if (mMhistorymM1.x[mMindex2.x].length === 3) {
+    number0.style.display = 'inline' 
+    number1.style.display = 'inline'   
+    number2.style.display = 'inline'   
+    number3.style.display = 'none'   
+  }
+
+  if (mMhistorymM1.x[mMindex2.x].length === 4) {
+    number0.style.display = 'inline' 
+    number1.style.display = 'inline'   
+    number2.style.display = 'inline'   
+    number3.style.display = 'inline'   
+  }
   return ret(x);
 };
 
@@ -452,7 +491,7 @@ function cleanup (x) {
     return ret(x);
 };
 
-function updateCalc() { 
+function updateCalc(mM1) { 
   mMZ2.bnd(() => mM13
                .bnd(score, 1)
                .bnd(next2, (mM13.x % 5 === 0), mMZ5) 
@@ -472,13 +511,12 @@ function updateCalc() {
                .ret(calc(x[0], mM8.x, x[1]))
                .bnd(next, 18, mMZ4)  
                .bnd(next, 20, mMZ2) // Releases mMZ2 (above)
-               .bnd(() => mM1.bnd(push, mM7.x, mM1)
-               .bnd(mM$1.ret)
-               .bnd(displayOff, ((mM1.x.length)+''))
+               .bnd(() => mM$1.ret(mM1.bnd(push, mM7.x, mM1))
                .bnd(() => mM3
                .ret([])
                .bnd(() => mM4
-               .ret(0).bnd(mM8.ret).bnd(cleanup)
+               .ret(0).bnd(mM8.ret)
+               .bnd(cleanup)
                ))))
 }
 
