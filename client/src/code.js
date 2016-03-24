@@ -1,5 +1,11 @@
 import {h, pre} from '@motorcycle/dom'; 
 
+import {subject} from 'most-subject'
+
+var sub = subject
+var observer = sub.observer;
+var stream = sub.stream;
+
 var Monad = function Monad(z, g) {
   var _this = this;
 
@@ -139,12 +145,8 @@ var Monad$ = h('pre',  `  var Monad$ = function Monad$(z, g) {
       this.id = g;
     }
   
-    this.bnd = function (func) {
-      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments[_key];
-      }
-  
-      return func.apply(undefined, [_this.x].concat(args));
+    this.bnd = function (func, ...args) {
+       return func(_this.x, ...args);
     };
   
     this.ret = function (a) {
@@ -185,29 +187,46 @@ var updateCalc = h('pre',  `  function updateCalc(mM1) {
   }
   `  )
 
-var stream = h('pre',  `  const mM$1Action$ = mM$1.stream.map(v => {
-    let ar = [];
-    if (Array.isArray(v.x)) {
-      let keys = Object.keys(v.x);
-      for(let k in keys) {
-        ar[k] = v.x[k];
+var nums = h('pre',  `  
+  const numClick$ = sources.DOM
+    .select('.num').events('click');
+     
+  const numClickAction$ = numClick$.map(e => {
+    console.log(e);
+    if (mM3.x.length < 2) {
+      mM3.bnd(push, e.target.innerHTML, mM3)
+      ret(mMhistorymM1.x[mMindex2.x])
+      .bnd(spliceRemove, e.target.id, mM1)
+      .bnd(v => {e.target.innerHTML = ''; mM$1.ret(ret(v))})
+      if (mM3.x.length === 2 && mM8.x !== 0) {
+        updateCalc(mM1);
       }
-    }
-    mMhistorymM1.bnd(spliceAdd, mMindex2.x, ar, mMhistorymM1);
-    document.getElementById('0').innerHTML = (mMhistorymM1.x[mMindex2.x])[0]; 
-    document.getElementById('1').innerHTML = (mMhistorymM1.x[mMindex2.x])[1]; 
-    document.getElementById('2').innerHTML = (mMhistorymM1.x[mMindex2.x])[2]; 
-    document.getElementById('3').innerHTML = (mMhistorymM1.x[mMindex2.x])[3]; 
-    show(4000);
-  })
+    };
+  });
 
-  const mM$3Action$ = mM$3.stream.map(v => {
-    document.getElementById('0').innerHTML = (mMhistorymM1.x[mMindex2.x])[0]; 
-    document.getElementById('1').innerHTML = (mMhistorymM1.x[mMindex2.x])[1]; 
-    document.getElementById('2').innerHTML = (mMhistorymM1.x[mMindex2.x])[2]; 
-    document.getElementById('3').innerHTML = (mMhistorymM1.x[mMindex2.x])[3]; 
-    show2(7);
-  })
+  const opClick$ = sources.DOM
+    .select('.op').events('click');
+
+  const opClickAction$ = opClick$.map(e => {
+    mM8.ret(e.target.textContent);
+    if (mM3.x.length === 2) {
+      updateCalc(mM1);
+    }
+  });
+
+  const mM$1Action$ = mM$1.stream.map(v => {
+    if (Array.isArray(v.x)) {
+      mMhistorymM1.bnd(spliceAdd, mMindex2.x, v.x, mMhistorymM1);
+      document.getElementById('0').innerHTML = (mMhistorymM1.x[mMindex2.x])[0]; 
+      document.getElementById('1').innerHTML = (mMhistorymM1.x[mMindex2.x])[1]; 
+      document.getElementById('2').innerHTML = (mMhistorymM1.x[mMindex2.x])[2]; 
+      document.getElementById('3').innerHTML = (mMhistorymM1.x[mMindex2.x])[3]; 
+      show2(4000)
+    }
+    else {
+      console.log('mM$1.stream is providing defective data to mM$1Action');
+    }
+  });
   `  )
 
   const arrayFuncs = h('pre',  `  var push = function push(y,v,mon) {
@@ -259,23 +278,116 @@ var stream = h('pre',  `  const mM$1Action$ = mM$1.stream.map(v => {
     };
   `  )
 
-var product4 = h('pre',  `  
+var show2 = h('pre',  `  const show2 = function show(x) {
+    let number0 = document.getElementById('0');
+    let number1 = document.getElementById('1');
+    let number2 = document.getElementById('2');
+    let number3 = document.getElementById('3');
+  
+    if (mMhistorymM1.x[mMindex2.x].length === 0) {
+      number0.style.display = 'none' 
+      number1.style.display = 'none'   
+      number2.style.display = 'none'   
+      number3.style.display = 'none'   
+    }
+  
+    if (mMhistorymM1.x[mMindex2.x].length === 1) {
+      number0.style.display = 'inline' 
+      number1.style.display = 'none'   
+      number2.style.display = 'none'   
+      number3.style.display = 'none'   
+    }
+  
+    if (mMhistorymM1.x[mMindex2.x].length === 2) {
+      number0.style.display = 'inline' 
+      number1.style.display = 'inline'   
+      number2.style.display = 'none'   
+      number3.style.display = 'none'   
+    }
+  
+    if (mMhistorymM1.x[mMindex2.x].length === 3) {
+      number0.style.display = 'inline' 
+      number1.style.display = 'inline'   
+      number2.style.display = 'inline'   
+      number3.style.display = 'none'   
+    }
+  
+    if (mMhistorymM1.x[mMindex2.x].length === 4) {
+      number0.style.display = 'inline' 
+      number1.style.display = 'inline'   
+      number2.style.display = 'inline'   
+      number3.style.display = 'inline'   
+    }
+    return ret(x);
+  }; `  )
+
+  var travel = h('pre',  `  const forwardClick$ = sources.DOM
+    .select('#forward2').events('click');
+
+    const backClick$ = sources.DOM
+      .select('#back2').events('click');
+  
+    const forwardClickAction$ = forwardClick$.map(() => {
+      if (mMindex2.x < (mMhistorymM1.x.length - 1)) {
+        inc(mMindex2.x, mMindex2)
+        .bnd(() => mM$3.ret('Hello'))
+      }
+    });
+  
+    const backClickAction$ = backClick$.map(() => {
+      if (mMindex2.x > 0) {
+        dec(mMindex2.x, mMindex2)
+        .bnd(() => mM$3.ret('You bet!'))
+      }
+    });
+  
+    const mM$3Action$ = mM$3.stream.map(v => {
+      document.getElementById('0').innerHTML = (mMhistorymM1.x[mMindex2.x])[0]; 
+      document.getElementById('1').innerHTML = (mMhistorymM1.x[mMindex2.x])[1]; 
+      document.getElementById('2').innerHTML = (mMhistorymM1.x[mMindex2.x])[2]; 
+      document.getElementById('3').innerHTML = (mMhistorymM1.x[mMindex2.x])[3]; 
+      show2(7);
+    })
   `  )
 
-  var test = h('pre',  `  
+  var ret = h('pre',  `  var ret = function ret(v) {
+    var mon = new Monad(v, 'anonymous');
+    return mon;
+  }
   `  )
 
-  var p4 = h('pre',  `  
-  `  )
-
-  var p5 = h('pre',  `  
+  var C42 = h('pre',  `  mMZ10.bnd(() => mM$1
+    .ret(mM1.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]]))
+    .bnd(() => mM$2.ret([]))
+    .bnd(displayInline,'0')
+    .bnd(displayInline,'1')
+    .bnd(displayInline,'2')
+    .bnd(displayInline,'3'));
   `  )
 
   var p6 = h('pre',  `  
   `  )
 
+  var p5 = h('pre',  `  
+  `  )
+
+  var p4 = h('pre',  `  
+  `  )
+
+  var p3 = h('pre',  `  
+  `  )
+
+  var p2 = h('pre',  `  
+  `  )
+
+  var p1 = h('pre',  `  
+  `  )
+
+  var p7 = h('pre',  `  
+  `  )
 
 
 
 
-export default {monads, fib, driver, messages, next, Monad$, updateCalc, stream, arrayFuncs }
+
+export default {monads, fib, driver, messages, next, Monad$, updateCalc, stream, arrayFuncs, travel, nums, show2, ret, C42 }

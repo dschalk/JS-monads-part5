@@ -319,7 +319,6 @@ var push = function push(y,v,mon) {
     for (let k in keys) {ar[k] = y[k]};
     ar.push(v);
     return mon.ret(ar);  
-    // return mon.ret(mMtemp.x.filter(v => (v !== "" && v !== undefined || v !== 'undefined')));
   }
   console.log('The value provided to push is not an array');
   return ret(y);

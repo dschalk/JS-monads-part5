@@ -175,9 +175,9 @@ function main(sources) {
   const numClickAction$ = numClick$.map(e => {
     console.log(e);
     if (mM3.x.length < 2) {
-      console.log('*********mM3 ', mM3);
       mM3.bnd(push, e.target.innerHTML, mM3)
-      ret(mMhistorymM1.x[mMindex2.x]).bnd(spliceRemove, e.target.id, mM1)
+      ret(mMhistorymM1.x[mMindex2.x])
+      .bnd(spliceRemove, e.target.id, mM1)
       .bnd(v => {e.target.innerHTML = ''; mM$1.ret(ret(v))})
       if (mM3.x.length === 2 && mM8.x !== 0) {
         updateCalc(mM1);
@@ -240,20 +240,18 @@ function main(sources) {
   });
 
   const mM$1Action$ = mM$1.stream.map(v => {
-    let ar = [];
     if (Array.isArray(v.x)) {
-      let keys = Object.keys(v.x);
-      for(let k in keys) {
-        ar[k] = v.x[k];
-      }
+      mMhistorymM1.bnd(spliceAdd, mMindex2.x, v.x, mMhistorymM1);
+      document.getElementById('0').innerHTML = (mMhistorymM1.x[mMindex2.x])[0]; 
+      document.getElementById('1').innerHTML = (mMhistorymM1.x[mMindex2.x])[1]; 
+      document.getElementById('2').innerHTML = (mMhistorymM1.x[mMindex2.x])[2]; 
+      document.getElementById('3').innerHTML = (mMhistorymM1.x[mMindex2.x])[3]; 
+      show2(4000)
     }
-    mMhistorymM1.bnd(spliceAdd, mMindex2.x, ar, mMhistorymM1);
-    document.getElementById('0').innerHTML = (mMhistorymM1.x[mMindex2.x])[0]; 
-    document.getElementById('1').innerHTML = (mMhistorymM1.x[mMindex2.x])[1]; 
-    document.getElementById('2').innerHTML = (mMhistorymM1.x[mMindex2.x])[2]; 
-    document.getElementById('3').innerHTML = (mMhistorymM1.x[mMindex2.x])[3]; 
-    show(4000);
-  })
+    else {
+      console.log('mM$1.stream is providing defective data to mM$1Action');
+    }
+  });
 
   const mM$3Action$ = mM$3.stream.map(v => {
     document.getElementById('0').innerHTML = (mMhistorymM1.x[mMindex2.x])[0]; 
@@ -298,10 +296,10 @@ function main(sources) {
       h('p', 'RULES: If clicking two numbers and an operator (in any order) results in 20 or 18, the score increases by 1 or 3, respectively. If the score becomes 0 mod 5, 5 points are added. A score of 25 results in one goal. That can only be achieved by arriving at a score of 20, which jumps the score to 25. Directly computing 25 results in a score of 30, and no goal. Each time ROLL is clicked, one point is deducted. Three goals wins the game. '    ),
       h('br'),
       h('br'),
-      h('button#0.num'  ),
-      h('button#1.num'  ),
-      h('button#2.num'  ),
-      h('button#3.num'  ),
+      h('button#0.num'),
+      h('button#1.num'),
+      h('button#2.num'),
+      h('button#3.num'),
       h('br'),
       h('button#4.op', 'add'  ),
       h('button#5.op', 'subtract' ),
@@ -339,30 +337,36 @@ function main(sources) {
       h('span.tao', 'People in the same group, other than solo, share text messages and dice rolls. '  ),
       h('hr'),
       h('h2',  'Streams and Time Travel'  ),
-      h('p',  'The monads presented in this series are simple and flexible. The reference at the bottom of this page presents the definitions of the two basic monads. There isn\'t much to them, but they are great for streamlining and organizing code. If you want error handling, enforcement of type rules, or something specific to your own application, just modify the basic Monad constructor, give it a new name, and start creating specialized monad instances. Monad$ as a good example. It is defined as follow: '  ),
+      h('p',  'The monads presented in this series are simple and flexible. The reference at the bottom of this page presents the definitions of the two basic monads. There isn\'t much to them, but they are great for streamlining and organizing code. If you want error handling, enforcement of type rules, or something specific to your own application, just modify the basic Monad constructor, give it a new name, and start creating specialized monad instances. Monad$ as a good example. It uses "subject" from the "most" library, and is defined as follow: '  ),
    code.Monad$,
-     h('p', 'I created two instances, which I named "mM$1" and "mM$3". mM$1.stream is used for updating monads involved in game play. mM$3.stream prompts browser display updates when traveling back and forth through the history of game actions. The argument provided to mM$3.ret() does not matter, nor does the content of the stream that updates as a result of calling it. But the update triggers mM$3Action$ to update the displayed numbers during history traversal. You can travel backwards and resume play starting with numbers that were previously displayed. ' ),
-     h('p', ' Traversing the history of the game boils down to increasing and decreasing mMindex.x, element.innerHTML = mM$1.history[mMindex.x] updates the browser display '  ), 
-     h('p',  'A developer not familiar with Cycle.js or Motorcycle.js, and new to the idea of object methods taking functions as arguments, would need some time to study Motorcycle.js and functional programming. After that, some experimentation with puzzles like '  ), 
+   h('p',  'The function "ret" is frequently used to create instances of Monad. Here is the definition of "ret": '  ),
+   code.ret,
+     h('p', 'mM$1, an instance of Monad$, guides the flow of game play data. mM$1.ret(monad holding an array) is used to feed array monads into mM$1.stream for use in updating the number display in the DOM and populating mMhistorymM1, which is used for traversal of the numbers display in the game. Here are the functions that handle the flow of information when a player clicks a number or an operator: ' ),     
+     code.nums,
+     h('p', ' mM$3 assists in the traversal of game display history. The data carried in mM$3.stream is of no consequence, so the argument provided to mM$3.ret() doesn\'t matter either. The value of mMindex2 changes when BACK or FORWARD are clicked, and that affects the DOM display. mM$3.ret is called in order to make the DOM patch occur whenever BACK or FORWARD are clicked. Here is the code: ' ), 
+     code.travel,
+     h('p', ' show2 keeps "undefined" and "" from cluttering the display. ' ),
+     code.show2,
+     h('p', ' For history traversal, it is important to avoid mutating the underlying array when push, shift, and the other Javascript array methods are used. Here are some of the array functions that are provided to the Monad "bnd" method: ' ),
+    code.arrayFuncs, 
+     h('p', ' The "ret()" method does not mutate monads when values are updated. You can press F12 and, in the browser console, try things like: '  ),
      h('pre.indent',  'mM1.x === mM1.bnd(v => mM1.ret(v).bnd(mM1.ret)).x'  ), 
      h('p', ' but '  ), 
      h('pre.indent',  'mM1 !== mM1.bnd(v => mM1.ret(v).bnd(mM1.ret))'  ),
-     h('p', ' would get them up and running. Unfortunately, Javascript front-end web developers seem to progress from coding JQuery-based web pages to cumbersome, opinionated frameworks that don\'t foster creativity, innovation, or fun. For anyone reading this who is somewhat bewildered, the above example might seem anomolous, but it does give the expected results. That is because the "ret" method returns a new monad with the calling monad\'s name and whatever value is provided to ret. When a monad calls ret on its own value, for instance with "mM1.bnd(mM1.ret)" or "mM1.ret(mM1.x)", the returned monad is nearly indistinguishable from the calling monad, but it resides in a different location in memory, and that causes mM1 === mM1.bnd(mM1.ret) to return false. It is possible to save old versions of mM1 by assigning them to variables or placing them in an array, confident that they will remain unchanged unless extraordinary measures are taken to locate and mutate them. I use the simple monads to hold values and use only the "ret" method (never mM1.x = newValuer) to update them. History traversal in the game depends on this sort of immutability, where mM1.x might reference one value now and another value later, but only if "mM1" does not reference the same monad that it referenced before.  ' ),
+     h('p', 'to verify this feature. As is apparent in the definition of "Monad", the "ret" method returns a new monad with the calling monad\'s name and whatever value is provided to ret. When a monad calls ret on its own value, for instance with "mM1.bnd(mM1.ret)" or "mM1.ret(mM1.x)", the returned monad is nearly indistinguishable from the calling monad, but it resides in a different location in memory, and mM1 === mM1.bnd(mM1.ret) returns false. In the history traversal code, old versions of mM1.x are stored in mMhistorymM1, and there is no danger that they will be modified by subsequent calls to mM1.ret(). I use monad instances to hold values and use only the "ret" method (never mM1.x = newValuer) to update them. ' ),
       h('hr'),
-      h('h2', 'A Closer Look'  ),
+      h('h2', 'Miscellaneous Functions'  ),
       h('p', 'The function responsible for updating scores is shown below. It gets called whenever two numbers and an operator have been selected, in any order.' ),  
       code.updateCalc,
-      h('p', ' Toward the end, before the final comment, ".bnd(mM$1.ret)" is one of two places where mM$1 places the array mM1.x in mM$1.history and sends it to the browser console. The other time this happens is after a dice roll, caused either by clicking ROLL or automatically when a player scores. The mM$1.history update and the browser update occur when a websockets message prefixed by "CA#$42" arrives from the server. Messages with that prefix contain four pseudo-random numbers representing a roll of the dice. The code is shown below: '  ),  
+      h('p', ' Note the seventh line up from the bottom. The newly computed value mM7.x gets pushed into mM1.x and mM$1.ret() puts the updated mM1 into mM$1.stream. mM$1Action$ observes mM$1.stream. It is merged into the stream that feeds information into the virtual DOM prior to the next patch. '  ),
+      h('p', 'That is how a DOM description gets returned from the "main" function. Data comes in through main\'s only argument: "sources". sources.WS provides websockets messages to the messages stream, which parses and acts upon them as follows: '  ),  
       code.messages,
-      h('p', 'mM$1 and mM$3 update the browser display as follows: ' ),
-      code.stream,
-      h('span.tao', 'When a player presses BACK for the first' ),
-      h('span', ' time, the cursor is at mMindex.x (mM$1.history.length - 1), making mM$1.history[mMindex.x - 1] the most recent prior value of mM1. mM$1Action$ gets merged into the stream that feeds data to the virtual DOM, setting the stage for the next patch of the DOM. The client/src/main.js file at ' ),
-      h('a', {props: {href: 'https://github.com/dschalk/JS-monads-part5'}}, 'JS-monads-part5'  ),
-      h('span', ' shows the details.  ' ),
+      h('p', 'When a message prefixed by "CA#$42" arrives from the server, the following code is executed: '  ),  
+      code.C42,
+      h('p', ' As always, mM$1.ret() is called on a monad whose value is an array. Sometimes, as here, that monad is mM1. Other times it is an anonymous monad manufactured by the sand-alone "ret()" function. The name doesn\'t matter because the names and id\'s of the monads get left behind when mM$1Action$ makes its deep copyies of the monads\' values. Those deep copies are what go into mMhistorymM1. ' ), 
       h('hr'),
-      h('h2', 'REFERENCE'  ),
-      h('p', 'This reference section is not comprehensive. For the reader\'s convenience, here are the basic monad constructors: '   ),
+      h('h2', 'A Little More Background'  ),
+      h('p', 'Here are the basic monad constructors: '   ),
       code.monads,
       h('p', 'As is apparent from the definition of Monad, when some monad "m" uses its "bnd" method on some function "f(x,v)", the first argument is the value of m (which is m.x). The return value of m.bnd(f,v) is f(m.x, v). Here is a function which takes two arguments: ' ),
       code.fib,
@@ -373,17 +377,18 @@ function main(sources) {
       h('input#code', ),  
       h('p#code2', mM19.x ),  
       h('br', ),  
-      h('p', ' The message-handling code is shown above. Here is the websockets driver: ' ),  
+      h('p', ' The message-handling code is shown above. This is how the websockets driver, the "WS" attribute of "sources", is defined: ' ),  
       code.driver,
       h('p', 'MonadIter instances have the "mMZ" prefix. Each instance has a "p" attribute which is a selector pointing to all of the code which comes after the call to its "bnd" method. Here is its definition of "next": ' ),  
       code.next,
       h('p', '"next" provides a simple but reliable way to assure that the messages$ stream and the updateCalc function respond appropriately to incoming data. The code using "next" is like a switch block, only more compact.  ' ),
+      h('span.tao', 'This is a link ot the Github repository: '  ), 
+      h('a', {props: {href: 'https://github.com/dschalk/JS-monads-part5'}}, 'JS-monads-part5'  ),
+      h('p', ), 
       h('hr', ),  
       h('hr',),  
       h('p', ' . ' ), 
       h('p', ),  
-      h('p', ), 
-      h('p', ), 
       h('p', )  
       ])
     )  
