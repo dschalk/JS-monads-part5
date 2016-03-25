@@ -98,7 +98,7 @@ var messages = h('pre', `  const messages$ = (sources.WS).map(e =>
       .bnd(next, 'CE#$42', mMZ14)
       .bnd(next, 'EE#$42', mMZ15)))));
     mMZ10.bnd(() => mM$1
-      .ret(mM1.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]]))
+      .ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]])
       .bnd(() => mM$2.ret([]))
       .bnd(displayInline,'0')
       .bnd(displayInline,'1')
@@ -177,7 +177,7 @@ var updateCalc = h('pre',  `  function updateCalc(mM1) {
                  .ret(calc(x[0], mM8.x, x[1]))
                  .bnd(next, 18, mMZ4)  
                  .bnd(next, 20, mMZ2) // Releases mMZ2 (above)
-                 .bnd(() => mM$1.ret(mM1.bnd(push, mM7.x, mM1))
+                 .bnd(() => mM$1.ret(mM1.bnd(push, mM7.x, mM1).x)
                  .bnd(() => mM3
                  .ret([])
                  .bnd(() => mM4
@@ -197,7 +197,7 @@ var nums = h('pre',  `
       mM3.bnd(push, e.target.innerHTML, mM3)
       mM$1.ret(
         ret(mMhistorymM1.x[mMindex2.x])
-        .bnd(spliceRemove, e.target.id, mM1)
+        .bnd(spliceRemove, e.target.id, mM1).x
       )
       if (mM3.x.length === 2 && mM8.x !== 0) {
         updateCalc(mM1);
@@ -216,19 +216,18 @@ var nums = h('pre',  `
   });
 
   const mM$1Action$ = mM$1.stream.map(v => {
-    if (Array.isArray(v.x)) {
-      mMhistorymM1.bnd(spliceAdd, mMindex2.x, v.x, mMhistorymM1);
+    if (Array.isArray(v)) {
+      mMhistorymM1.bnd(spliceAdd, mMindex2.x, v, mMhistorymM1);
       document.getElementById('0').innerHTML = (mMhistorymM1.x[mMindex2.x])[0]; 
       document.getElementById('1').innerHTML = (mMhistorymM1.x[mMindex2.x])[1]; 
       document.getElementById('2').innerHTML = (mMhistorymM1.x[mMindex2.x])[2]; 
       document.getElementById('3').innerHTML = (mMhistorymM1.x[mMindex2.x])[3]; 
-      show2(4000)
+      cleanup(42)
     }
     else {
       console.log('mM$1.stream is providing defective data to mM$1Action');
     }
-  });
-  `  )
+  });  `  )
 
   const arrayFuncs = h('pre',  `  var push = function push(y,v,mon) {
       if (Array.isArray(y)) {
@@ -279,45 +278,17 @@ var nums = h('pre',  `
     };
   `  )
 
-var show2 = h('pre',  `  const show2 = function show(x) {
-    let number0 = document.getElementById('0');
-    let number1 = document.getElementById('1');
-    let number2 = document.getElementById('2');
-    let number3 = document.getElementById('3');
-  
-    if (mMhistorymM1.x[mMindex2.x].length === 0) {
-      number0.style.display = 'none' 
-      number1.style.display = 'none'   
-      number2.style.display = 'none'   
-      number3.style.display = 'none'   
-    }
-  
-    if (mMhistorymM1.x[mMindex2.x].length === 1) {
-      number0.style.display = 'inline' 
-      number1.style.display = 'none'   
-      number2.style.display = 'none'   
-      number3.style.display = 'none'   
-    }
-  
-    if (mMhistorymM1.x[mMindex2.x].length === 2) {
-      number0.style.display = 'inline' 
-      number1.style.display = 'inline'   
-      number2.style.display = 'none'   
-      number3.style.display = 'none'   
-    }
-  
-    if (mMhistorymM1.x[mMindex2.x].length === 3) {
-      number0.style.display = 'inline' 
-      number1.style.display = 'inline'   
-      number2.style.display = 'inline'   
-      number3.style.display = 'none'   
-    }
-  
-    if (mMhistorymM1.x[mMindex2.x].length === 4) {
-      number0.style.display = 'inline' 
-      number1.style.display = 'inline'   
-      number2.style.display = 'inline'   
-      number3.style.display = 'inline'   
+var cleanup = h('pre',  `  function cleanup (x) {
+    let target0 = document.getElementById('0');
+    let target1 = document.getElementById('1');
+    let target2 = document.getElementById('2');
+    let target3 = document.getElementById('3');
+    let targetAr = [target0, target1, target2, target3];
+    for (let i in [0,1,2,3]) {
+      if (mM1.x[i] === undefined)    {
+        targetAr[i].style.display = 'none';
+      }
+      else {targetAr[i].style.display = 'inline'}
     }
     return ret(x);
   }; `  )
@@ -347,9 +318,8 @@ var show2 = h('pre',  `  const show2 = function show(x) {
       document.getElementById('1').innerHTML = (mMhistorymM1.x[mMindex2.x])[1]; 
       document.getElementById('2').innerHTML = (mMhistorymM1.x[mMindex2.x])[2]; 
       document.getElementById('3').innerHTML = (mMhistorymM1.x[mMindex2.x])[3]; 
-      show2(7);
-    })
-  `  )
+      cleanup(7);
+    })  `  )
 
   var ret = h('pre',  `  var ret = function ret(v) {
     var mon = new Monad(v, 'anonymous');
@@ -391,4 +361,4 @@ var show2 = h('pre',  `  const show2 = function show(x) {
 
 
 
-export default {monads, fib, driver, messages, next, Monad$, updateCalc, stream, arrayFuncs, travel, nums, show2, ret, C42 }
+export default {monads, fib, driver, messages, next, Monad$, updateCalc, stream, arrayFuncs, travel, nums, cleanup, ret, C42 }

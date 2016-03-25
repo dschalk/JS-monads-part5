@@ -94,7 +94,7 @@ function main(sources) {
       .bnd(next, 'CE#$42', mMZ14)
       .bnd(next, 'EE#$42', mMZ15)))));
     mMZ10.bnd(() => mM$1
-      .ret(mM1.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]]))
+      .ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]])
       .bnd(() => mM$2.ret([]))
       .bnd(displayInline,'0')
       .bnd(displayInline,'1')
@@ -178,7 +178,7 @@ function main(sources) {
       mM3.bnd(push, e.target.innerHTML, mM3)
       mM$1.ret(
         ret(mMhistorymM1.x[mMindex2.x])
-        .bnd(spliceRemove, e.target.id, mM1)
+        .bnd(spliceRemove, e.target.id, mM1).x
       )
       if (mM3.x.length === 2 && mM8.x !== 0) {
         updateCalc(mM1);
@@ -241,13 +241,13 @@ function main(sources) {
   });
 
   const mM$1Action$ = mM$1.stream.map(v => {
-    if (Array.isArray(v.x)) {
-      mMhistorymM1.bnd(spliceAdd, mMindex2.x, v.x, mMhistorymM1);
+    if (Array.isArray(v)) {
+      mMhistorymM1.bnd(spliceAdd, mMindex2.x, v, mMhistorymM1);
       document.getElementById('0').innerHTML = (mMhistorymM1.x[mMindex2.x])[0]; 
       document.getElementById('1').innerHTML = (mMhistorymM1.x[mMindex2.x])[1]; 
       document.getElementById('2').innerHTML = (mMhistorymM1.x[mMindex2.x])[2]; 
       document.getElementById('3').innerHTML = (mMhistorymM1.x[mMindex2.x])[3]; 
-      show2(4000)
+      cleanup(42)
     }
     else {
       console.log('mM$1.stream is providing defective data to mM$1Action');
@@ -259,7 +259,7 @@ function main(sources) {
     document.getElementById('1').innerHTML = (mMhistorymM1.x[mMindex2.x])[1]; 
     document.getElementById('2').innerHTML = (mMhistorymM1.x[mMindex2.x])[2]; 
     document.getElementById('3').innerHTML = (mMhistorymM1.x[mMindex2.x])[3]; 
-    show2(7);
+    cleanup('nothing much');
   })
 
   const mM$2Action$ = mM$2.stream.map(v => {
@@ -342,15 +342,16 @@ function main(sources) {
    code.Monad$,
    h('p',  'The function "ret" is frequently used to create instances of Monad. Here is the definition of "ret": '  ),
    code.ret,
-     h('p', 'mM$1, an instance of Monad$, guides the flow of game play data. mM$1.ret(monad holding an array) is used to feed array monads into mM$1.stream for use in updating the number display in the DOM and populating mMhistorymM1, which is used for traversal of the numbers display in the game. Here are the functions that handle the flow of information when a player clicks a number or an operator: ' ),     
+     h('p', 'mM$1, an instance of Monad$, guides the flow of game play data. mM$1.ret(some array) is used to feed arrays into mM$1.stream for use in updating the number display in the browser, and for populating mMhistorymM1, which is used for traversing the numbers display. Here are the functions that handle the flow of information when a player clicks a number or an operator: ' ),     
      code.nums,
-     h('p', ' mM$3 assists in the traversal of game display history. The data carried in mM$3.stream is of no consequence, so the argument provided to mM$3.ret() doesn\'t matter either. The value of mMindex2 changes when BACK or FORWARD are clicked, and that affects the DOM display. mM$3.ret is called in order to make the DOM patch occur whenever BACK or FORWARD are clicked. Here is the code: ' ), 
+     h('p', ' mM$3 assists in the traversal of game display history. The data carried in mM$3.stream is of no consequence, so the argument provided to mM$3.ret() doesn\'t matter either. The value of mMindex2 changes when BACK or FORWARD are clicked, and that affects the browser display the next time the DOM is patched. mM$3.ret is called in order to trigger a DOM. Here is the code: ' ), 
      code.travel,
-     h('p', ' show2 keeps "undefined" and "" from cluttering the display. ' ),
-     code.show2,
+     h('p', ' cleanup() keeps "undefined" from cluttering the display. ' ),
+     code.cleanup,
      h('p', ' For history traversal, it is important to avoid mutating the underlying array when push, shift, and the other Javascript array methods are used. Here are some of the array functions that are provided to the Monad "bnd" method: ' ),
     code.arrayFuncs, 
-     h('p', ' The "ret()" method does not mutate monads when values are updated. You can press F12 and, in the browser console, try things like: '  ),
+     h('p', ' mM1 can be conveniently updated by making it the final argument in these functions. ' ), 
+     h('p', 'The "ret()" method updates monads without mutating them. You can press F12 and, in the browser console, try things like: '  ),
      h('pre.indent',  'mM1.x === mM1.bnd(v => mM1.ret(v).bnd(mM1.ret)).x'  ), 
      h('p', ' but '  ), 
      h('pre.indent',  'mM1 !== mM1.bnd(v => mM1.ret(v).bnd(mM1.ret))'  ),
@@ -395,92 +396,6 @@ function main(sources) {
     )  
   } 
 }
- 
-const show = function show(x) {
-  let number0 = document.getElementById('0');
-  let number1 = document.getElementById('1');
-  let number2 = document.getElementById('2');
-  let number3 = document.getElementById('3');
-
-  if (mM1.x.length === 0) {
-    number0.style.display = 'none' 
-    number1.style.display = 'none'   
-    number2.style.display = 'none'   
-    number3.style.display = 'none'   
-  }
-
-  if (mM1.x.length === 1) {
-    number0.style.display = 'inline' 
-    number1.style.display = 'none'   
-    number2.style.display = 'none'   
-    number3.style.display = 'none'   
-  }
-
-  if (mM1.x.length === 2) {
-    number0.style.display = 'inline' 
-    number1.style.display = 'inline'   
-    number2.style.display = 'none'   
-    number3.style.display = 'none'   
-  }
-
-  if (mM1.x.length === 3) {
-    number0.style.display = 'inline' 
-    number1.style.display = 'inline'   
-    number2.style.display = 'inline'   
-    number3.style.display = 'none'   
-  }
-
-  if (mM1.x.length === 4) {
-    number0.style.display = 'inline' 
-    number1.style.display = 'inline'   
-    number2.style.display = 'inline'   
-    number3.style.display = 'inline'   
-  }
-  return ret(x);
-};
-
-const show2 = function show(x) {
-  let number0 = document.getElementById('0');
-  let number1 = document.getElementById('1');
-  let number2 = document.getElementById('2');
-  let number3 = document.getElementById('3');
-
-  if (mMhistorymM1.x[mMindex2.x].length === 0) {
-    number0.style.display = 'none' 
-    number1.style.display = 'none'   
-    number2.style.display = 'none'   
-    number3.style.display = 'none'   
-  }
-
-  if (mMhistorymM1.x[mMindex2.x].length === 1) {
-    number0.style.display = 'inline' 
-    number1.style.display = 'none'   
-    number2.style.display = 'none'   
-    number3.style.display = 'none'   
-  }
-
-  if (mMhistorymM1.x[mMindex2.x].length === 2) {
-    number0.style.display = 'inline' 
-    number1.style.display = 'inline'   
-    number2.style.display = 'none'   
-    number3.style.display = 'none'   
-  }
-
-  if (mMhistorymM1.x[mMindex2.x].length === 3) {
-    number0.style.display = 'inline' 
-    number1.style.display = 'inline'   
-    number2.style.display = 'inline'   
-    number3.style.display = 'none'   
-  }
-
-  if (mMhistorymM1.x[mMindex2.x].length === 4) {
-    number0.style.display = 'inline' 
-    number1.style.display = 'inline'   
-    number2.style.display = 'inline'   
-    number3.style.display = 'inline'   
-  }
-  return ret(x);
-};
 
 function cleanup (x) {
     let target0 = document.getElementById('0');
@@ -517,7 +432,7 @@ function updateCalc(mM1) {
                .ret(calc(x[0], mM8.x, x[1]))
                .bnd(next, 18, mMZ4)  
                .bnd(next, 20, mMZ2) // Releases mMZ2 (above)
-               .bnd(() => mM$1.ret(mM1.bnd(push, mM7.x, mM1))
+               .bnd(() => mM$1.ret(mM1.bnd(push, mM7.x, mM1).x)
                .bnd(() => mM3
                .ret([])
                .bnd(() => mM4
