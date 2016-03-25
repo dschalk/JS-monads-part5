@@ -4,49 +4,13 @@ import {just, create, merge, combine, fromEvent, periodic, observe, delay, filte
 import code from './code.js'; 
 import {subject} from 'most-subject'
 
-//window.subject = subject;
-//window.create = create;
-
-var sub = subject
-var observer = sub.observer;
-var stream = sub.stream;
-
-var Monad$ = function Monad$(z, g) {
-  var _this = this;
-  
-  this.subject = sub();
-  this.observer = this.subject.observer;
-  this.stream = this.subject.stream;
-  this.x = z;
-
-  if (arguments.length === 1) {
-    this.id = 'anonymous';
-  } else {
-    this.id = g;
-  }
-
-  this.bnd = function (func) {
-    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
-    }
-
-    return func.apply(undefined, [_this.x].concat(args));
-  };
-
-  this.ret = function (a) {
-    window[_this.id] = new Monad$(a,_this.id);
-    _this.observer.next(a);
-    return window[_this.id];
-  };
-};
+var tempStyle = {display: 'inline'}
+var tempStyle2 = {display: 'none'}
+mM6.ret('');
 
 var mM$1 = new Monad$([], 'mM$1');
 var mM$2 = new Monad$([], 'mM$2');
 var mM$3 = new Monad$([], 'mM$3');
-
-var tempStyle = {display: 'inline'}
-var tempStyle2 = {display: 'none'}
-mM6.ret('');
 
 function createWebSocket(path) {
     let host = window.location.hostname;
@@ -99,6 +63,7 @@ function main(sources) {
       .bnd(displayInline,'0')
       .bnd(displayInline,'1')
       .bnd(displayInline,'2')
+      .bnd(log, 'from messages ' + mM$1.x)
       .bnd(displayInline,'3'));
     mMZ11.bnd(() => mMscbd
       .ret(mMscores.x)
@@ -241,6 +206,7 @@ function main(sources) {
   });
 
   const mM$1Action$ = mM$1.stream.map(v => {
+    console.log('From mM$1Action$ ', v);
     if (Array.isArray(v)) {
       mMhistorymM1.bnd(spliceAdd, mMindex2.x, v, mMhistorymM1);
       document.getElementById('0').innerHTML = (mMhistorymM1.x[mMindex2.x])[0]; 

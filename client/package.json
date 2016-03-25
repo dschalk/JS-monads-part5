@@ -15,7 +15,7 @@
     "immutable": "3.7.6",
     "js-monads": "1.0.3",
     "most": "0.18.4",
-    "most-subject": "3.0.0",
+    "most-subject": "3.0.2",
     "rx": "4.0.6",
     "watchify": "3.7.0"
   },
