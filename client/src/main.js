@@ -367,7 +367,7 @@ function main(sources) {
       code.messages,
       h('p', 'When a message prefixed by "CA#$42" arrives from the server, the following code is executed: '  ),  
       code.C42,
-      h('p', ' As always, mM$1.ret() is called on a monad whose value is an array. Sometimes, as here, that monad is mM1. Other times it is an anonymous monad manufactured by the sand-alone "ret()" function. The name doesn\'t matter because the names and id\'s of the monads get left behind when mM$1Action$ makes its deep copyies of the monads\' values. Those deep copies are what go into mMhistorymM1. ' ), 
+      h('p', ' As always, mM$1.ret() is called on array. ' ), 
       h('hr'),
       h('h2', 'A Little More Background'  ),
       h('p', 'Here are the basic monad constructors: '   ),

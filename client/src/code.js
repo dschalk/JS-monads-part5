@@ -183,8 +183,8 @@ var updateCalc = h('pre',  `  function updateCalc(mM1) {
                  .bnd(() => mM4
                  .ret(0).bnd(mM8.ret)
                  .bnd(cleanup)
-                 ))))
-  }
+                 ))));
+  };
   `  )
 
 var nums = h('pre',  `  
@@ -329,7 +329,7 @@ var cleanup = h('pre',  `  function cleanup (x) {
   }  `  )
 
   var C42 = h('pre',  `  mMZ10.bnd(() => mM$1
-    .ret(mM1.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]]))
+    .ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]])
     .bnd(() => mM$2.ret([]))
     .bnd(displayInline,'0')
     .bnd(displayInline,'1')
