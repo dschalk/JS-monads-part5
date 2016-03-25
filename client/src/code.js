@@ -115,8 +115,8 @@ var messages = h('pre', `  const messages$ = (sources.WS).map(e =>
       .bnd(splice, 0, 3, mMar)
       .bnd(reduce, (a,b) => a + ", " + b)
       .bnd(() => mMmsg
-      .bnd(push, mMsender.x + ': ' + mMar.x, mMmsg)
-      .bnd(updateMessages)));
+      .bnd(push, h('div', mMsender.x + ': ' + mMar.x), mMmsg)
+      ));
     mMZ14.bnd(() => mMgoals2.ret('The winner is ' + mMname.x ));
     mMZ15.bnd(() => mMgoals2.ret('A player named ' + 
         mMname.x + 'is currently logged in. Page will refresh in 4 seconds.')
@@ -222,7 +222,7 @@ var nums = h('pre',  `
       document.getElementById('1').innerHTML = (mMhistorymM1.x[mMindex2.x])[1]; 
       document.getElementById('2').innerHTML = (mMhistorymM1.x[mMindex2.x])[2]; 
       document.getElementById('3').innerHTML = (mMhistorymM1.x[mMindex2.x])[3]; 
-      cleanup(42)
+      cleanup()
     }
     else {
       console.log('mM$1.stream is providing defective data to mM$1Action');
@@ -320,14 +320,13 @@ var cleanup = h('pre',  `  function cleanup (x) {
       document.getElementById('1').innerHTML = (mMhistorymM1.x[mMindex2.x])[1]; 
       document.getElementById('2').innerHTML = (mMhistorymM1.x[mMindex2.x])[2]; 
       document.getElementById('3').innerHTML = (mMhistorymM1.x[mMindex2.x])[3]; 
-      cleanup(7);
+      cleanup();
     })  `  )
 
   var ret = h('pre',  `  var ret = function ret(v) {
     var mon = new Monad(v, 'anonymous');
     return mon;
-  }
-  `  )
+  }  `  )
 
   var C42 = h('pre',  `  mMZ10.bnd(() => mM$1
     .ret(mM1.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]]))

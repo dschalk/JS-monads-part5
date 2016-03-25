@@ -111,8 +111,8 @@ function main(sources) {
       .bnd(splice, 0, 3, mMar)
       .bnd(reduce, (a,b) => a + ", " + b)
       .bnd(() => mMmsg
-      .bnd(push, mMsender.x + ': ' + mMar.x, mMmsg)
-      .bnd(updateMessages)));
+      .bnd(push, h('div', mMsender.x + ': ' + mMar.x), mMmsg)
+      ));
     mMZ14.bnd(() => mMgoals2.ret('The winner is ' + mMname.x ));
     mMZ15.bnd(() => mMgoals2.ret('A player named ' + 
         mMname.x + 'is currently logged in. Page will refresh in 4 seconds.')
@@ -247,7 +247,7 @@ function main(sources) {
       document.getElementById('1').innerHTML = (mMhistorymM1.x[mMindex2.x])[1]; 
       document.getElementById('2').innerHTML = (mMhistorymM1.x[mMindex2.x])[2]; 
       document.getElementById('3').innerHTML = (mMhistorymM1.x[mMindex2.x])[3]; 
-      cleanup(42)
+      cleanup()
     }
     else {
       console.log('mM$1.stream is providing defective data to mM$1Action');
@@ -259,7 +259,7 @@ function main(sources) {
     document.getElementById('1').innerHTML = (mMhistorymM1.x[mMindex2.x])[1]; 
     document.getElementById('2').innerHTML = (mMhistorymM1.x[mMindex2.x])[2]; 
     document.getElementById('3').innerHTML = (mMhistorymM1.x[mMindex2.x])[3]; 
-    cleanup('nothing much');
+    cleanup();
   })
 
   const mM$2Action$ = mM$2.stream.map(v => {
@@ -280,8 +280,8 @@ function main(sources) {
       h('span', 'I demonstrate the tools I use for front-end web application development. The server is built on top of the '  ),
       h('a', {props: {href: 'https://github.com/yesodweb/wai/tree/master/wai-websockets' }}, 'Wai Websockets server' ), 
       h('span', ' It is very easy to modify whenever the need arises because the Haskell Programming Language provides list comprehension and pattern matching and, when used as intended, is not likely to surprise you with unintended side effects. The front end is a ' ),
-      h('a', {props: {href: 'https://github.com/motorcyclejs' }},'Motorcyclejs' ), 
-      h('span', ' application. Motorcyclejs is Cycle.js, only using '  ),  
+      h('a', {props: {href: 'https://github.com/motorcyclejs' }},'Motorcycle.js' ), 
+      h('span', ' application. Motorcycle.js is Cycle.js, only using '  ),  
       h('a', {props: {href: 'https://github.com/paldepind/snabbdom' }},'Snabbdom' ), 
       h('span',  ' instead of "virtual-dom", and ' ), 
       h('a', {props: {href: 'https://github.com/cujojs/most' }},'Most' ), 
@@ -323,7 +323,7 @@ function main(sources) {
       h('div.messages', [
       h('p', {style: tempStyle2}, 'Enter messages here: '  ),
       h('input.inputMessage', {style: tempStyle2} ),
-      h('div', mMmessages.x  ) ]),
+      h('div', mMmsg.x  ) ]),
       h('p.group2', [ 
       h('br'),  
       h('span',  'Group: ' + mMgroup.x ),
@@ -338,10 +338,12 @@ function main(sources) {
       h('span.tao', 'People in the same group, other than solo, share text messages and dice rolls. '  ),
       h('hr'),
       h('h2',  'Streams and Time Travel'  ),
-      h('p',  'The monads presented in this series are simple and flexible. The reference at the bottom of this page presents the definitions of the two basic monads. There isn\'t much to them, but they are great for streamlining and organizing code. If you want error handling, enforcement of type rules, or something specific to your own application, just modify the basic Monad constructor, give it a new name, and start creating specialized monad instances. Monad$ as a good example. It uses "subject" from the "most" library, and is defined as follow: '  ),
-   code.Monad$,
-   h('p',  'The function "ret" is frequently used to create instances of Monad. Here is the definition of "ret": '  ),
-   code.ret,
+      h('span.tao',  'The monads presented in this series are simple and flexible. The reference at the bottom of this page presents the definitions of the two basic monads. There isn\'t much to them, but they are great for streamlining and organizing code. If you want error handling, enforcement of type rules, or something specific to your own application, just modify the basic Monad constructor, give it a new name, and start creating specialized monad instances. Monad$ as a good example. It uses "subject" from the '  ), 
+      h('a',  {props: {href:  "https://github.com/tylors/most-subject.git"}}, 'most-subject' ),
+      h('span', 'library, and is defined as follow: '  ),
+      code.Monad$,
+      h('p',  'The function "ret" is frequently used to create instances of Monad. Here is the definition of "ret": '  ),
+     code.ret,
      h('p', 'mM$1, an instance of Monad$, guides the flow of game play data. mM$1.ret(some array) is used to feed arrays into mM$1.stream for use in updating the number display in the browser, and for populating mMhistorymM1, which is used for traversing the numbers display. Here are the functions that handle the flow of information when a player clicks a number or an operator: ' ),     
      code.nums,
      h('p', ' mM$3 assists in the traversal of game display history. The data carried in mM$3.stream is of no consequence, so the argument provided to mM$3.ret() doesn\'t matter either. The value of mMindex2 changes when BACK or FORWARD are clicked, and that affects the browser display the next time the DOM is patched. mM$3.ret is called in order to trigger a DOM. Here is the code: ' ), 
@@ -451,16 +453,6 @@ var updateScoreboard = function updateScoreboard(v) {
     mMscoreboard.bnd(unshift, h('div.indent', ar[k]), mMscoreboard)
   }
   return mMscoreboard;
-}
-
-var updateMessages = function updateMessages(v) {
-  mMmessages.ret([]);
-  let ar = mMmsg.x;
-  let keys = Object.keys(ar);
-  for (let k in keys) {
-    mMmessages.bnd(unshift, h('div', ar[k]),mMmessages)
-  }
-  return mMmessages;
 }
 
 var displayOff = function displayOff(x,a) {

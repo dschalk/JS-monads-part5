@@ -313,6 +313,7 @@ var clean = function clean(x, mon) {
 }
 
 var push = function push(y,v,mon) {
+  console.log(mon);
   if (Array.isArray(y)) {
     let ar = [];
     let keys = Object.keys(y);
