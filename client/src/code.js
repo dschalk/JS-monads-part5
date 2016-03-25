@@ -195,14 +195,15 @@ var nums = h('pre',  `
     console.log(e);
     if (mM3.x.length < 2) {
       mM3.bnd(push, e.target.innerHTML, mM3)
-      ret(mMhistorymM1.x[mMindex2.x])
-      .bnd(spliceRemove, e.target.id, mM1)
-      .bnd(v => {e.target.innerHTML = ''; mM$1.ret(ret(v))})
+      mM$1.ret(
+        ret(mMhistorymM1.x[mMindex2.x])
+        .bnd(spliceRemove, e.target.id, mM1)
+      )
       if (mM3.x.length === 2 && mM8.x !== 0) {
         updateCalc(mM1);
       }
     };
-  });
+  }).startWith(mM1.x[0]);
 
   const opClick$ = sources.DOM
     .select('.op').events('click');
