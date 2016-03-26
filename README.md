@@ -23,8 +23,8 @@ In JS-monads-part4 the Monad instances created by the "ret()" method were in glo
     };
 
     this.ret = function (a) {
-      O.[_this.id] = new Monad(a, _this.id);
-      return O.[_this.id]
+      O[_this.id] = new Monad(a, _this.id);
+      return O[_this.id]
     };
   };               
 ```
@@ -53,9 +53,9 @@ This fifth part of the monad series features a souped up version of ret(). It is
     };
   
     this.ret = function (a) {
-      window[_this.id] = new Monad$(a,_this.id);
+      O[_this.id] = new Monad$(a,_this.id);
       _this.observer.next(a);
-      return window[_this.id];
+      return O[_this.id];
     };
   };
 ```
