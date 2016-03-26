@@ -47,8 +47,8 @@ const monads = h('pre', {style: {color: '#AFEEEE' }}, `  var Monad = function Mo
     };
 
     this.ret = function (a) {
-      window[_this.id] = new Monad(a, _this.id);
-      return window[_this.id]
+      O.[_this.id] = new Monad(a, _this.id);
+      return O.[_this.id]
     };
   };               
 

@@ -1,5 +1,7 @@
 'use strict';
 
+var O = {};
+
 var tempStyle = {display: 'inline'}
 var tempStyle2 = {display: 'none'}
 
@@ -34,9 +36,9 @@ var Monad$ = function Monad$(z, g) {
   };
 
   this.ret = function (a) {
-    window[_this.id] = new Monad$(a,_this.id);
+    O[_this.id] = new Monad$(a,_this.id);
     _this.observer.next(a);
-    return window[_this.id];
+    return O[_this.id];
   };
 };
 
@@ -66,6 +68,15 @@ var MonadSave = function MonadSave(z, g, h) {
     return window[_this.id];
   };
 };
+
+var mM$1 = new Monad$([], 'mM$1');
+mM$1.ret(mM$1.x);
+
+var mM$2 = new Monad$([], 'mM$2');
+mM$2.ret(mM$2.x);
+
+var mM$3 = new Monad$([], 'mM$3');
+mM$3.ret(mM$3.x);
 
 var mMsaved = new MonadSave({}, 'mMsaved');
 var mMid = new MonadSave('waiting', 'mMid');
@@ -98,8 +109,8 @@ var Monad = function Monad(z, g) {
   };
 
   this.ret = function (a) {
-    window[_this.id] = new Monad(a,_this.id);
-    return window[_this.id];
+    O[_this.id] = new Monad(a,_this.id);
+    return O[_this.id];
   };
 };
 
@@ -147,7 +158,7 @@ var MI = function MI() {
 };
 
 var Count = 0;
-var mM1 = M([],'mM1');
+// var mM1 = M([],'mM1');
 var mM2 = M(0,'mM2');
 var mM3 = M([],'mM3');
 var mM4 = M([],'mM4');
@@ -222,7 +233,26 @@ var mMhistorymM3 = new Monad([], 'mMhistorymM3');
 var mMtemp = new Monad('temp', 'mMtemp');
 var mMte = new Monad(0, 'mMte');
 var mMid = new Monad('cow', 'mMid');
-var mM1change = new Monad(mM1, 'mM1change');
+
+mMgoals.ret(mMgoals.x)
+mMgoals2.ret(mMgoals2.x)
+mM3.ret(mM3.x)
+mM6.ret(mM6.x)
+mMmsg.ret(mMmsg.x)
+mMmessages.ret(mMmessages.x)
+mMgroup.ret(mMgroup.x)
+mMname.ret(mMname.x)
+mMscoreboard.ret(mMscoreboard.x)
+mMscbd.ret(mMscbd.x)
+mM13.ret(mM13.x)
+mM3.ret(mM3.x)
+mM8.ret(mM8.x)
+mM19.ret(mM19.x)
+mMhistorymM1.ret(mMhistorymM1.x)
+mMhistorymM3.ret(mMhistorymM3.x)
+mMhistory.ret(mMhistory.x)
+mMindex2.ret(mMindex2.x);
+
 
 var mMZ1 = MI();
 var mMZ2 = MI();
@@ -255,12 +285,6 @@ var mMZ26 = MI();
 var mMZ27 = MI();
 var mMZ28 = MI();
 var mMZ29 = MI();
-
-var change = [new Monad([7,7,7,7])];
-  
-var Bigcow = 'change[0] === mM1 ' + change[0] === mM1;
-
-var change2Elem = 'Niether true now false';
 
 var trim = function trim(x,str) {
   return ret(str.trim());
@@ -315,14 +339,16 @@ var wait = function wait(x, y, mon2) {
   return mon2;
 };
 
-var unshift = function unshift(y,v,mon) {
+var unshift = function push(y,v,mon) {
   if (Array.isArray(y)) {
-    let mMtemp = ret(y);
-    mMtemp.x.unshift(v);
-    return mon.ret(mMtemp.x);
+    let ar = [];
+    let keys = Object.keys(y);
+    for (let k in keys) {ar[k] = y[k]};
+    ar.unshift(v);
+    return mon.ret(ar);  
   }
-  console.log('The value provided to unshift is not an array');
-  return mon.ret(y);
+  console.log('The value provided to push is not an array');
+  return ret(y);
 };
 
 var unshift2 = function unshift(y,v,mon) {

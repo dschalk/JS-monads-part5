@@ -1,16 +1,12 @@
 import Cycle from '@motorcycle/core';
-import {h, p, span, h1, h2, h3, br, div, label, input, hr, makeDOMDriver} from '@motorcycle/dom'; 
-import {just, create, merge, combine, fromEvent, periodic, observe, delay, filter, of} from 'most'; 
-import code from './code.js'; 
+import {h, p, span, h1, h2, h3, br, div, label, input, hr, makeDOMDriver} from '@motorcycle/dom';
+import {just, create, merge, combine, fromEvent, periodic, observe, delay, filter, of} from 'most';
+import code from './code.js';
 import {subject} from 'most-subject'
 
 var tempStyle = {display: 'inline'}
 var tempStyle2 = {display: 'none'}
 mM6.ret('');
-
-var mM$1 = new Monad$([], 'mM$1');
-var mM$2 = new Monad$([], 'mM$2');
-var mM$3 = new Monad$([], 'mM$3');
 
 function createWebSocket(path) {
     let host = window.location.hostname;
@@ -28,17 +24,14 @@ const websocketsDriver = function () {
     })
 }
 
-var mM1ob = {'mM1': mM1};
-
 const unitDriver = function () {
   return periodic(1000, 1);
 }
 
-mM1.ret([0,0,0,0]);
 mM3.ret([]);
 
 window.onload = function (event) {
-    console.log('onopen event: ', event);
+  console.log('onopen event: ', event);
 };
 
 function main(sources) {
@@ -49,8 +42,8 @@ function main(sources) {
   const messages$ = (sources.WS).map(e => 
     mMar.ret(e.data.split(','))
     .bnd(array => mMscores.ret(array[3].split("<br>"))
-    .bnd(() => mMsender.ret(mMar.x[2])
-    .bnd(() => mMprefix.ret(mMar.x[0])
+    .bnd(() => mMsender.ret(O.mMar.x[2])
+    .bnd(() => mMprefix.ret(O.mMar.x[0])
       .bnd(next, 'CA#$42', mMZ10)
       .bnd(next, 'CB#$42', mMZ11)
       .bnd(next, 'CC#$42', mMZ12)
@@ -58,29 +51,28 @@ function main(sources) {
       .bnd(next, 'CE#$42', mMZ14)
       .bnd(next, 'EE#$42', mMZ15)))));
     mMZ10.bnd(() => mM$1
-      .ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]])
+      .ret([O.mMar.x[3], O.mMar.x[4], O.mMar.x[5], O.mMar.x[6]])
       .bnd(() => mM$2.ret([]))
       .bnd(displayInline,'0')
       .bnd(displayInline,'1')
       .bnd(displayInline,'2')
-      .bnd(log, 'from messages ' + mM$1.x)
       .bnd(displayInline,'3'));
     mMZ11.bnd(() => mMscbd
-      .ret(mMscores.x)
+      .ret(O.mMscores.x)
       .bnd(updateScoreboard)
       .bnd(() => mM3.ret([])
       .bnd(() => mM8.ret(0) )));
     mMZ12.bnd(() => mM6
-      .ret( mMsender.x + ' successfully logged in.'));
-    mMZ13.bnd(() => mMar
-      .bnd(splice, 0, 3, mMar)
+      .ret( O.mMsender.x + ' successfully logged in.'));
+    mMZ13.bnd(() => O.mMar
+      .bnd(splice, 0, 3, O.mMar)
       .bnd(reduce, (a,b) => a + ", " + b)
-      .bnd(() => mMmsg
-      .bnd(push, h('div', mMsender.x + ': ' + mMar.x), mMmsg)
+      .bnd(() => O.mMmsg
+      .bnd(unshift, h('div', O.mMsender.x + ': ' + O.mMar.x), O.mMmsg)
       ));
-    mMZ14.bnd(() => mMgoals2.ret('The winner is ' + mMname.x ));
+    mMZ14.bnd(() => mMgoals2.ret('The winner is ' + O.mMname.x ));
     mMZ15.bnd(() => mMgoals2.ret('A player named ' + 
-        mMname.x + 'is currently logged in. Page will refresh in 4 seconds.')
+        O.mMname.x + 'is currently logged in. Page will refresh in 4 seconds.')
       .bnd(refresh));
   
   const loginPress$ = sources.DOM
@@ -111,7 +103,7 @@ function main(sources) {
     } 
     if( e.keyCode == 13 ) 
       mMgroup.ret(e.target.value);
-      socket.send(`CO#$42,${e.target.value},${mMname.x.trim()},${e.target.value}`);
+      socket.send(`CO#$42,${e.target.value},${O.mMname.x.trim()},${e.target.value}`);
   });
 
   var addS = function addS (x,y) {
@@ -129,7 +121,7 @@ function main(sources) {
 
   const messagePressAction$ = messagePress$.map(e => {
     if( e.keyCode == 13 ) {
-      socket.send(`CD#$42,${mMgroup.x.trim()},${mMname.x.trim()},${e.target.value}`);
+      socket.send(`CD#$42,${O.mMgroup.x.trim()},${O.mMname.x.trim()},${e.target.value}`);
       e.target.value = '';
     }
   });
@@ -139,25 +131,24 @@ function main(sources) {
      
   const numClickAction$ = numClick$.map(e => {
     console.log(e);
-    if (mM3.x.length < 2) {
-      mM3.bnd(push, e.target.innerHTML, mM3)
-      mM$1.ret(
-        ret(mMhistorymM1.x[mMindex2.x])
-        .bnd(spliceRemove, e.target.id, mM1).x
-      )
-      if (mM3.x.length === 2 && mM8.x !== 0) {
-        updateCalc(mM1);
+    if (O.mM3.x.length < 2) {
+      O.mM3.bnd(push, e.target.innerHTML, O.mM3)
+      mM28.ret(O.mMhistorymM1.x[O.mMindex2.x])
+      .bnd(spliceRemove, e.target.id, O.mM$1)
+      .bnd(mM$1.ret);
+      if (O.mM3.x.length === 2 && O.mM8.x !== 0) {
+        updateCalc();
       }
     };
-  }).startWith(mM1.x[0]);
+  }).startWith([0,0,0,0]);
 
   const opClick$ = sources.DOM
     .select('.op').events('click');
 
   const opClickAction$ = opClick$.map(e => {
     mM8.ret(e.target.textContent);
-    if (mM3.x.length === 2) {
-      updateCalc(mM1);
+    if (O.mM3.x.length === 2) {
+      updateCalc();
     }
   })
 
@@ -165,9 +156,9 @@ function main(sources) {
     .select('.roll').events('click');
 
   const rollClickAction$ = rollClick$.map(e => {  
-    mM13.ret(mM13.x - 1);
-    socket.send('CG#$42,' + mMgroup.x.trim() + ',' + mMname.x.trim() + ',' + -1 + ',' + mMgoals.x);
-    socket.send(`CA#$42,${mMgroup.x},${mMname.x.trim()},6,6,12,20`);
+    mM13.ret(O.mM13.x - 1);
+    socket.send('CG#$42,' + O.mMgroup.x.trim() + ',' + O.mMname.x.trim() + ',' + -1 + ',' + O.mMgoals.x);
+    socket.send(`CA#$42,${O.mMgroup.x},${O.mMname.x.trim()},6,6,12,20`);
   });
 
   const fibPress$ = sources.DOM
@@ -192,44 +183,43 @@ function main(sources) {
     .select('#back2').events('click');
 
   const forwardClickAction$ = forwardClick$.map(() => {
-    if (mMindex2.x < (mMhistorymM1.x.length - 1)) {
-      inc(mMindex2.x, mMindex2)
+    if (O.mMindex2.x < (O.mMhistorymM1.x.length - 1)) {
+      inc(O.mMindex2.x, mMindex2)
       .bnd(() => mM$3.ret('Hello'))
     }
   });
 
   const backClickAction$ = backClick$.map(() => {
-    if (mMindex2.x > 0) {
-      dec(mMindex2.x, mMindex2)
+    if (O.mMindex2.x > 0) {
+      dec(O.mMindex2.x, mMindex2)
       .bnd(() => mM$3.ret('You bet!'))
     }
   });
 
   const mM$1Action$ = mM$1.stream.map(v => {
-    console.log('From mM$1Action$ ', v);
     if (Array.isArray(v)) {
-      mMhistorymM1.bnd(spliceAdd, mMindex2.x, v, mMhistorymM1);
-      document.getElementById('0').innerHTML = (mMhistorymM1.x[mMindex2.x])[0]; 
-      document.getElementById('1').innerHTML = (mMhistorymM1.x[mMindex2.x])[1]; 
-      document.getElementById('2').innerHTML = (mMhistorymM1.x[mMindex2.x])[2]; 
-      document.getElementById('3').innerHTML = (mMhistorymM1.x[mMindex2.x])[3]; 
+      O.mMhistorymM1.bnd(spliceAdd, O.mMindex2.x, v, O.mMhistorymM1);
+      document.getElementById('0').innerHTML = (O.mMhistorymM1.x[O.mMindex2.x])[0]; 
+      document.getElementById('1').innerHTML = (O.mMhistorymM1.x[O.mMindex2.x])[1]; 
+      document.getElementById('2').innerHTML = (O.mMhistorymM1.x[O.mMindex2.x])[2]; 
+      document.getElementById('3').innerHTML = (O.mMhistorymM1.x[O.mMindex2.x])[3]; 
       cleanup()
     }
     else {
-      console.log('mM$1.stream is providing defective data to mM$1Action');
+      console.log('O.mM$1.stream is providing defective data to O.mM$1Action');
     }
   });
 
   const mM$3Action$ = mM$3.stream.map(v => {
-    document.getElementById('0').innerHTML = (mMhistorymM1.x[mMindex2.x])[0]; 
-    document.getElementById('1').innerHTML = (mMhistorymM1.x[mMindex2.x])[1]; 
-    document.getElementById('2').innerHTML = (mMhistorymM1.x[mMindex2.x])[2]; 
-    document.getElementById('3').innerHTML = (mMhistorymM1.x[mMindex2.x])[3]; 
+    document.getElementById('0').innerHTML = (O.mMhistorymM1.x[O.mMindex2.x])[0]; 
+    document.getElementById('1').innerHTML = (O.mMhistorymM1.x[O.mMindex2.x])[1]; 
+    document.getElementById('2').innerHTML = (O.mMhistorymM1.x[O.mMindex2.x])[2]; 
+    document.getElementById('3').innerHTML = (O.mMhistorymM1.x[O.mMindex2.x])[3]; 
     cleanup();
   })
 
   const mM$2Action$ = mM$2.stream.map(v => {
-    mMhistorymM3.bnd(push, v, mMhistorymM3);
+    O.mMhistorymM3.bnd(push, v, O.mMhistorymM3);
     console.log('From mM$2.stream: ', v);
   })
 
@@ -279,28 +269,28 @@ function main(sources) {
       h('button#back2', {style: tempStyle2}, 'FORWARD'  ),
       h('button#forward2', {style: tempStyle2}, 'BACK'  ),
       h('br'),
-      h('div.winner', mMgoals2.x+''  ),
+      h('div.winner', O.mMgoals2.x+''  ),
       h('p.login', {style: tempStyle}, 'Please enter some name.'  ),
       h('br'),
       h('input.login', {style: tempStyle }   ),
-      h('p', mM6.x.toString() ),
+      h('p', O.mM6.x.toString() ),
       h('p.group', {style: tempStyle2}, 'Change group: '  ),
       h('input.group', {style: tempStyle2} ),
       h('div.messages', [
       h('p', {style: tempStyle2}, 'Enter messages here: '  ),
       h('input.inputMessage', {style: tempStyle2} ),
-      h('div', mMmsg.x  ) ]),
+      h('div', O.mMmsg.x  ) ]),
       h('p.group2', [ 
       h('br'),  
-      h('span',  'Group: ' + mMgroup.x ),
+      h('span',  'Group: ' + O.mMgroup.x ),
       h('br'),
-      h('span',  'Goals: ' + mMgoals.x ),
+      h('span',  'Goals: ' + O.mMgoals.x ),
       h('br'),
-      h('span',  'Name: ' + mMname.x ),
+      h('span',  'Name: ' + O.mMname.x ),
       h('br'),
       h('div.scoreDisplay', [
       h('span', 'player[score][goals]' ),
-      h('div', mMscoreboard.x ) ]) ]),
+      h('div', O.mMscoreboard.x ) ]) ]),
       h('span.tao', 'People in the same group, other than solo, share text messages and dice rolls. '  ),
       h('hr'),
       h('h2',  'Streams and Time Travel'  ),
@@ -345,7 +335,7 @@ function main(sources) {
       h('p',   'The result will be displayed underneath the input box. ' ),
       h('br'),
       h('input#code', ),  
-      h('p#code2', mM19.x ),  
+      h('p#code2', O.mM19.x ),  
       h('br', ),  
       h('p', ' The message-handling code is shown above. This is how the websockets driver, the "WS" attribute of "sources", is defined: ' ),  
       code.driver,
@@ -382,27 +372,27 @@ function cleanup (x) {
     return ret(x);
 };
 
-function updateCalc(mM1) { 
-  mMZ2.bnd(() => mM13
+function updateCalc() { 
+  mMZ2.bnd(() => O.mM13
                .bnd(score, 1)
-               .bnd(next2, (mM13.x % 5 === 0), mMZ5) 
+               .bnd(next2, (O.mM13.x % 5 === 0), mMZ5) 
                .bnd(newRoll));
-  mMZ4.bnd(() => mM13
+  mMZ4.bnd(() => O.mM13
                .bnd(score, 3)
-               .bnd(next2, (mM13.x % 5 === 0), mMZ5) 
+               .bnd(next2, (O.mM13.x % 5 === 0), mMZ5) 
                .bnd(newRoll));
-      mMZ5.bnd(() => mM13
+      mMZ5.bnd(() => O.mM13
                    .bnd(score,5)
                    .bnd(v => mM13.ret(v)
                    .bnd(next, 25, mMZ6)));
           mMZ6.bnd(() => mM9.bnd(score2) 
                        .bnd(next,3,mMZ7));
              mMZ7.bnd(() => mM13.bnd(winner));               
-  mM3.bnd(x => mM7
-               .ret(calc(x[0], mM8.x, x[1]))
+  O.mM3.bnd(x => mM7
+               .ret(calc(x[0], O.mM8.x, x[1]))
                .bnd(next, 18, mMZ4)  
                .bnd(next, 20, mMZ2) // Releases mMZ2 (above)
-               .bnd(() => mM$1.ret(mM1.bnd(push, mM7.x, mM1).x)
+               .bnd(() => O.mM$1.bnd(push, O.mM7.x, mM$1)
                .bnd(() => mM3
                .ret([])
                .bnd(() => mM4
@@ -413,12 +403,12 @@ function updateCalc(mM1) {
 
 var updateScoreboard = function updateScoreboard(v) {
   mMscoreboard.ret([]);
-  let ar = mMscbd.x;
+  let ar = O.mMscbd.x;
   let keys = Object.keys(ar);
   for (let k in keys) {
-    mMscoreboard.bnd(unshift, h('div.indent', ar[k]), mMscoreboard)
+    O.mMscoreboard.bnd(unshift, h('div.indent', ar[k]), mMscoreboard)
   }
-  return mMscoreboard;
+  return O.mMscoreboard;
 }
 
 var displayOff = function displayOff(x,a) {
@@ -432,14 +422,14 @@ var displayInline = function displayInline(x,a) {
 };
 
 var score = function score(v,j) {
-  socket.send('CG#$42,' + mMgroup.x + ',' + mMname.x + ',' + j + ',' + mMgoals.x);
+  socket.send('CG#$42,' + O.mMgroup.x + ',' + O.mMname.x + ',' + j + ',' + O.mMgoals.x);
   return mM13.ret(v + j);
 }
 
 var score2 = function score2() {
   mMgoals.ret(mMgoals.x + 1);
   let j = -25;
-  socket.send('CG#$42,' + mMgroup.x + ',' + mMname.x + ',' + j + ',' + mMgoals.x);
+  socket.send('CG#$42,' + O.mMgroup.x + ',' + O.mMname.x + ',' + j + ',' + O.mMgoals.x);
   mM13.ret(0);
   return mMgoals;
 }
@@ -447,13 +437,13 @@ var score2 = function score2() {
 var winner = function winner() {
   let k = -3
   mMgoals.ret(mMgoals.x - 3);
-  socket.send('CG#$42,' + mMgroup.x + ',' + mMname.x + ',' + 0 + ',' + mMgoals.x);
-  socket.send('CE#$42,' + mMgroup.x + ',' + mMname.x + ',nothing ');
+  socket.send('CG#$42,' + O.mMgroup.x + ',' + O.mMname.x + ',' + 0 + ',' + O.mMgoals.x);
+  socket.send('CE#$42,' + O.mMgroup.x + ',' + O.mMname.x + ',nothing ');
   return ret(0);
 }
 
 var newRoll = function(v) {
-  socket.send(`CA#$42,${mMgroup.x},${mMname.x.trim()},6,6,12,20`);
+  socket.send(`CA#$42,${O.mMgroup.x},${O.mMname.x.trim()},6,6,12,20`);
   return ret(v);
 };
 
