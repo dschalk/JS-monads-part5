@@ -4,9 +4,9 @@ This page picks up where [JS-monads-part4](http://schalk.net:3099) left off, but
 
 ## One Big Mutable Object    
 
-For any instance of Monad m, m.ret(v) give m the value v. In other words, m.ret(v) results in m.x === v. This result can be accomplished through mutation by setting m.x = v, but we don't do that. The m.ret(v) creates a new monad named "m" with value v.
+For any instance of Monad m, m.ret(v) give m the value v. In other words, m.ret(v) results in m.x === v. This result can be accomplished through mutation by setting m.x = v, but we don't do that. The m.ret(v) creates a new Monad instance named "m" with value v.
 
-In JS-monads-part4 the Monad instances created by the "ret()" method were in globa scope. Like their originally created instances, they were attributes of window. In this, the fifth part of the series, I retain all of the benefits of a "no-mutations" policy and gain some advantage by attaching new monad instances created by "ret()" to one mutable object, which I named "O". Instead of mutating window, we mutate O. References to historical instances of Monad which share the same name and id can still be stored in variables, arrays, etc. It is easier to reason about code now that we retain the never-changing original version of a Monad instance while having the option of doing whatever we want with the O name space clones created by ret(). Here is the new definition:
+In JS-monads-part4 the Monad instances created by the "ret()" method were in global scope. Like their originally created instances, they were attributes of window. In this, the fifth part of the series, I retain all of the benefits of a "no-mutations" policy and gain some advantage by attaching new monad instances created by "ret()" to one mutable object, which I named "O". Instead of mutating window, we mutate O. References to historical instances of Monad which share the same name and id can still be stored in variables, arrays, etc. It is easier to reason about code now that we retain the never-changing original version of a Monad instance while having the option of doing whatever we want with the O name space clones created by ret(). Here is the new definition:
 ```javascript                 
   var Monad = function Monad(z, g) {
     var _this = this;
