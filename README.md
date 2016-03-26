@@ -2,8 +2,6 @@
 
 This page picks up where [JS-monads-part4](http://schalk.net:3099) left off, but with the Monad "ret()" method re-defined, and a new type of monad named "Monad$".
 
-A drawback of the approach taken in parts 1, 2, 3, and 4 of this series is that older versions of m were not being garbage collected. They persisted on the heap even when there was no reference to them. Instead of religously clinging to a "no-mutations" policy, I opted for "One Big Mutable Object" sulution. This 
-
 ## One Big Mutable Object    
 
 For any instance of Monad m, m.ret(v) give m the value v. In other words, m.ret(v) results in m.x === v. This result can be accomplished through mutation by setting m.x = v, but we don't do that. The m.ret(v) creates a new monad named "m" with value v.
