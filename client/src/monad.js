@@ -15,26 +15,17 @@ var subject = mostSubject.subject;
 
 var Monad$ = function Monad$(z, g) {
   var _this = this;
-  
   this.subject = subject();
   this.observer = this.subject.observer;
   this.stream = this.subject.stream;
   this.x = z;
-
-  if (arguments.length === 1) {
-    this.id = 'anonymous';
-  } else {
-    this.id = g;
-  }
-
+  this.id = g;
   this.bnd = function (func) {
     for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
       args[_key - 1] = arguments[_key];
     }
-
     return func.apply(undefined, [_this.x].concat(args));
   };
-
   this.ret = function (a) {
     O[_this.id] = new Monad$(a,_this.id);
     _this.observer.next(a);
