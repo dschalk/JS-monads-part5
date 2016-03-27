@@ -69,6 +69,9 @@ mM$2.ret(mM$2.x);
 var mM$3 = new Monad$([], 'mM$3');
 mM$3.ret(mM$3.x);
 
+var mM$todo = new Monad$([], 'mM$todo');
+mM$todo.ret(mM$todo.x);
+
 var mMsaved = new MonadSave({}, 'mMsaved');
 var mMid = new MonadSave('waiting', 'mMid');
 var mMnewval = new MonadSave('waiting', 'mMnewval');
